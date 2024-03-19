@@ -1,0 +1,2 @@
+09:38:04.357 [nacos-grpc-client-executor-127.0.0.1-8] ERROR c.a.n.c.r.c.g.GrpcClient - [printIfErrorEnabled,102] - [1710725884308_127.0.0.1_49601]Error to process server push response: {"headers":{},"abilityTable":{"supportPersistentInstanceByGrpc":true},"module":"internal"}
+09:38:06.762 [nacos-grpc-client-executor-127.0.0.1-6] ERROR c.a.n.c.r.c.g.GrpcClient - [printIfErrorEnabled,102] - [1710725886758_127.0.0.1_49611]Error to process server push response: {"headers":{},"abilityTable":{"supportPersistentInstanceByGrpc":true},"module":"internal"}
