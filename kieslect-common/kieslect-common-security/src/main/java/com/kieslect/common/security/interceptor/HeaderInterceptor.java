@@ -6,7 +6,7 @@ import com.kieslect.common.core.context.SecurityContextHolder;
 import com.kieslect.common.core.utils.ServletUtils;
 import com.kieslect.common.core.utils.StringUtils;
 import com.kieslect.common.security.auth.AuthUtil;
-import com.kieslect.common.security.model.LoginUser;
+import com.kieslect.common.security.model.LoginUserInfo;
 import com.kieslect.common.security.utils.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,13 +31,12 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor
         }
 
         SecurityContextHolder.setUserId(ServletUtils.getHeader(request, SecurityConstants.DETAILS_USER_ID));
-        SecurityContextHolder.setUserName(ServletUtils.getHeader(request, SecurityConstants.DETAILS_USERNAME));
         SecurityContextHolder.setUserKey(ServletUtils.getHeader(request, SecurityConstants.USER_KEY));
 
         String token = SecurityUtils.getToken();
         if (StringUtils.isNotEmpty(token))
         {
-            LoginUser loginUser = AuthUtil.getLoginUser(token);
+            LoginUserInfo loginUser = AuthUtil.getLoginUser(token);
             if (StringUtils.isNotNull(loginUser))
             {
                 AuthUtil.verifyLoginUserExpire(loginUser);

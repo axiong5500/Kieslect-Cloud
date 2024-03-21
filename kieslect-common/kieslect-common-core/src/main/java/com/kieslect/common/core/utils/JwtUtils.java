@@ -49,8 +49,7 @@ public class JwtUtils
      */
     public static String getUserKey(String token)
     {
-        Claims claims = parseToken(token);
-        return getValue(claims, SecurityConstants.USER_KEY);
+        return JWTUtil.parseToken(token).getPayload().getClaim(SecurityConstants.USER_KEY).toString();
     }
 
     /**

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kieslect.user.mapper.UserInfoMapper">
+    <resultMap type="com.kieslect.user.domain.UserInfo" id="UserInfoResult">
+        <result property="id"    column="id"    />
+        <result property="account"    column="account"    />
+        <result property="password"    column="password"    />
+        <result property="email"    column="email"    />
+        <result property="sex"    column="sex"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="height"    column="height"    />
+        <result property="weight"    column="weight"    />
+        <result property="country"    column="country"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="headImage"    column="head_image"    />
+        <result property="appName"    column="app_name"    />
+        <result property="appSystem"    column="app_system"    />
+        <result property="appType"    column="app_type"    />
+        <result property="appChannel"    column="app_channel"    />
+        <result property="appStatus"    column="app_status"    />
+        <result property="appVersion"    column="app_version"    />
+        <result property="metricBritish"    column="metric_british"    />
+        <result property="hourly"    column="hourly"    />
+        <result property="temperature"    column="temperature"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <insert id="insertUserInfo" parameterType="com.kieslect.user.domain.UserInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="account != null">account,</if>
+            <if test="password != null">password,</if>
+            <if test="email != null">email,</if>
+            <if test="sex != null">sex,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="height != null">height,</if>
+            <if test="weight != null">weight,</if>
+            <if test="country != null">country,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="nickName != null">nick_name,</if>
+            <if test="headImage != null">head_image,</if>
+            <if test="appName != null">app_name,</if>
+            <if test="appSystem != null">app_system,</if>
+            <if test="appType != null">app_type,</if>
+            <if test="appChannel != null">app_channel,</if>
+            <if test="appStatus != null">app_status,</if>
+            <if test="appVersion != null">app_version,</if>
+            <if test="metricBritish != null">metric_british,</if>
+            <if test="hourly != null">hourly,</if>
+            <if test="temperature != null">temperature,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="account != null">#{account},</if>
+            <if test="password != null">#{password},</if>
+            <if test="email != null">#{email},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="height != null">#{height},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="country != null">#{country},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="nickName != null">#{nickName},</if>
+            <if test="headImage != null">#{headImage},</if>
+            <if test="appName != null">#{appName},</if>
+            <if test="appSystem != null">#{appSystem},</if>
+            <if test="appType != null">#{appType},</if>
+            <if test="appChannel != null">#{appChannel},</if>
+            <if test="appStatus != null">#{appStatus},</if>
+            <if test="appVersion != null">#{appVersion},</if>
+            <if test="metricBritish != null">#{metricBritish},</if>
+            <if test="hourly != null">#{hourly},</if>
+            <if test="temperature != null">#{temperature},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+</mapper>

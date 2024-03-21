@@ -8,6 +8,7 @@ import com.kieslect.common.security.exception.NotLoginException;
 import com.kieslect.common.security.exception.NotPermissionException;
 import com.kieslect.common.security.exception.NotRoleException;
 import com.kieslect.common.security.model.LoginUser;
+import com.kieslect.common.security.model.LoginUserInfo;
 import com.kieslect.common.security.service.TokenService;
 import com.kieslect.common.security.utils.SecurityUtils;
 import org.springframework.util.PatternMatchUtils;
@@ -86,7 +87,7 @@ public class AuthLogic
      * @param token 前端传递的认证信息
      * @return 用户缓存信息
      */
-    public LoginUser getLoginUser(String token)
+    public LoginUserInfo getLoginUser(String token)
     {
         return tokenService.getLoginUser(token);
     }
@@ -96,7 +97,7 @@ public class AuthLogic
      * 
      * @param loginUser 当前用户信息
      */
-    public void verifyLoginUserExpire(LoginUser loginUser)
+    public void verifyLoginUserExpire(LoginUserInfo loginUser)
     {
         tokenService.verifyToken(loginUser);
     }

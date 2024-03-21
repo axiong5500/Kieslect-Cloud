@@ -4,12 +4,11 @@ package com.kieslect.common.security.service;
 import cn.hutool.core.util.IdUtil;
 import com.kieslect.common.core.constant.CacheConstants;
 import com.kieslect.common.core.constant.SecurityConstants;
-import com.kieslect.common.core.ip.IpUtils;
 import com.kieslect.common.core.utils.JwtUtils;
 import com.kieslect.common.core.utils.ServletUtils;
 import com.kieslect.common.core.utils.StringUtils;
 import com.kieslect.common.redis.service.RedisService;
-import com.kieslect.common.security.model.LoginUser;
+import com.kieslect.common.security.model.LoginUserInfo;
 import com.kieslect.common.security.utils.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -47,22 +46,17 @@ public class TokenService
     /**
      * 创建令牌
      */
-    public Map<String, Object> createToken(LoginUser loginUser)
+    public Map<String, Object> createToken(LoginUserInfo loginUser)
     {
         String token = IdUtil.fastUUID();
-        Long userId = loginUser.getUserid();
-        String userName = loginUser.getUsername();
+        Long userId = loginUser.getId();
         loginUser.setToken(token);
-        loginUser.setUserid(userId);
-        loginUser.setUsername(userName);
-        loginUser.setIpaddr(IpUtils.getIpAddr());
         refreshToken(loginUser);
 
         // Jwt存储信息
         Map<String, Object> claimsMap = new HashMap<String, Object>();
         claimsMap.put(SecurityConstants.USER_KEY, token);
         claimsMap.put(SecurityConstants.DETAILS_USER_ID, userId);
-        claimsMap.put(SecurityConstants.DETAILS_USERNAME, userName);
 
         // 接口返回信息
         Map<String, Object> rspMap = new HashMap<String, Object>();
@@ -76,7 +70,7 @@ public class TokenService
      *
      * @return 用户信息
      */
-    public LoginUser getLoginUser()
+    public LoginUserInfo getLoginUser()
     {
         return getLoginUser(ServletUtils.getRequest());
     }
@@ -86,7 +80,7 @@ public class TokenService
      *
      * @return 用户信息
      */
-    public LoginUser getLoginUser(HttpServletRequest request)
+    public LoginUserInfo getLoginUser(HttpServletRequest request)
     {
         // 获取请求携带的令牌
         String token = SecurityUtils.getToken(request);
@@ -98,9 +92,9 @@ public class TokenService
      *
      * @return 用户信息
      */
-    public LoginUser getLoginUser(String token)
+    public LoginUserInfo getLoginUser(String token)
     {
-        LoginUser user = null;
+        LoginUserInfo user = null;
         try
         {
             if (StringUtils.isNotEmpty(token))
@@ -120,7 +114,7 @@ public class TokenService
     /**
      * 设置用户身份信息
      */
-    public void setLoginUser(LoginUser loginUser)
+    public void setLoginUser(LoginUserInfo loginUser)
     {
         if (StringUtils.isNotNull(loginUser) && StringUtils.isNotEmpty(loginUser.getToken()))
         {
@@ -143,30 +137,30 @@ public class TokenService
     /**
      * 验证令牌有效期，相差不足120分钟，自动刷新缓存
      *
-     * @param loginUser
+     * @param loginUserInfo
      */
-    public void verifyToken(LoginUser loginUser)
+    public void verifyToken(LoginUserInfo loginUserInfo)
     {
-        long expireTime = loginUser.getExpireTime();
+        long expireTime = loginUserInfo.getExpireTime();
         long currentTime = System.currentTimeMillis();
         if (expireTime - currentTime <= MILLIS_MINUTE_TEN)
         {
-            refreshToken(loginUser);
+            refreshToken(loginUserInfo);
         }
     }
 
     /**
      * 刷新令牌有效期
      *
-     * @param loginUser 登录信息
+     * @param loginUserInfo 登录信息
      */
-    public void refreshToken(LoginUser loginUser)
+    public void refreshToken(LoginUserInfo loginUserInfo)
     {
-        loginUser.setLoginTime(System.currentTimeMillis());
-        loginUser.setExpireTime(loginUser.getLoginTime() + expireTime * MILLIS_MINUTE);
+        loginUserInfo.setLoginTime(System.currentTimeMillis());
+        loginUserInfo.setExpireTime(loginUserInfo.getLoginTime() + expireTime * MILLIS_MINUTE);
         // 根据uuid将loginUser缓存
-        String userKey = getTokenKey(loginUser.getToken());
-        redisService.setCacheObject(userKey, loginUser, expireTime, TimeUnit.MINUTES);
+        String userKey = getTokenKey(loginUserInfo.getToken());
+        redisService.setCacheObject(userKey, loginUserInfo, expireTime, TimeUnit.MINUTES);
     }
 
     private String getTokenKey(String token)

@@ -1,7 +1,7 @@
 package com.kieslect.common.security.auth;
 
 
-import com.kieslect.common.security.model.LoginUser;
+import com.kieslect.common.security.model.LoginUserInfo;
 
 /**
  * Token 权限验证工具类
@@ -47,7 +47,7 @@ public class AuthUtil
      * @param token 指定token
      * @return 用户信息
      */
-    public static LoginUser getLoginUser(String token)
+    public static LoginUserInfo getLoginUser(String token)
     {
         return authLogic.getLoginUser(token);
     }
@@ -57,7 +57,7 @@ public class AuthUtil
      * 
      * @param loginUser 用户信息
      */
-    public static void verifyLoginUserExpire(LoginUser loginUser)
+    public static void verifyLoginUserExpire(LoginUserInfo loginUser)
     {
         authLogic.verifyLoginUserExpire(loginUser);
     }

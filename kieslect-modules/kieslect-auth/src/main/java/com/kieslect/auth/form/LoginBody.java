@@ -19,5 +19,9 @@ public class LoginBody
      * 用户密码
      */
     private String password;
+    /**
+     * 应用名
+     */
+    private String appName;
 
 }

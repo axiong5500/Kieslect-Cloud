@@ -18,15 +18,11 @@
     </properties>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>com.baomidou</groupId>-->
-<!--            <artifactId>mybatis-plus-boot-starter</artifactId>-->
-<!--            <version>3.4.3.3</version>-->
-<!--        </dependency>-->
+
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity</artifactId>
-            <version>1.7</version> <!-- 或者是您所需的版本号 -->
+            <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>

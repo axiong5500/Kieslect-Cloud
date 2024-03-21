@@ -16,11 +16,22 @@ public class SysLoginService
     /**
      * 登录
      */
-    public LoginUser login(String username, String password)
+    public LoginUser login(String account, String password)
     {
+//        if (EmailUtils.isEmail(account))
+//        {
+//            // 邮箱登录
+//            // 查找邮箱在不在数据库
+//            return null;
+//        }
+//        else
+//        {
+//            // 账号登录
+//            return null;
+//        }
         LoginUser loginUser =  new LoginUser();
         loginUser.setUserid(1L);
-        loginUser.setUsername(username);
+        loginUser.setUsername(account);
         return loginUser;
     }
 

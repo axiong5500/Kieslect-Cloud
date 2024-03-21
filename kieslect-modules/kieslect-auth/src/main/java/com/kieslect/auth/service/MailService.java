@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class MailService {
 
-    private static final long MAIL_TIMEOUT_KEY = 60L; // 60秒有效期
-    private static final String MAIL_CODE_KEY = "mail:code:"; // 60秒有效期
+    private static final long MAIL_TIMEOUT_KEY =  60 * 60L; // 60分钟有效期
+    private static final String MAIL_CODE_KEY = "mail:code:";
 
     @Autowired
     private MailConfig mailConfig;

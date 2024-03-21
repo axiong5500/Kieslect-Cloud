@@ -1,8 +1,8 @@
 package com.kieslect.common.core.domain;
 
 
-
 import com.kieslect.common.core.constant.Constants;
+import com.kieslect.common.core.enums.ResponseCodeEnum;
 
 import java.io.Serializable;
 
@@ -27,6 +27,16 @@ public class R<T> implements Serializable
 
     private T data;
 
+    public R() {
+
+    }
+
+    public R(int code, String message, T data) {
+        this.code = code;
+        this.msg = message;
+        this.data = data;
+    }
+
     public static <T> R<T> ok()
     {
         return restResult(null, SUCCESS, null);
@@ -50,6 +60,11 @@ public class R<T> implements Serializable
     public static <T> R<T> fail(String msg)
     {
         return restResult(null, FAIL, msg);
+    }
+
+    // 添加静态方法，根据枚举常量返回响应信息
+    public static <T> R<T> fail(ResponseCodeEnum responseCodeEnum) {
+        return new R<>(responseCodeEnum.getCode(), responseCodeEnum.getMessage(), null);
     }
 
     public static <T> R<T> fail(T data)

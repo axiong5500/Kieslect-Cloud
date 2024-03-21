@@ -12,6 +12,5 @@ public class RegisterBody extends LoginBody
 {
     private String code;
 
-    
-    private Number registerType;
+    private int registerType;
 }

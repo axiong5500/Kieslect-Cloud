@@ -50,4 +50,17 @@ public class EmailUtils {
             System.out.println("邮件发送失败，错误信息：" + e.getMessage());
         }
     }
+
+    /**
+     * 判断是否是邮箱
+     * @param str
+     * @return  true 是邮箱 false 不是邮箱
+     */
+    public static boolean isEmail(String str){
+        if(StringUtils.isEmpty(str)){
+            throw new RuntimeException("不能为空");
+        }
+        String pattern = "^[\\w-]+(\\.[\\w-]+)*@[\\w-]+(\\.[\\w-]+)+$";
+        return str.matches(pattern);
+    }
 }

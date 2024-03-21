@@ -15,6 +15,7 @@
         <module>kieslect-modules</module>
         <module>kieslect-common</module>
         <module>kieslect-generator</module>
+        <module>kieslect-api</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -35,8 +36,8 @@
         <hutool-all.version>5.8.26</hutool-all.version>
         <druid.version>1.2.20</druid.version>
         <dynamic-ds.version>4.2.0</dynamic-ds.version>
-        <spring.boot.starter.mail.version>3.0.2</spring.boot.starter.mail.version>
-        <mybatis.plus.generator.version>3.3.0</mybatis.plus.generator.version>
+        <spring-boot-starter-mail.version>3.0.2</spring-boot-starter-mail.version>
+        <mybatis-plus-generator.version>3.5.5</mybatis-plus-generator.version>
     </properties>
     <dependencies>
         <dependency>
@@ -144,7 +145,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-mail</artifactId>
-                <version>${spring.boot.starter.mail.version}</version>
+                <version>${spring-boot-starter-mail.version}</version>
             </dependency>
 
             <dependency>
@@ -182,10 +183,36 @@
                 <version>${kieslect.version}</version>
             </dependency>
 
+            <!-- api服务 -->
+            <dependency>
+                <groupId>com.kieslect</groupId>
+                <artifactId>kieslect-api</artifactId>
+                <version>${kieslect.version}</version>
+            </dependency>
+
+            <!-- mybatis-plus -->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-generator</artifactId>
-                <version>${mybatis.plus.generator.version}</version>
+                <version>${mybatis-plus-generator.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-core</artifactId>
+                <version>${mybatis-plus-generator.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-extension</artifactId>
+                <version>${mybatis-plus-generator.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus-generator.version}</version>
             </dependency>
 
         </dependencies>
