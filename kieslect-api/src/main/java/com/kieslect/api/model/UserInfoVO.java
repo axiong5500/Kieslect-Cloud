@@ -6,15 +6,19 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 public class UserInfoVO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private String account;
     private String email;
+    private String password;
+    private String thirdToken;
+    private Byte thirdTokenType;
     private Byte sex;
     private LocalDate birthday;
     private Double height;
@@ -33,7 +37,8 @@ public class UserInfoVO implements Serializable {
     private Byte metricBritish;
     private Byte hourly;
     private Byte temperature;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
+    private Byte firstLogin;
+    private Long createTime;
+    private Long updateTime;
 
 }

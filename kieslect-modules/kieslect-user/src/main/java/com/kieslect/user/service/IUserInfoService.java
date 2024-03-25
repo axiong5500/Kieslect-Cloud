@@ -5,6 +5,7 @@ import com.kieslect.api.domain.LoginInfo;
 import com.kieslect.api.domain.RegisterInfo;
 import com.kieslect.api.model.UserInfoVO;
 import com.kieslect.user.domain.UserInfo;
+import com.kieslect.user.domain.vo.SaveUserInfoVO;
 
 /**
  * <p>
@@ -24,4 +25,10 @@ public interface IUserInfoService extends IService<UserInfo> {
     Boolean register(RegisterInfo registerInfo);
 
     UserInfoVO login(LoginInfo loginInfo);
+
+    boolean saveUserInfo(SaveUserInfoVO userInfoVO);
+
+    UserInfoVO getUserInfo(long id);
+
+    boolean isEmailExists(String email,String appName);
 }

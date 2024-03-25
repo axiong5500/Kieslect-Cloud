@@ -10,7 +10,6 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -185,11 +184,11 @@ public class UserInfo implements Serializable {
      * 创建时间
      */
       @TableField("create_time")
-    private LocalDateTime createTime;
+    private Long createTime;
 
       /**
      * 更新时间
      */
       @TableField("update_time")
-    private LocalDateTime updateTime;
+    private Long updateTime;
 }

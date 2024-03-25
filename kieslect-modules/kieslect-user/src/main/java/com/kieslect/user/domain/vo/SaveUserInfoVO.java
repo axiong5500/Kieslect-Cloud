@@ -1,16 +1,18 @@
-package com.kieslect.user.domain.dto;
+package com.kieslect.user.domain.vo;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.Instant;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class RegisterUserInfoDTO {
+public class SaveUserInfoVO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private String account;
     private String email;
@@ -35,22 +37,6 @@ public class RegisterUserInfoDTO {
     private Byte metricBritish;
     private Byte hourly;
     private Byte temperature;
-    private Byte firstLogin;
-    private Byte delStatus;
-    private Long createTime;
     private Long updateTime;
 
-    public RegisterUserInfoDTO() {
-        // 设置默认初始化值
-        this.account = "kieslect_" + Instant.now().toEpochMilli();
-        this.password = "123456";
-        this.sex = 0;
-        this.metricBritish = 0;
-        this.hourly = 0;
-        this.temperature = 0;
-        this.firstLogin = 1;
-        this.delStatus = 0;
-        this.createTime =  Instant.now().getEpochSecond();
-        this.updateTime = Instant.now().getEpochSecond();
-    }
 }

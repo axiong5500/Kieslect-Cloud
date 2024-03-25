@@ -8,7 +8,7 @@ import com.kieslect.common.core.utils.JwtUtils;
 import com.kieslect.common.core.utils.ServletUtils;
 import com.kieslect.common.core.utils.StringUtils;
 import com.kieslect.common.redis.service.RedisService;
-import com.kieslect.common.security.model.LoginUserInfo;
+import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.security.utils.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -48,14 +48,14 @@ public class TokenService
      */
     public Map<String, Object> createToken(LoginUserInfo loginUser)
     {
-        String token = IdUtil.fastUUID();
+        String userKey = IdUtil.fastUUID();
         Long userId = loginUser.getId();
-        loginUser.setToken(token);
+        loginUser.setUserKey(userKey);
         refreshToken(loginUser);
 
         // Jwt存储信息
         Map<String, Object> claimsMap = new HashMap<String, Object>();
-        claimsMap.put(SecurityConstants.USER_KEY, token);
+        claimsMap.put(SecurityConstants.USER_KEY, userKey);
         claimsMap.put(SecurityConstants.DETAILS_USER_ID, userId);
 
         // 接口返回信息
@@ -111,16 +111,7 @@ public class TokenService
         return user;
     }
 
-    /**
-     * 设置用户身份信息
-     */
-    public void setLoginUser(LoginUserInfo loginUser)
-    {
-        if (StringUtils.isNotNull(loginUser) && StringUtils.isNotEmpty(loginUser.getToken()))
-        {
-            refreshToken(loginUser);
-        }
-    }
+
 
     /**
      * 删除用户缓存信息
@@ -130,6 +121,14 @@ public class TokenService
         if (StringUtils.isNotEmpty(token))
         {
             String userkey = JwtUtils.getUserKey(token);
+            redisService.deleteObject(getTokenKey(userkey));
+        }
+    }
+
+    public void delLoginUserByUserkey(String userkey)
+    {
+        if (StringUtils.isNotEmpty(userkey))
+        {
             redisService.deleteObject(getTokenKey(userkey));
         }
     }
@@ -159,7 +158,7 @@ public class TokenService
         loginUserInfo.setLoginTime(System.currentTimeMillis());
         loginUserInfo.setExpireTime(loginUserInfo.getLoginTime() + expireTime * MILLIS_MINUTE);
         // 根据uuid将loginUser缓存
-        String userKey = getTokenKey(loginUserInfo.getToken());
+        String userKey = getTokenKey(loginUserInfo.getUserKey());
         redisService.setCacheObject(userKey, loginUserInfo, expireTime, TimeUnit.MINUTES);
     }
 

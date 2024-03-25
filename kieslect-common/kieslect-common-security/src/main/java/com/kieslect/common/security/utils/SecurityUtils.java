@@ -3,9 +3,9 @@ package com.kieslect.common.security.utils;
 import com.kieslect.common.core.constant.SecurityConstants;
 import com.kieslect.common.core.constant.TokenConstants;
 import com.kieslect.common.core.context.SecurityContextHolder;
+import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.utils.ServletUtils;
 import com.kieslect.common.core.utils.StringUtils;
-import com.kieslect.common.security.model.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -44,9 +44,9 @@ public class SecurityUtils
     /**
      * 获取登录用户信息
      */
-    public static LoginUser getLoginUser()
+    public static LoginUserInfo getLoginUser()
     {
-        return SecurityContextHolder.get(SecurityConstants.LOGIN_USER, LoginUser.class);
+        return SecurityContextHolder.get(SecurityConstants.LOGIN_USER, LoginUserInfo.class);
     }
 
     /**

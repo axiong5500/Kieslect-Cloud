@@ -4,12 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDate;
 
 /**
  * <p>
@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author kieslect
- * @since 2024-03-20
+ * @since 2024-03-21
  */
 @Getter
 @Setter
@@ -184,11 +184,11 @@ public class UserInfo implements Serializable {
      * 创建时间
      */
       @TableField("create_time")
-    private LocalDateTime createTime;
+    private Long  createTime;
 
       /**
      * 更新时间
      */
       @TableField("update_time")
-    private LocalDateTime updateTime;
+    private Long  updateTime;
 }

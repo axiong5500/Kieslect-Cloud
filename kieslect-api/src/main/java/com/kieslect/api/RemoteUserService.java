@@ -37,6 +37,23 @@ public interface RemoteUserService
     @PostMapping(value = "/user/register")
     R<Boolean> registerUserInfo(@RequestBody RegisterInfo registerInfo);
 
+    /**
+     * 登录
+     *
+     * @param loginInfo 登录信息
+     * @return 结果
+     */
     @PostMapping(value = "/user/login")
     R<UserInfoVO> login(@RequestBody LoginInfo loginInfo);
+
+    /**
+     * 邮箱是否已经注册
+     *
+     * @return 结果
+     */
+    @PostMapping(value = "/user/isEmailExists")
+    R<Boolean> isEmailExists();
+
+    @GetMapping(value = "/user/isEmailExists/{toEmail}/{appName}")
+    R<Boolean> isEmailExists(@PathVariable("toEmail") String toEmail,@PathVariable("appName") String appName);
 }

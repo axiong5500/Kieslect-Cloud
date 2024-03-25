@@ -4,10 +4,6 @@ package com.kieslect.common.security.interceptor;
 import com.kieslect.common.core.constant.SecurityConstants;
 import com.kieslect.common.core.context.SecurityContextHolder;
 import com.kieslect.common.core.utils.ServletUtils;
-import com.kieslect.common.core.utils.StringUtils;
-import com.kieslect.common.security.auth.AuthUtil;
-import com.kieslect.common.security.model.LoginUserInfo;
-import com.kieslect.common.security.utils.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.method.HandlerMethod;
@@ -23,8 +19,7 @@ import org.springframework.web.servlet.AsyncHandlerInterceptor;
 public class HeaderInterceptor implements AsyncHandlerInterceptor
 {
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
-    {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (!(handler instanceof HandlerMethod))
         {
             return true;
@@ -33,23 +28,11 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor
         SecurityContextHolder.setUserId(ServletUtils.getHeader(request, SecurityConstants.DETAILS_USER_ID));
         SecurityContextHolder.setUserKey(ServletUtils.getHeader(request, SecurityConstants.USER_KEY));
 
-        String token = SecurityUtils.getToken();
-        if (StringUtils.isNotEmpty(token))
-        {
-            LoginUserInfo loginUser = AuthUtil.getLoginUser(token);
-            if (StringUtils.isNotNull(loginUser))
-            {
-                AuthUtil.verifyLoginUserExpire(loginUser);
-                SecurityContextHolder.set(SecurityConstants.LOGIN_USER, loginUser);
-            }
-        }
         return true;
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-            throws Exception
-    {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         SecurityContextHolder.remove();
     }
 }

@@ -3,6 +3,7 @@ package com.kieslect.common.core.enums;
 public enum ResponseCodeEnum {
     SUCCESS(200, "成功"),
     FAIL(400, "失败"),
+    UNAUTHORIZED(401, "token已失效"),
 
     INTERNAL_SERVER_ERROR(500, "服务器内部错误"),
     CAPTCHA_ERROR(1001, "验证码错误"),

@@ -1,5 +1,6 @@
 package com.kieslect.auth.service;
 
+import com.kieslect.auth.enums.EmailTypeEnum;
 import com.kieslect.common.core.config.MailConfig;
 import com.kieslect.common.core.utils.EmailUtils;
 import com.kieslect.common.redis.service.RedisService;
@@ -13,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 public class MailService {
 
     private static final long MAIL_TIMEOUT_KEY =  60 * 60L; // 60分钟有效期
-    private static final String MAIL_CODE_KEY = "mail:code:";
 
     @Autowired
     private MailConfig mailConfig;
@@ -21,17 +21,18 @@ public class MailService {
     @Autowired
     private RedisService redisService;
 
-    public void sendVerificationCode(String to, String code) {
-
-        String subject = "Verification Code";
-        String content = "Your verification code is: " + code;
-        EmailUtils.sendEmail(mailConfig,to, subject, content);
-        redisService.setCacheObject(MAIL_CODE_KEY + to, code, MAIL_TIMEOUT_KEY, TimeUnit.SECONDS);
+    public void sendVerificationCode(String to, String emailType, String code) {
+        String emailSubject = EmailTypeEnum.getEmailType(emailType).getEmailSubject();
+        String emailContent = EmailTypeEnum.getEmailType(emailType).getEmailContent();
+        String redisKey = EmailTypeEnum.getEmailType(emailType).getRedisKey();
+        String content = emailContent + code;
+        EmailUtils.sendEmail(mailConfig,to, emailSubject, content);
+        redisService.setCacheObject(redisKey + to, code, MAIL_TIMEOUT_KEY, TimeUnit.SECONDS);
     }
 
     public boolean isCaptchaValid(String email, String code){
         // 从缓存中获取验证码
-        String storedCode = redisService.getCacheObject(MAIL_CODE_KEY + email);
+        String storedCode = redisService.getCacheObject(email);
 
         // 如果缓存中没有存储的验证码，则认为验证码无效
         if (storedCode == null) {

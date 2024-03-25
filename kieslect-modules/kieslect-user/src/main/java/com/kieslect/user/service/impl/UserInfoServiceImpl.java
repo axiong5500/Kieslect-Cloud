@@ -11,6 +11,7 @@ import com.kieslect.common.core.enums.ResponseCodeEnum;
 import com.kieslect.common.core.utils.EmailUtils;
 import com.kieslect.user.domain.UserInfo;
 import com.kieslect.user.domain.dto.RegisterUserInfoDTO;
+import com.kieslect.user.domain.vo.SaveUserInfoVO;
 import com.kieslect.user.exception.CustomException;
 import com.kieslect.user.mapper.UserInfoMapper;
 import com.kieslect.user.service.IUserInfoService;
@@ -80,6 +81,23 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
         // 密码正确
         // 封装返回值
+        UserInfoVO userInfoVO = new UserInfoVO();
+        BeanUtils.copyProperties(userInfo, userInfoVO);
+        return userInfoVO;
+    }
+
+    @Override
+    public boolean saveUserInfo(SaveUserInfoVO userInfoVO) {
+        // firstLogin 修改为1
+        UserInfo userInfo = new UserInfo();
+        BeanUtils.copyProperties(userInfoVO, userInfo);
+        userInfo.setFirstLogin((byte) 1);
+        return this.updateById(userInfo);
+    }
+
+    @Override
+    public UserInfoVO getUserInfo(long id) {
+        UserInfo userInfo = userInfoMapper.selectById(id);
         UserInfoVO userInfoVO = new UserInfoVO();
         BeanUtils.copyProperties(userInfo, userInfoVO);
         return userInfoVO;

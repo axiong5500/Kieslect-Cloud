@@ -6,12 +6,14 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 public class LoginUserInfo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private String account;
     private String email;
@@ -37,11 +39,10 @@ public class LoginUserInfo implements Serializable {
     private Byte hourly;
     private Byte temperature;
     private Byte firstLogin;
-    private Byte delStatus;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
+    private Long createTime;
+    private Long updateTime;
 
-    private String token;
+    private String userKey;
     /**
      * 登录时间
      */
