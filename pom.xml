@@ -38,6 +38,7 @@
         <dynamic-ds.version>4.2.0</dynamic-ds.version>
         <spring-boot-starter-mail.version>3.0.2</spring-boot-starter-mail.version>
         <mybatis-plus-generator.version>3.5.5</mybatis-plus-generator.version>
+        <aliyun-sdk-oss.version>3.15.1</aliyun-sdk-oss.version>
     </properties>
     <dependencies>
         <dependency>
@@ -156,38 +157,52 @@
             </dependency>
 
 
-            <!-- 核心模块 -->
+            <!-- kieslect 核心模块 -->
             <dependency>
                 <groupId>com.kieslect</groupId>
                 <artifactId>kieslect-common-core</artifactId>
                 <version>${kieslect.version}</version>
             </dependency>
 
-            <!-- 安全模块 -->
+            <!-- kieslect 邮箱服务 -->
+            <dependency>
+                <groupId>com.kieslect</groupId>
+                <artifactId>kieslect-common-mail</artifactId>
+                <version>${kieslect.version}</version>
+            </dependency>
+
+            <!-- kieslect 安全模块 -->
             <dependency>
                 <groupId>com.kieslect</groupId>
                 <artifactId>kieslect-common-security</artifactId>
                 <version>${kieslect.version}</version>
             </dependency>
 
-            <!-- 缓存服务 -->
+            <!-- kieslect 缓存服务 -->
             <dependency>
                 <groupId>com.kieslect</groupId>
                 <artifactId>kieslect-common-redis</artifactId>
                 <version>${kieslect.version}</version>
             </dependency>
 
-            <!-- 数据源服务 -->
+            <!-- kieslect 数据源服务 -->
             <dependency>
                 <groupId>com.kieslect</groupId>
                 <artifactId>kieslect-common-datasource</artifactId>
                 <version>${kieslect.version}</version>
             </dependency>
 
-            <!-- api服务 -->
+            <!-- kieslect api服务 -->
             <dependency>
                 <groupId>com.kieslect</groupId>
                 <artifactId>kieslect-api</artifactId>
+                <version>${kieslect.version}</version>
+            </dependency>
+
+            <!-- kieslect file服务 -->
+            <dependency>
+                <groupId>com.kieslect</groupId>
+                <artifactId>kieslect-common-file</artifactId>
                 <version>${kieslect.version}</version>
             </dependency>
 
@@ -214,6 +229,13 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus-generator.version}</version>
+            </dependency>
+
+            <!-- Aliyun OSS SDK -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun-sdk-oss.version}</version>
             </dependency>
 
         </dependencies>

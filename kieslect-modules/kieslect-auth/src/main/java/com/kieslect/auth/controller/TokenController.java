@@ -1,24 +1,29 @@
 package com.kieslect.auth.controller;
 
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.kieslect.api.RemoteUserService;
+import com.kieslect.api.domain.ForgetPasswordBody;
 import com.kieslect.api.domain.LoginInfo;
+import com.kieslect.api.domain.LogoutBody;
 import com.kieslect.api.domain.RegisterInfo;
 import com.kieslect.api.enums.RegisterTypeEnum;
 import com.kieslect.api.model.UserInfoVO;
-import com.kieslect.auth.enums.EmailTypeEnum;
-import com.kieslect.auth.form.ForgetPasswordBody;
 import com.kieslect.auth.form.RegisterBody;
 import com.kieslect.auth.form.SendCaptchaBody;
-import com.kieslect.auth.service.MailService;
-import com.kieslect.common.core.context.RequestContextHolder;
 import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.domain.R;
+import com.kieslect.common.core.enums.CaptchaEmailTypeEnum;
+import com.kieslect.common.core.enums.EmailTypeEnum;
 import com.kieslect.common.core.enums.ResponseCodeEnum;
 import com.kieslect.common.core.utils.EmailUtils;
+import com.kieslect.common.core.utils.JwtUtils;
 import com.kieslect.common.core.utils.StringUtils;
+import com.kieslect.common.mail.service.MailService;
+import com.kieslect.common.redis.service.RedisService;
 import com.kieslect.common.security.service.TokenService;
+import com.kieslect.common.security.utils.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -44,6 +49,9 @@ public class TokenController {
     @Autowired
     private RemoteUserService remoteUserService;
 
+    @Autowired
+    private RedisService redisService;
+
     /**
      *  登录
      * @param loginInfo
@@ -52,6 +60,8 @@ public class TokenController {
     @PostMapping("login")
     public R<?> login(@RequestBody @Valid LoginInfo loginInfo) {
         // 用户登录
+        String userKey = IdUtil.fastUUID();
+        loginInfo.setUserKey(userKey);
         R<UserInfoVO> result = remoteUserService.login(loginInfo);
         if (R.isError(result)) {
             // 登录失败，处理错误信息...
@@ -122,10 +132,33 @@ public class TokenController {
     @PostMapping("sendCaptcha")
     public R<?> sendCaptcha(@RequestBody @Valid SendCaptchaBody vo) {
         //发送邮箱验证码之前校验是否已经注册过
-        R<Boolean> result = remoteUserService.isEmailExists(vo.getToEmail(),vo.getAppName());
-        if (result.getData()){
-            return R.fail(ResponseCodeEnum.EMAIL_ALREADY_EXIST);
+        R<Boolean> result = remoteUserService.isEmailExists(vo.getToEmail(), vo.getAppName());
+        if (vo.getEmailType().equals(CaptchaEmailTypeEnum.REGISTER.getCode())) {
+            if (result.getData()) {
+                return R.fail(ResponseCodeEnum.EMAIL_ALREADY_EXIST);
+            }
         }
+        if (vo.getEmailType().equals(CaptchaEmailTypeEnum.FORGET_PASSWORD.getCode())) {
+            if (!result.getData()) {
+                return R.fail(ResponseCodeEnum.EMAIL_NOT_EXIST);
+            }
+        }
+//        if (vo.getEmailType().equals(CaptchaEmailTypeEnum.CHANGE_EMAIL.getCode())) {
+//            if (result.getData()) {
+//                return R.fail(ResponseCodeEnum.EMAIL_ALREADY_EXIST);
+//            }
+//        }
+        if (vo.getEmailType().equals(CaptchaEmailTypeEnum.BIND_EMAIL.getCode())) {
+            if (result.getData()) {
+                return R.fail(ResponseCodeEnum.EMAIL_ALREADY_EXIST);
+            }
+        }
+//        if (vo.getEmailType().equals(CaptchaEmailTypeEnum.CHANGE_EMAIL_NEW.getCode())) {
+//            if (result.getData()) {
+//                return R.fail(ResponseCodeEnum.EMAIL_ALREADY_EXIST);
+//            }
+//        }
+
         // 生成一个6位数字的验证码
         String verificationCode = RandomUtil.randomNumbers(6);
         mailService.sendVerificationCode(vo.getToEmail(),vo.getEmailType(), verificationCode);
@@ -133,8 +166,8 @@ public class TokenController {
     }
 
     @PostMapping("getUserInfo")
-    public R<?> getUserInfo() {
-        LoginUserInfo loginUser = RequestContextHolder.getLoginUser();
+    public R<?> getUserInfo(HttpServletRequest request) {
+        LoginUserInfo loginUser = tokenService.getLoginUser(request);
         UserInfoVO userInfoVO = new UserInfoVO();
         if (StringUtils.isNotNull(loginUser)) {
 
@@ -145,9 +178,40 @@ public class TokenController {
 
     @PostMapping("forgetPassword")
     public R<?> forgetPassword(@RequestBody @Valid ForgetPasswordBody body) {
+        String email = EmailTypeEnum.FORGOT_PASSWORD.getRedisKey() + body.getAccount();
+        boolean validCode = mailService.isCaptchaValid(email, body.getCode());
 
-        return R.ok();
+        if (!validCode) {
+            return R.fail(ResponseCodeEnum.CAPTCHA_ERROR);
+        }
+
+        // 验证码正确情况下删除验证码
+        redisService.deleteObject(email);
+
+        return remoteUserService.forgetPassword(body);
     }
+
+    // 账号注销分两种情况，一种是带有token格式，一种是只有账号密码没有token
+    @PostMapping("logout")
+    public R<?> logout(HttpServletRequest request, @RequestBody(required = false) LogoutBody logoutBody) {
+        String token = SecurityUtils.getToken(request);
+        if (StringUtils.isNotEmpty(token)) {
+            String userKey = JwtUtils.getUserKey(token);
+            Long userId =  JwtUtils.getUserId(token);
+            // 删除用户缓存记录
+            tokenService.delLoginUserByUserkey(userKey);
+            remoteUserService.logout(userId);
+            return R.ok();
+        }else{
+            // 判断账号和密码是否正确
+            R<UserInfoVO> result = remoteUserService.logoutByAccountAndPassword(logoutBody);
+            UserInfoVO userInfoVO = result.getData();
+            // 删除用户缓存记录
+            tokenService.delLoginUserByUserkey(userInfoVO.getUserKey());
+            return R.ok();
+        }
+    }
+
 
     @GetMapping("test")
     public R<?> getTest() {

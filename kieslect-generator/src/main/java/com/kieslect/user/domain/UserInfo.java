@@ -70,7 +70,7 @@ public class UserInfo implements Serializable {
      * 生日
      */
       @TableField("birthday")
-    private LocalDate birthday;
+    private String birthday;
 
       /**
      * 身高
@@ -118,7 +118,7 @@ public class UserInfo implements Serializable {
      * app名字
      */
       @TableField("app_name")
-    private String appName;
+    private Byte appName;
 
       /**
      * app系统，0：android，1：ios，2：harmony

@@ -1,7 +1,9 @@
 package com.kieslect.api;
 
 
+import com.kieslect.api.domain.ForgetPasswordBody;
 import com.kieslect.api.domain.LoginInfo;
+import com.kieslect.api.domain.LogoutBody;
 import com.kieslect.api.domain.RegisterInfo;
 import com.kieslect.api.model.UserInfoVO;
 import com.kieslect.common.core.constant.ServiceNameConstants;
@@ -47,13 +49,21 @@ public interface RemoteUserService
     R<UserInfoVO> login(@RequestBody LoginInfo loginInfo);
 
     /**
-     * 邮箱是否已经注册
-     *
-     * @return 结果
+     * 邮箱是否存在
+     * @param toEmail
+     * @param appName
+     * @return
      */
-    @PostMapping(value = "/user/isEmailExists")
-    R<Boolean> isEmailExists();
-
     @GetMapping(value = "/user/isEmailExists/{toEmail}/{appName}")
-    R<Boolean> isEmailExists(@PathVariable("toEmail") String toEmail,@PathVariable("appName") String appName);
+    R<Boolean> isEmailExists(@PathVariable("toEmail") String toEmail,@PathVariable("appName") Byte appName);
+
+    @PostMapping(value = "/user/forgetPassword")
+    R<Object> forgetPassword(@RequestBody ForgetPasswordBody body);
+
+    @PostMapping(value = "/user/logout/{userId}")
+    void logout(@PathVariable("userId") Long userId);
+
+
+    @PostMapping(value = "/user/logoutByAccountAndPassword")
+    R<UserInfoVO> logoutByAccountAndPassword(@RequestBody LogoutBody logoutBody);
 }

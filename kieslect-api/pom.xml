@@ -13,7 +13,7 @@
 
     <dependencies>
 
-        <!-- RuoYi Common Core-->
+        <!-- Kieslect Common Core-->
         <dependency>
             <groupId>com.kieslect</groupId>
             <artifactId>kieslect-common-core</artifactId>

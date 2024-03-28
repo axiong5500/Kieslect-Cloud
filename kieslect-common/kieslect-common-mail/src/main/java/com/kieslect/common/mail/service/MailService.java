@@ -1,14 +1,13 @@
-package com.kieslect.auth.service;
+package com.kieslect.common.mail.service;
 
-import com.kieslect.auth.enums.EmailTypeEnum;
 import com.kieslect.common.core.config.MailConfig;
+import com.kieslect.common.core.enums.EmailTypeEnum;
 import com.kieslect.common.core.utils.EmailUtils;
 import com.kieslect.common.redis.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
-
 
 @Service
 public class MailService {
@@ -42,6 +41,7 @@ public class MailService {
         // 验证码验证
         if (storedCode.equals(code)) {
             // 验证码正确
+
             return true;
         } else {
             // 验证码错误

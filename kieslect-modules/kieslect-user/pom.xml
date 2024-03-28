@@ -47,6 +47,10 @@
         </dependency>
         <dependency>
             <groupId>com.kieslect</groupId>
+            <artifactId>kieslect-common-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.kieslect</groupId>
             <artifactId>kieslect-api</artifactId>
         </dependency>
 

@@ -56,4 +56,9 @@ public class CacheConstants
      * 登录IP黑名单 cache key
      */
     public static final String SYS_LOGIN_BLACKIPLIST = SYS_CONFIG_KEY + "sys.login.blackIPList";
+
+    /**
+     * Redis 中存储经纬度的键名
+     */
+    public static final String LOCATION_KEY = "location:";
 }

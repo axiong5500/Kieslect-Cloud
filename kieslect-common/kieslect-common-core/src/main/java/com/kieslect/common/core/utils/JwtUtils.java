@@ -4,9 +4,6 @@ package com.kieslect.common.core.utils;
 import cn.hutool.jwt.JWTUtil;
 import com.kieslect.common.core.constant.SecurityConstants;
 import com.kieslect.common.core.constant.TokenConstants;
-import com.kieslect.common.core.text.Convert;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 
 import java.util.Map;
 
@@ -30,16 +27,7 @@ public class JwtUtils
         return JWTUtil.createToken(payload, secret.getBytes());
     }
 
-    /**
-     * 从令牌中获取数据声明
-     *
-     * @param token 令牌
-     * @return 数据声明
-     */
-    public static Claims parseToken(String token)
-    {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-    }
+
 
     /**
      * 根据令牌获取用户标识
@@ -52,16 +40,6 @@ public class JwtUtils
         return JWTUtil.parseToken(token).getPayload().getClaim(SecurityConstants.USER_KEY).toString();
     }
 
-    /**
-     * 根据令牌获取用户标识
-     * 
-     * @param claims 身份信息
-     * @return 用户ID
-     */
-    public static String getUserKey(Claims claims)
-    {
-        return getValue(claims, SecurityConstants.USER_KEY);
-    }
 
     /**
      * 根据令牌获取用户ID
@@ -69,55 +47,10 @@ public class JwtUtils
      * @param token 令牌
      * @return 用户ID
      */
-    public static String getUserId(String token)
+    public static Long getUserId(String token)
     {
-        Claims claims = parseToken(token);
-        return getValue(claims, SecurityConstants.DETAILS_USER_ID);
+        return Long.valueOf(JWTUtil.parseToken(token)
+                .getPayload().getClaim(SecurityConstants.DETAILS_USER_ID).toString());
     }
 
-    /**
-     * 根据身份信息获取用户ID
-     * 
-     * @param claims 身份信息
-     * @return 用户ID
-     */
-    public static String getUserId(Claims claims)
-    {
-        return getValue(claims, SecurityConstants.DETAILS_USER_ID);
-    }
-
-    /**
-     * 根据令牌获取用户名
-     * 
-     * @param token 令牌
-     * @return 用户名
-     */
-    public static String getUserName(String token)
-    {
-        Claims claims = parseToken(token);
-        return getValue(claims, SecurityConstants.DETAILS_USERNAME);
-    }
-
-    /**
-     * 根据身份信息获取用户名
-     * 
-     * @param claims 身份信息
-     * @return 用户名
-     */
-    public static String getUserName(Claims claims)
-    {
-        return getValue(claims, SecurityConstants.DETAILS_USERNAME);
-    }
-
-    /**
-     * 根据身份信息获取键值
-     * 
-     * @param claims 身份信息
-     * @param key 键
-     * @return 值
-     */
-    public static String getValue(Claims claims, String key)
-    {
-        return Convert.toStr(claims.get(key), "");
-    }
 }

@@ -1,14 +1,13 @@
 package com.kieslect.common.security.service;
 
 
-import cn.hutool.core.util.IdUtil;
 import com.kieslect.common.core.constant.CacheConstants;
 import com.kieslect.common.core.constant.SecurityConstants;
+import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.utils.JwtUtils;
 import com.kieslect.common.core.utils.ServletUtils;
 import com.kieslect.common.core.utils.StringUtils;
 import com.kieslect.common.redis.service.RedisService;
-import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.security.utils.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -48,7 +47,7 @@ public class TokenService
      */
     public Map<String, Object> createToken(LoginUserInfo loginUser)
     {
-        String userKey = IdUtil.fastUUID();
+        String userKey = loginUser.getUserKey();
         Long userId = loginUser.getId();
         loginUser.setUserKey(userKey);
         refreshToken(loginUser);
@@ -162,8 +161,8 @@ public class TokenService
         redisService.setCacheObject(userKey, loginUserInfo, expireTime, TimeUnit.MINUTES);
     }
 
-    private String getTokenKey(String token)
+    private String getTokenKey(String userKey)
     {
-        return ACCESS_TOKEN + token;
+        return ACCESS_TOKEN + userKey;
     }
 }

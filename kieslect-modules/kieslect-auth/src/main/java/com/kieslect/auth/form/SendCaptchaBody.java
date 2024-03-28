@@ -1,11 +1,15 @@
 package com.kieslect.auth.form;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class SendCaptchaBody {
+
     @NotBlank
+    @Email( message = "邮箱格式错误")
     private String toEmail;
     /**
      * 验证码类型，0：注册，1：忘记密码，2：修改密码，3：修改邮箱
@@ -16,6 +20,6 @@ public class SendCaptchaBody {
     /**
      * 应用名
      */
-    @NotBlank
-    private String appName;
+    @NotNull
+    private Byte appName;
 }

@@ -22,7 +22,7 @@ public class RegisterInfo {
     /**
      * 应用名称
      */
-    private String appName;
+    private Byte appName;
 
     /**
      * 用户第三方鉴权token

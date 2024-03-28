@@ -18,7 +18,7 @@ public class RegisterUserInfoDTO {
     private String thirdToken;
     private Byte thirdTokenType;
     private Byte sex;
-    private LocalDate birthday;
+    private String birthday;
     private Double height;
     private Double weight;
     private String country;
@@ -26,7 +26,7 @@ public class RegisterUserInfoDTO {
     private String city;
     private String nickName;
     private String headImage;
-    private String appName;
+    private Byte appName;
     private Byte appSystem;
     private String appType;
     private Integer appChannel;

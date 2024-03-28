@@ -1,6 +1,5 @@
 package com.kieslect.gateway.config;
 
-import com.kieslect.common.core.context.RequestContextHolder;
 import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.enums.ResponseCodeEnum;
 import com.kieslect.common.security.service.TokenService;
@@ -30,8 +29,10 @@ public class GatewayConfig {
             "/public/**",
             "/kieslect-auth/auth/sendCaptcha",
             "/kieslect-auth/auth/register",
+            "/kieslect-auth/auth/forgetPassword",
             "/kieslect-auth/auth/login",
-            "/kieslect-user/user/notify/getAppList"
+            "/kieslect-auth/auth/logout",
+            "/kieslect-user/user/notify/getAppList",
     };
 
     @Bean
@@ -77,8 +78,6 @@ public class GatewayConfig {
                 return onError(exchange, ResponseCodeEnum.UNAUTHORIZED, null);
             }
             tokenService.verifyToken(loginUser);
-            // 将用户信息存储到 ThreadLocal 中
-            RequestContextHolder.setLoginUser(loginUser);
 
             // 如果 Token 存在且有效，继续处理请求
             return chain.filter(exchange);

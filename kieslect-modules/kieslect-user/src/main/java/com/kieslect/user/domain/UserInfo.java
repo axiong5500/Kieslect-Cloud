@@ -9,7 +9,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 /**
  * <p>
@@ -29,6 +28,11 @@ public class UserInfo implements Serializable {
 
       @TableId(value = "id", type = IdType.AUTO)
       private Long id;
+    /**
+     * 用户key
+     */
+    @TableField("user_key")
+    private String userKey;
 
       /**
      * 账号
@@ -70,7 +74,7 @@ public class UserInfo implements Serializable {
      * 生日
      */
       @TableField("birthday")
-    private LocalDate birthday;
+    private String birthday;
 
       /**
      * 身高
@@ -118,7 +122,7 @@ public class UserInfo implements Serializable {
      * app名字
      */
       @TableField("app_name")
-    private String appName;
+    private Byte appName;
 
       /**
      * app系统，0：android，1：ios，2：harmony

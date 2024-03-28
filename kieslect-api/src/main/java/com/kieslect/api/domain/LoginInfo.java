@@ -1,6 +1,7 @@
 package com.kieslect.api.domain;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -25,7 +26,12 @@ public class LoginInfo
     /**
      * app名字
      */
-    @NotBlank
-    private String appName;
+    @NotNull
+    private Byte appName;
+
+    /**
+     * 用户唯一标识
+     */
+    private String userKey;
 
 }

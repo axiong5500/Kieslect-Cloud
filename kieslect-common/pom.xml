@@ -20,6 +20,7 @@
         <module>kieslect-common-core</module>
         <module>kieslect-common-redis</module>
         <module>kieslect-common-datasource</module>
+        <module>kieslect-common-mail</module>
     </modules>
 
 

@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -21,7 +20,7 @@ public class LoginUserInfo implements Serializable {
     private String thirdToken;
     private Byte thirdTokenType;
     private Byte sex;
-    private LocalDate birthday;
+    private String birthday;
     private Double height;
     private Double weight;
     private String country;
@@ -29,7 +28,7 @@ public class LoginUserInfo implements Serializable {
     private String city;
     private String nickName;
     private String headImage;
-    private String appName;
+    private Byte appName;
     private Byte appSystem;
     private String appType;
     private Integer appChannel;

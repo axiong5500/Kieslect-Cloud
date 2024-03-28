@@ -1,14 +1,16 @@
 package com.kieslect.user.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kieslect.api.domain.ForgetPasswordBody;
 import com.kieslect.api.domain.LoginInfo;
+import com.kieslect.api.domain.LogoutBody;
 import com.kieslect.api.domain.RegisterInfo;
 import com.kieslect.api.enums.RegisterTypeEnum;
 import com.kieslect.api.model.UserInfoVO;
 import com.kieslect.common.core.enums.ResponseCodeEnum;
 import com.kieslect.common.core.utils.EmailUtils;
+import com.kieslect.common.security.service.TokenService;
 import com.kieslect.user.domain.UserInfo;
 import com.kieslect.user.domain.dto.RegisterUserInfoDTO;
 import com.kieslect.user.domain.vo.SaveUserInfoVO;
@@ -18,6 +20,8 @@ import com.kieslect.user.service.IUserInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 /**
  * <p>
@@ -32,6 +36,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Autowired
     private UserInfoMapper userInfoMapper;
+
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     public Boolean register(RegisterInfo registerInfo){
@@ -62,7 +69,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public UserInfoVO login(LoginInfo loginInfo) {
         String account = loginInfo.getAccount();
-        String appName = loginInfo.getAppName();
+        Byte appName = loginInfo.getAppName();
         UserInfo userInfo;
         if (EmailUtils.isEmail(account)) {
             // 邮箱登录
@@ -79,7 +86,15 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         if (!userInfo.getPassword().equals(loginInfo.getPassword())) {
             throw new CustomException(ResponseCodeEnum.INCORRECT_PASSWORD);
         }
-        // 密码正确
+        // 密码正确 ,删除缓存key
+        tokenService.delLoginUserByUserkey(userInfo.getUserKey());
+
+        // 当前时间戳 单位秒
+        userInfo.setUpdateTime(Instant.now().getEpochSecond());
+        userInfo.setDelStatus((byte) 0);
+        userInfo.setUserKey(loginInfo.getUserKey());
+        userInfoMapper.updateById(userInfo);
+
         // 封装返回值
         UserInfoVO userInfoVO = new UserInfoVO();
         BeanUtils.copyProperties(userInfo, userInfoVO);
@@ -91,7 +106,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         // firstLogin 修改为1
         UserInfo userInfo = new UserInfo();
         BeanUtils.copyProperties(userInfoVO, userInfo);
-        userInfo.setFirstLogin((byte) 1);
+        userInfo.setFirstLogin((byte) 0).setUpdateTime(Instant.now().getEpochSecond());
         return this.updateById(userInfo);
     }
 
@@ -110,20 +125,64 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
      * @param email
      * @return true:存在,false:不存在
      */
-    public boolean isEmailExists(String email,String appName) {
+    public boolean isEmailExists(String email,Byte appName) {
         UserInfo userInfo = getUserInfo("email", email,appName);
         // 判断查询结果
         return userInfo != null;
     }
 
-    private UserInfo getUserInfo(String column, String value,String appName) {
+    @Override
+    public UserInfo forgetPassword(ForgetPasswordBody forgetPasswordBody) {
+        UserInfo userInfo = getUserInfo("email", forgetPasswordBody.getAccount(),forgetPasswordBody.getAppName());
+        if (userInfo != null) {
+            userInfo.setPassword(forgetPasswordBody.getPassword());
+            userInfoMapper.updateById(userInfo);
+        }
+        return userInfo;
+    }
+
+    @Override
+    public void logout(Long userId) {
+        this.updateById(new UserInfo().setId(userId).setDelStatus((byte) 1).setUpdateTime(Instant.now().getEpochSecond()));
+    }
+
+    @Override
+    public UserInfoVO logoutByAccountAndPassword(LogoutBody logoutBody) {
+        if (logoutBody == null) {
+            throw new CustomException(ResponseCodeEnum.PARAM_ERROR);
+        }
+        if (logoutBody.getAccount() == null || logoutBody.getPassword() == null) {
+            throw new CustomException(ResponseCodeEnum.PARAM_ERROR);
+        }
+        // 通过logoutBody.getAccount() 和 logoutBody.getAppName() 查询数据库里的账号或者邮箱是否存在该账号
+        UserInfoVO userInfoVO = new UserInfoVO();
+        UserInfo userInfo;
+        if (EmailUtils.isEmail(logoutBody.getAccount())) {
+            userInfo = getUserInfo("email", logoutBody.getAccount(),logoutBody.getAppName());
+        } else {
+            userInfo = getUserInfo("account", logoutBody.getAccount(),logoutBody.getAppName());
+        }
+        if (userInfo == null) {
+            throw new CustomException(ResponseCodeEnum.ACCOUNT_NOT_EXIST);
+        }
+        if (!userInfo.getPassword().equals(logoutBody.getPassword())) {
+            throw new CustomException(ResponseCodeEnum.INCORRECT_PASSWORD);
+        }
+        // 删除该账号
+        logout(userInfo.getId());
+        BeanUtils.copyProperties(userInfo, userInfoVO);
+        return userInfoVO;
+    }
+
+    private UserInfo getUserInfo(String column, String value,Byte appName) {
         // 创建查询条件
         QueryWrapper<UserInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(column, value);
         // 如果需要查询特定应用下的用户信息，则添加应用名称作为查询条件
-        if (StrUtil.isNotBlank(appName)) {
+        if (appName != null) {
             queryWrapper.eq("app_name", appName);
         }
+        queryWrapper.ne("del_status", 2);
         // 执行查询
         UserInfo userInfo = userInfoMapper.selectOne(queryWrapper);
         return userInfo;
@@ -135,7 +194,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
      * @param account
      * @return true:存在,false:不存在
      */
-    public boolean isAccountExists(String account,String appName) {
+    public boolean isAccountExists(String account,Byte appName) {
         // 创建查询条件
         UserInfo userInfo = getUserInfo("account", account,appName);
         // 判断查询结果

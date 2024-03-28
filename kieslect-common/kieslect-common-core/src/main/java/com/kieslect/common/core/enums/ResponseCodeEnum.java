@@ -17,9 +17,12 @@ public enum ResponseCodeEnum {
     //邮箱不存在
     EMAIL_NOT_EXIST(1007, "邮箱不存在"),
     EMAIL_ALREADY_EXIST(1008, "邮箱已存在"),
-    //邮箱验证码错误
+    // 邮箱验证码错误
     EMAIL_CAPTCHA_ERROR(1009, "邮箱验证码错误"),
+    // 上传文件不为空
+    FILE_NOT_EMPTY(1010, "上传文件不为空"),
 
+    PARAM_ERROR (1000, "参数错误"),
     ;
 
     private final int code;

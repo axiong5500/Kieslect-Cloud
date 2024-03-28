@@ -1,7 +1,9 @@
 package com.kieslect.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kieslect.api.domain.ForgetPasswordBody;
 import com.kieslect.api.domain.LoginInfo;
+import com.kieslect.api.domain.LogoutBody;
 import com.kieslect.api.domain.RegisterInfo;
 import com.kieslect.api.model.UserInfoVO;
 import com.kieslect.user.domain.UserInfo;
@@ -30,5 +32,11 @@ public interface IUserInfoService extends IService<UserInfo> {
 
     UserInfoVO getUserInfo(long id);
 
-    boolean isEmailExists(String email,String appName);
+    boolean isEmailExists(String email,Byte appName);
+
+    UserInfo forgetPassword(ForgetPasswordBody userInfoVO);
+
+    void logout(Long userId);
+
+    UserInfoVO logoutByAccountAndPassword(LogoutBody logoutBody);
 }
