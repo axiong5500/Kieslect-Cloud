@@ -19,6 +19,7 @@ public class MyBatisPlusGenerator {
                 .outputDir(System.getProperty("user.dir") + "/kieslect-generator" + "/src/main/java")
                 .author("kieslect")
                 .disableOpenDir()
+
                 .build();
 
         // 包配置
@@ -33,9 +34,12 @@ public class MyBatisPlusGenerator {
 
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig.Builder()
-                .addInclude("t_user_info")
+                .addInclude("t_issue")
                 .addTablePrefix("t_")
-                .entityBuilder()
+                .serviceBuilder().enableFileOverride()
+                .mapperBuilder().enableFileOverride()
+                .controllerBuilder().enableFileOverride()
+                .entityBuilder().enableFileOverride()
                 .naming(NamingStrategy.underline_to_camel)
                 .columnNaming(NamingStrategy.underline_to_camel)
                 .enableChainModel()

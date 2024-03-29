@@ -9,10 +9,10 @@ import org.springframework.stereotype.Controller;
  * </p>
  *
  * @author kieslect
- * @since 2024-03-21
+ * @since 2024-03-29
  */
 @Controller
-@RequestMapping("//userInfo")
-public class UserInfoController {
+@RequestMapping("//issue")
+public class IssueController {
 
 }

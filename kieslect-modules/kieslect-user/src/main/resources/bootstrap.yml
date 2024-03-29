@@ -1,8 +1,6 @@
 # Tomcat
 server:
   port: 9200
-  servlet:
-    context-path: /user
 
 # Spring
 spring:

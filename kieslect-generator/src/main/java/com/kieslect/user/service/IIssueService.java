@@ -1,6 +1,6 @@
 package com.kieslect.user.service;
 
-import com.kieslect.user.domain.UserInfo;
+import com.kieslect.user.domain.Issue;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author kieslect
- * @since 2024-03-21
+ * @since 2024-03-29
  */
-public interface IUserInfoService extends IService<UserInfo> {
+public interface IIssueService extends IService<Issue> {
 
 }

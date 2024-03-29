@@ -1,6 +1,6 @@
 package com.kieslect.user.mapper;
 
-import com.kieslect.user.domain.UserInfo;
+import com.kieslect.user.domain.Issue;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author kieslect
- * @since 2024-03-21
+ * @since 2024-03-29
  */
-public interface UserInfoMapper extends BaseMapper<UserInfo> {
+public interface IssueMapper extends BaseMapper<Issue> {
 
 }

@@ -38,7 +38,7 @@ import java.util.Map;
  * @since 2024-03-19
  */
 @RestController
-@RequestMapping()
+@RequestMapping("/user")
 public class UserInfoController {
 
     @Autowired

@@ -25,7 +25,7 @@ public enum PathTypeEnum {
                 return pathTypeEnum;
             }
         }
-        return null;
+        return PathTypeEnum.OTHER;
     }
 
     public static PathTypeEnum getByPath(String path) {
@@ -34,7 +34,7 @@ public enum PathTypeEnum {
                 return pathTypeEnum;
             }
         }
-        return null;
+        return PathTypeEnum.OTHER;
     }
 
     public int getCode() {

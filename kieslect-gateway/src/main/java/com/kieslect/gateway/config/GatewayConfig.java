@@ -33,6 +33,7 @@ public class GatewayConfig {
             "/kieslect-auth/auth/login",
             "/kieslect-auth/auth/logout",
             "/kieslect-user/user/notify/getAppList",
+            "/kieslect-user/issue/issues_suggestions",
     };
 
     @Bean
