@@ -22,6 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("")
@@ -84,7 +87,7 @@ public class FileController {
         // 获取请求中的路径参数
         String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
         // 获取文件名
-        String filename = fullPath.substring(fullPath.lastIndexOf("/") + 1);
+        String filename = Paths.get(fullPath).getFileName().toString();
         String ossFilePath = fullPath.substring(fullPath.indexOf("/download/") + 10);
         try {
             OSSObject object = fileService.downloadFile(ossFilePath, ossConfig.getBucketName());
@@ -96,6 +99,8 @@ public class FileController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(mediaType); // 设置内容类型为二进制流
             headers.setContentLength(object.getObjectMetadata().getContentLength());
+            // 设置文件名
+            headers.setContentDispositionFormData("attachment", filename);
 
             return new ResponseEntity<>(new InputStreamResource(inputStream), headers, HttpStatus.OK);
         } catch (OSSException e) {
@@ -104,20 +109,36 @@ public class FileController {
         }
     }
 
-    private String getContentType(String filename) {
-        // 你可以根据文件名后缀来设置 MIME 类型，这里仅作示例
-        String extension = FilenameUtils.getExtension(filename);
-        switch (extension.toLowerCase()) {
-            case "jpg":
-            case "jpeg":
-                return "image/jpeg";
-            case "png":
-                return "image/png";
-            case "gif":
-                return "image/gif";
-            // 其他文件类型根据需要添加
-            default:
-                return MediaType.APPLICATION_OCTET_STREAM_VALUE;
+    private String getContentType(String filename) throws IOException {
+        Path path = Paths.get(filename);
+        String mimeType = Files.probeContentType(path);
+        if (mimeType == null) {
+            // 如果无法检测到MIME类型，则返回默认的二进制流类型
+            return "application/octet-stream";
         }
+        return mimeType;
+        // 你可以根据文件名后缀来设置 MIME 类型，这里仅作示例
+//        String extension = FilenameUtils.getExtension(filename);
+//        switch (extension.toLowerCase()) {
+//            case "jpg":
+//            case "jpeg":
+//                return "image/jpeg";
+//            case "png":
+//                return "image/png";
+//            case "gif":
+//                return "image/gif";
+//            case "zip":
+//                return "application/zip";
+//            case "pdf":
+//                return "application/pdf";
+//            case "txt":
+//                return "text/plain";
+//            case "doc":
+//            case "docx":
+//                return "application/msword";
+//            // 其他文件类型根据需要添加
+//            default:
+//                return MediaType.APPLICATION_OCTET_STREAM_VALUE;
+//        }
     }
 }

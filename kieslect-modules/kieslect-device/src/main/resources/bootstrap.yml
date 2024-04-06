@@ -1,14 +1,14 @@
 # Tomcat
 server:
-  port: 9400
+  port: 9500
   servlet:
-    context-path: /file
+    context-path: /device
 
 # Spring
 spring:
   application:
     # 应用名称
-    name: kieslect-file
+    name: kieslect-device
   profiles:
     # 环境配置
     active: dev
@@ -28,10 +28,5 @@ spring:
         # 共享配置
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
-  servlet:
-    multipart:
-      max-file-size: 200MB
-      max-request-size: 200MB
-
 
 

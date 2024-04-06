@@ -86,7 +86,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         if (!userInfo.getPassword().equals(loginInfo.getPassword())) {
             throw new CustomException(ResponseCodeEnum.INCORRECT_PASSWORD);
         }
-        // 密码正确 ,删除缓存key
+        // 密码正确 ,删除旧的缓存key，实现单端登录
         tokenService.delLoginUserByUserkey(userInfo.getUserKey());
 
         // 当前时间戳 单位秒

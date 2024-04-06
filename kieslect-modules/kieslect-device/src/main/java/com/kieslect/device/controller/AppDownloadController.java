@@ -1,4 +1,4 @@
-package com.kieslect.user.controller;
+package com.kieslect.device.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Controller;
  * </p>
  *
  * @author kieslect
- * @since 2024-03-29
+ * @since 2024-04-01
  */
 @Controller
-@RequestMapping("//issue")
-public class IssueController {
+@RequestMapping("//appDownload")
+public class AppDownloadController {
 
 }

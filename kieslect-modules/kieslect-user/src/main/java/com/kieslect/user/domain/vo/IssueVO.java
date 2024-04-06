@@ -9,4 +9,5 @@ public class IssueVO {
     private String imagePaths;
     private String contactEmail;
     private String shareLog;
+    private String account;
 }

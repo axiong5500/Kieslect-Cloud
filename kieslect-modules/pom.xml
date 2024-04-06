@@ -14,6 +14,7 @@
         <module>kieslect-user</module>
         <module>kieslect-weather</module>
         <module>kieslect-file</module>
+        <module>kieslect-device</module>
     </modules>
 
     <artifactId>kieslect-modules</artifactId>

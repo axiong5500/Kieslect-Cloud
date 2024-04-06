@@ -14,8 +14,23 @@ public class WeatherController {
 
     @Autowired
     private IWeatherService weatherService;
-    @GetMapping("/getWeatherInfo")
+    @GetMapping("/getWeatherInfoWithCache")
     public R<?> getWeatherInfoWithCache(@RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude) {
         return R.ok(weatherService.getWeatherInfoWithCache(latitude, longitude));
+    }
+
+    @GetMapping("/getWeatherInfo")
+    public R<?> getWeatherInfo(@RequestParam("latitude") double latitude,
+                               @RequestParam("longitude") double longitude,
+                               @RequestParam(value = "lang", required = false) String lang,
+                               @RequestParam(value = "unit", required = false) String unit) {
+        return R.ok(weatherService.getWeatherInfo(latitude, longitude,lang,unit));
+    }
+
+    @GetMapping("/getCity")
+    public R<?> getCity(@RequestParam("location") String location,
+                               @RequestParam(value = "lang", required = false) String lang,
+                               @RequestParam(value = "unit", required = false) String unit) {
+        return R.ok(weatherService.getCity(location,lang,unit));
     }
 }

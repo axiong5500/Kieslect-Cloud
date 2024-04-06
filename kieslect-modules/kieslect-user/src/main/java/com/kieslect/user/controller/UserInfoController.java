@@ -75,11 +75,13 @@ public class UserInfoController {
         // 如果userInfoVO里的password不为空，则说明更改了密码，需要重新登录
         if (saveUserInfoVO.getPassword() != null && !saveUserInfoVO.getPassword().equals(loginUser.getPassword())) {
             tokenService.delLoginUserByUserkey(loginUser.getUserKey());
+        }else{
             UserInfoVO entity = userInfoService.getUserInfo(loginUser.getId());
             LoginUserInfo refreshLoginUser = new LoginUserInfo();
             BeanUtils.copyProperties(entity, refreshLoginUser);
             tokenService.refreshToken(refreshLoginUser);
         }
+
         return R.ok();
     }
 

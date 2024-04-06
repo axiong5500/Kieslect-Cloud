@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kieslect.device.mapper.ParamConfigMapper">
+    <resultMap type="com.kieslect.device.domain.ParamConfig" id="ParamConfigResult">
+        <id property="id" column="id" />
+        <result property="paramName" column="param_name" />
+        <result property="paramTitle" column="param_title" />
+        <result property="paramDesc" column="param_desc" />
+        <result property="paramValue" column="param_value" />
+        <result property="paramType" column="param_type" />
+        <result property="paramGroup" column="param_group" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+
+    <insert id="insertParamConfig" parameterType="com.kieslect.device.domain.ParamConfig" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_param_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="paramName != null">param_name,</if>
+            <if test="paramTitle != null">param_title,</if>
+            <if test="paramDesc != null">param_desc,</if>
+            <if test="paramValue != null">param_value,</if>
+            <if test="paramType != null">param_type,</if>
+            <if test="paramGroup != null">param_group,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="paramName != null">#{paramName},</if>
+            <if test="paramTitle != null">#{paramTitle},</if>
+            <if test="paramDesc != null">#{paramDesc},</if>
+            <if test="paramValue != null">#{paramValue},</if>
+            <if test="paramType != null">#{paramType},</if>
+            <if test="paramGroup != null">#{paramGroup},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+    <select id="getList" resultType="com.kieslect.device.domain.ParamConfig">
+        select * from t_param_config
+        <where>
+            <if test="paramGroup != null">
+                and param_group = #{paramGroup}
+            </if>
+            <if test="paramType != null">
+                and param_type = #{paramType}
+            </if>
+            <if test="paramName != null">
+                and param_name = #{paramName}
+            </if>
+            <if test="paramTitle != null">
+                and param_title like '%' || #{paramTitle} || '%'
+            </if>
+
+        </where>
+        order by id desc
+    </select>
+
+</mapper>
