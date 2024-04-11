@@ -37,16 +37,16 @@ public class DeviceManageController {
     public R<?> sysGetDeviceManageList() {
         return R.ok(deviceManageService.list());
     }
-    @PostMapping("/update")
+    @PostMapping("/sys/update")
     public R<?> updateDeviceManage(@RequestBody DeviceManage deviceManage) {
         deviceManageService.updateEntity(deviceManage);
         return R.ok();
     }
-    @GetMapping("/delete")
+    @PostMapping("/sys/delete")
     public R<?> deleteDeviceManage() {
         return R.ok(deviceManageService.list());
     }
-    @PostMapping("/save")
+    @PostMapping("/sys/save")
     public R<?> saveDeviceManage(@RequestBody DeviceManage deviceManage) {
         deviceManageService.save(deviceManage);
         return R.ok();

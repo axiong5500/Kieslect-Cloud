@@ -28,6 +28,8 @@ public class WeatherServiceImpl implements IWeatherService {
 
     // 实况天气
     private static final String THREE_WEATHER_URL = "https://devapi.qweather.com/v7/weather/now?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
+    // 逐小时预报（未来24小时）
+    private static final String HOURLY_WEATHER_FORECAST_URL = "https://devapi.qweather.com/v7/weather/24h?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
 
     // 7天预报
     private static final String SEVEN_WEATHER_FORECAST_URL = "https://devapi.qweather.com/v7/weather/7d?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
@@ -47,20 +49,23 @@ public class WeatherServiceImpl implements IWeatherService {
         String latitudeFormatted = String.format("%.2f", latitude);
         String longitudeFormatted = String.format("%.2f", longitude);
         // lang 为空和null时，默认为中文
-        lang = lang == null ? "zh" : lang;
+//        lang = lang == null ? "zh" : lang;
         // unit 为空和null时，默认为公制
-        unit = unit == null ? "m" : unit;
-        String langFormatted = lang.equals("zh") ? lang : "zh";
-        String unitFormatted = unit.equals("m") ? unit : "m";
+//        unit = unit == null ? "m" : unit;
+        String langFormatted = lang;
+        String unitFormatted = unit;
 
-        String nowWeather = String.format(THREE_WEATHER_URL, longitudeFormatted, latitudeFormatted, langFormatted,unitFormatted);
+//        String nowWeather = String.format(THREE_WEATHER_URL, longitudeFormatted, latitudeFormatted, langFormatted,unitFormatted);
+        String hourlyWeatherForecast = String.format(HOURLY_WEATHER_FORECAST_URL, longitudeFormatted, latitudeFormatted, langFormatted,unitFormatted);
         String sevenWeatherForecast = String.format(SEVEN_WEATHER_FORECAST_URL, longitudeFormatted, latitudeFormatted, langFormatted,unitFormatted);
 
-        String getNowWeather = HttpUtil.get(nowWeather);
+//        String getNowWeather = HttpUtil.get(nowWeather);
+        String gethourlyWeatherForecast = HttpUtil.get(hourlyWeatherForecast);
         String getSevenWeatherForecast = HttpUtil.get(sevenWeatherForecast);
 
         Map<String, Object> weatherInfo = new HashMap<>();
-        weatherInfo.put("now", parseJson(getNowWeather));
+//        weatherInfo.put("now", parseJson(getNowWeather));
+        weatherInfo.put("hourly", parseJson(gethourlyWeatherForecast));
         weatherInfo.put("seven", parseJson(getSevenWeatherForecast));
         return weatherInfo;
     }
@@ -91,6 +96,9 @@ public class WeatherServiceImpl implements IWeatherService {
             }
             if (resultJson.get("location") != null) {
                 return resultJson.get("location");
+            }
+            if (resultJson.get("hourly") != null) {
+                return resultJson.get("hourly");
             }
         }
         return null;

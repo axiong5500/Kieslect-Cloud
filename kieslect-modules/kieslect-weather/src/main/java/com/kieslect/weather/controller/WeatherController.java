@@ -20,7 +20,8 @@ public class WeatherController {
     }
 
     @GetMapping("/getWeatherInfo")
-    public R<?> getWeatherInfo(@RequestParam("latitude") double latitude,
+    public R<?> getWeatherInfo(@RequestParam(value = "id", required = false) int id,
+                @RequestParam("latitude") double latitude,
                                @RequestParam("longitude") double longitude,
                                @RequestParam(value = "lang", required = false) String lang,
                                @RequestParam(value = "unit", required = false) String unit) {
