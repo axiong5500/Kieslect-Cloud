@@ -25,13 +25,7 @@ public class WeatherController {
                                @RequestParam("longitude") double longitude,
                                @RequestParam(value = "lang", required = false) String lang,
                                @RequestParam(value = "unit", required = false) String unit) {
-        return R.ok(weatherService.getWeatherInfo(latitude, longitude,lang,unit));
+        return R.ok(weatherService.getWeatherInfo(id,latitude, longitude,lang,unit));
     }
 
-    @GetMapping("/getCity")
-    public R<?> getCity(@RequestParam("location") String location,
-                               @RequestParam(value = "lang", required = false) String lang,
-                               @RequestParam(value = "unit", required = false) String unit) {
-        return R.ok(weatherService.getCity(location,lang,unit));
-    }
 }

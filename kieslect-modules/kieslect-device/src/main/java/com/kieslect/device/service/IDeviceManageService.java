@@ -1,7 +1,10 @@
 package com.kieslect.device.service;
 
-import com.kieslect.device.domain.DeviceManage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kieslect.device.domain.DeviceManage;
+import com.kieslect.device.domain.vo.DeviceManageVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,4 +17,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IDeviceManageService extends IService<DeviceManage> {
 
     void updateEntity(DeviceManage deviceManage);
+
+    List<DeviceManageVO> getDeviceManageList();
 }

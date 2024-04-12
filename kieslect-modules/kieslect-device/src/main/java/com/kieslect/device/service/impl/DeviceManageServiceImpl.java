@@ -6,13 +6,16 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kieslect.device.domain.DeviceManage;
 import com.kieslect.device.domain.ParamConfig;
+import com.kieslect.device.domain.vo.DeviceManageVO;
 import com.kieslect.device.domain.vo.ParamConfigVO;
 import com.kieslect.device.mapper.DeviceManageMapper;
 import com.kieslect.device.service.IDeviceManageService;
 import com.kieslect.device.service.IParamConfigService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +36,41 @@ public class DeviceManageServiceImpl extends ServiceImpl<DeviceManageMapper, Dev
     @Autowired
     private IParamConfigService paramConfigService;
 
+    @Override
+    public List<DeviceManageVO> getDeviceManageList() {
+        // 获取所有paramConfig
+        List<ParamConfig> paramConfigList = paramConfigService.list();
+        Map<String, String> paramConfigMap = new HashMap<>();
+        for (ParamConfig paramConfig : paramConfigList) {
+            paramConfigMap.put(String.valueOf(paramConfig.getId()), paramConfig.getParamName());
+        }
+
+        List<DeviceManage> list = this.list();
+        List<DeviceManageVO> result = new ArrayList<>();
+        for (DeviceManage deviceManage : list) {
+            // 创建新的 DeviceManageVO 对象，将 DeviceManage 对象的属性复制到 DeviceManageVO
+            DeviceManageVO deviceManageVO = new DeviceManageVO();
+            BeanUtils.copyProperties(deviceManage, deviceManageVO);
+
+            Map<String, Object> updatedParamCollection = new HashMap<>();
+            // 添加其他属性复制...
+            Map<String, Object> paramCollectionJson = JSONUtil.toBean(deviceManage.getParamCollection(), Map.class);
+            paramCollectionJson.forEach((k, v) -> {
+                if (paramConfigMap.containsKey(k)) {
+                    updatedParamCollection.put(paramConfigMap.get(k), v);
+                }
+            });
+            deviceManageVO.setParams(updatedParamCollection);
+
+            deviceManageVO.setDeviceId(deviceManage.getForm());
+            deviceManageVO.setProducers(deviceManage.getForm());
+            deviceManageVO.setInnerId(deviceManage.getId());
+
+            // 将转换后的 DeviceManageVO 对象添加到 result 列表
+            result.add(deviceManageVO);
+        }
+        return result;
+    }
 
     @Override
     public void updateEntity(DeviceManage deviceManage) {
@@ -67,9 +105,13 @@ public class DeviceManageServiceImpl extends ServiceImpl<DeviceManageMapper, Dev
             deviceManage.setParamCollection(JSONUtil.toJsonStr(resultMap));
 
         } else {
-            deviceManage.setParamIds("");
-            deviceManage.setParamCollection("");
+            if (StrUtil.isBlank(deviceManage.getParamIds()) && StrUtil.isBlank( deviceManage.getParamCollection())){
+                deviceManage.setParamIds("");
+                deviceManage.setParamCollection("");
+            }
         }
         deviceManageMapper.updateById(deviceManage);
     }
+
+
 }

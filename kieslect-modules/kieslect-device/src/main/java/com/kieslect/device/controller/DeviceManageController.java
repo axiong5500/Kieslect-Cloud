@@ -1,8 +1,8 @@
 package com.kieslect.device.controller;
 
-import cn.hutool.json.JSONUtil;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.device.domain.DeviceManage;
+import com.kieslect.device.domain.vo.DeviceManageVO;
 import com.kieslect.device.service.IDeviceManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,15 +23,11 @@ public class DeviceManageController {
     @Autowired
     private IDeviceManageService deviceManageService;
 
+
     @GetMapping("/getList")
-    public R<?> getDeviceManageList() {
-        List<DeviceManage> list = deviceManageService.list();
-        list.forEach(deviceManage -> {
-            // 将paramCollection字段值转换为JSON字符串
-            String paramCollectionJson = JSONUtil.toJsonPrettyStr(deviceManage.getParamCollection());
-            deviceManage.setParamCollection(paramCollectionJson);
-        });
-        return R.ok(list);
+    public R<List<DeviceManageVO>> getDeviceManageList() {
+        List<DeviceManageVO> result = deviceManageService.getDeviceManageList();
+        return R.ok(result);
     }
     @GetMapping("/sys/getList")
     public R<?> sysGetDeviceManageList() {
