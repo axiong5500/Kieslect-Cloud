@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+//option java_multiple_files = false;
+option java_package = "com.kieslect.kdata.proto.dto";
+option java_outer_classname = "KActivityProto";
+
+message KActivity {
+    int64 user_id = 1;
+    repeated KActivityListData list = 2;
+}
+
+
+message KActivityListData {
+    int64 date = 1;
+    repeated DetailSteps detail_steps = 2;
+    repeated DetailHr detail_hr = 3;
+    repeated DetailSilentHr detail_silent_hr = 4;
+    repeated DetailSpo2 detail_spo2 = 5;
+    repeated DetailStress detail_stress = 6;
+    repeated DetailSleep detail_sleep = 7;
+    repeated DetailWeight detail_weight = 8;
+}
+
+message DetailSteps {
+    int64 date = 1;
+    int32 steps = 2;
+    int32 calories = 3;//卡路里
+    int32 distance = 4;//距离 米
+    string mac = 5;
+    int64 only = 6;
+}
+
+message DetailSilentHr {
+    int64 date = 1;
+    int32 silent_hr = 2;//静息心率
+    string mac = 3;
+    int64 only = 4;
+}
+message DetailHr {
+    int64 date = 1;
+    int32 hr = 2;
+    string mac = 3;
+    int64 only = 4;
+}
+
+message DetailSpo2 {
+    int64 date = 1;
+    int32 spo2 = 2;//血氧
+    int32 pi = 3;//灌注指数
+    string mac = 4;
+    int64 only = 5;
+}
+
+message DetailStress {
+    int64 date = 1;
+    int32 stress = 2;
+    string mac = 3;
+    int64 only = 4;
+}
+
+message DetailSleep {
+    int64 start_time = 1;//开始睡觉
+    int64 end_time = 2;//结束睡觉
+    int64 time = 3;//睡眠时长
+    int32 code = 4;//睡眠类型 1 深睡，2浅睡，3清醒,4眼动
+    string mac = 5;
+    int64 only = 6;
+}
+
+
+message DetailWeight {
+    int64 date = 1;
+    double weight = 2;//体重 KG
+    string mac = 3;
+    int64 only = 4;
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+option java_package = "com.kieslect.kdata.proto.dto";
+option java_outer_classname = "GeoCityBeanProto";
+
+message GeoCityBean {
+    repeated CityBean cityBean = 1;
+    string version = 2;
+    int64 updateTime = 3;
+}
+
+message CityBean {
+    int64 id = 1;
+    int64 geonameid = 2;
+    string name = 3;
+    string alternatenames = 4;
+    double latitude = 5;
+    double longitude = 6;
+    string timezone = 7;
+}

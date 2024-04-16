@@ -1,7 +1,10 @@
 package com.kieslect.file.controller;
 
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.OSSObjectSummary;
+import com.aliyun.oss.model.ObjectListing;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.common.core.enums.ResponseCodeEnum;
 import com.kieslect.file.config.OSSConfig;
@@ -10,7 +13,6 @@ import com.kieslect.file.enums.PathTypeEnum;
 import com.kieslect.file.service.FileService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -21,10 +23,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("")
@@ -36,7 +42,9 @@ public class FileController {
     private OSSConfig ossConfig;
 
     @PostMapping("/upload")
-    public R<?> uploadFile(@RequestParam("file") @NotNull(message = "文件不能为空") MultipartFile file, @RequestParam("pathType") @NotNull(message = "路径类型不能为空") Integer pathType) throws IOException {
+    public R<?> uploadFile(@RequestParam("file") @NotNull(message = "文件不能为空") MultipartFile file,
+                           @RequestParam("pathType") @NotNull(message = "路径类型不能为空") Integer pathType,
+                           @RequestParam(value = "userId", required = false) Long userId) throws IOException {
         // 检查上传的文件是否为空
         if (file.isEmpty()) {
             // 文件为空，返回错误信息
@@ -44,31 +52,52 @@ public class FileController {
         }
         // 根据枚举获取路径类型
         PathTypeEnum pathTypeEnum = PathTypeEnum.getByCode(pathType);
-        return uploadFile(file, pathTypeEnum.getPath());
+        userId = userId == null ? 9999L : userId;
+        return uploadFile(file, pathTypeEnum.getPath(), userId);
     }
 
-    public R<?> uploadFile(MultipartFile file, String path) throws IOException {
+    public R<?> uploadFile(MultipartFile file, String path, long userId) throws IOException {
         // 创建 OSS 文件夹路径
         String bucketName = ossConfig.getBucketName();
         fileService.createFolder(bucketName, path);
 
         // 在路径后添加文件名
-        String filename = FilenameUtils.getName(file.getOriginalFilename());
-        String ossFilePath = path + "/" + filename;
+        // 获取文件名和后缀名
+        String originalFilename = file.getOriginalFilename();
+        String baseName = getBaseName(originalFilename);
+        String extension = getFileExtension(originalFilename);
+        // 生成唯一性标识
+        String uniqueFileName = baseName + "." + extension;
+        String ossFilePath = path + "/" + userId + "/" + uniqueFileName;
 
         // 上传文件到 OSS
         fileService.uploadFile(file, bucketName, ossFilePath);
+
 
         // 生成文件的URL
         String fileUrl = generateFileUrl(ossFilePath);
 
         // 构造响应体
         UploadResponse response = new UploadResponse()
-                .setFilename(filename)
+                .setFilename(uniqueFileName)
                 .setFileUrl(fileUrl)
                 .setFileSize(file.getSize());
 
         return R.ok(response);
+    }
+
+    private String getFileExtension(String filename) {
+        return filename.substring(filename.lastIndexOf('.') + 1);
+    }
+
+    private String getBaseName(String filename) {
+        // 获取文件名的基本部分作为 baseName
+        int lastDotIndex = filename.lastIndexOf('.');
+        if (lastDotIndex == -1) {
+            return filename; // 没有找到扩展名，返回整个文件名
+        } else {
+            return filename.substring(0, lastDotIndex);
+        }
     }
 
     private String generateFileUrl(String filePath) {
@@ -82,6 +111,71 @@ public class FileController {
         return appName + contextPath + "/download/" + filePath;
     }
 
+    @GetMapping("/listFilesInFolder")
+    public ResponseEntity<List<String>> listFilesInFolder(@RequestParam("folderPath") String folderPath) {
+        try {
+            // 列举指定前缀（文件夹路径）下的所有文件
+            ListObjectsRequest listRequest = new ListObjectsRequest(ossConfig.getBucketName());
+            listRequest.setPrefix(folderPath); // 设置前缀为文件夹路径
+            ObjectListing objectListing = fileService.listObjects(listRequest);
+
+            List<String> fileNames = new ArrayList<>();
+
+            // 遍历文件列表，并获取文件名
+            for (OSSObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+                fileNames.add(objectSummary.getKey()); // 添加文件名到列表
+            }
+
+            return ResponseEntity.ok(fileNames);
+
+        } catch (OSSException e) {
+            // 处理 OSS 异常
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/downloadFileByFilePath")
+    public ResponseEntity<byte[]> downloadFile(@RequestParam("filePath") String filePath) {
+        try {
+            // 下载指定文件
+            OSSObject object = fileService.getObject( filePath,ossConfig.getBucketName());
+            InputStream inputStream = object.getObjectContent();
+
+            // 读取文件内容到字节数组
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteArrayOutputStream.write(buffer, 0, len);
+            }
+            byte[] fileBytes = byteArrayOutputStream.toByteArray();
+
+            // 获取文件名
+            String filename = getFileNameFromPath(filePath);
+
+            // 设置响应头
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM); // 设置内容类型为二进制流
+            headers.setContentLength(fileBytes.length);
+            headers.setContentDispositionFormData("attachment", filename); // 设置文件名
+
+            return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
+
+        } catch (OSSException e) {
+            // 处理 OSS 异常
+            e.printStackTrace();
+            return ResponseEntity.notFound().build(); // 文件不存在，返回 404 Not Found
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String getFileNameFromPath(String filePath) {
+        // 从文件路径中获取文件名
+        return filePath.substring(filePath.lastIndexOf('/') + 1);
+    }
+
     @GetMapping("/download/**")
     public ResponseEntity<InputStreamResource> downloadFile(HttpServletRequest request) throws IOException {
         // 获取请求中的路径参数
@@ -90,8 +184,8 @@ public class FileController {
         String filename = Paths.get(fullPath).getFileName().toString();
         String ossFilePath = fullPath.substring(fullPath.indexOf("/download/") + 10);
         try {
-            OSSObject object = fileService.downloadFile(ossFilePath, ossConfig.getBucketName());
-            java.io.InputStream inputStream = object.getObjectContent();
+            OSSObject object = fileService.getObject(ossFilePath, ossConfig.getBucketName());
+            InputStream inputStream = object.getObjectContent();
 
             // 根据文件名后缀设置 MIME 类型
             MediaType mediaType = MediaType.parseMediaType(getContentType(filename));
@@ -117,28 +211,5 @@ public class FileController {
             return "application/octet-stream";
         }
         return mimeType;
-        // 你可以根据文件名后缀来设置 MIME 类型，这里仅作示例
-//        String extension = FilenameUtils.getExtension(filename);
-//        switch (extension.toLowerCase()) {
-//            case "jpg":
-//            case "jpeg":
-//                return "image/jpeg";
-//            case "png":
-//                return "image/png";
-//            case "gif":
-//                return "image/gif";
-//            case "zip":
-//                return "application/zip";
-//            case "pdf":
-//                return "application/pdf";
-//            case "txt":
-//                return "text/plain";
-//            case "doc":
-//            case "docx":
-//                return "application/msword";
-//            // 其他文件类型根据需要添加
-//            default:
-//                return MediaType.APPLICATION_OCTET_STREAM_VALUE;
-//        }
     }
 }

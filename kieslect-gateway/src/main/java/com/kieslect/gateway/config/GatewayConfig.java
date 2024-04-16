@@ -14,6 +14,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,6 +35,9 @@ public class GatewayConfig {
             "/kieslect-auth/auth/logout",
             "/kieslect-user/user/notify/getAppList",
             "/kieslect-user/issue/issues_suggestions",
+            "/kieslect-device/device/paramConfig/sys/**",
+            "/kieslect-device/device/moduleConfig/sys/**",
+            "/kieslect-device/device/sys/**"
     };
 
     @Bean
@@ -46,6 +50,9 @@ public class GatewayConfig {
                 .route("user_service", r -> r.path("/kieslect-user/**")
                         .filters(f -> f.filter(tokenValidationFilter()).rewritePath("/kieslect-user/(?<path>.*)", "/${path}"))
                         .uri("lb://kieslect-user"))
+                .route("device_service", r -> r.path("/kieslect-device/**")
+                        .filters(f -> f.filter(tokenValidationFilter()).rewritePath("/kieslect-device/(?<path>.*)", "/${path}"))
+                        .uri("lb://kieslect-device"))
                 .build();
     }
 
@@ -87,13 +94,15 @@ public class GatewayConfig {
 
     // 判断请求路径是否在白名单中的方法
     private boolean isInWhiteList(String requestPath) {
+        AntPathMatcher antPathMatcher = new AntPathMatcher();
         for (String path : WHITELIST) {
-            if (requestPath.startsWith(path)) {
+            if (antPathMatcher.match(path, requestPath)) {
                 return true;
             }
         }
         return false;
     }
+
 
     private Mono<Void> onError(ServerWebExchange exchange, ResponseCodeEnum responseCode, String data) {
         ServerHttpResponse response = exchange.getResponse();

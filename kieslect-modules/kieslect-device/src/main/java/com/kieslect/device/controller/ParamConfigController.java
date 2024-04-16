@@ -24,27 +24,27 @@ public class ParamConfigController {
     @Autowired
     private IParamConfigService paramConfigService;
 
-    @PostMapping("/save")
+    @PostMapping("/sys/save")
     public R<?> saveParamConfig(@RequestBody ParamConfig paramConfig) {
         paramConfig.setCreateTime(String.valueOf(Instant.now().getEpochSecond()));
         paramConfig.setUpdateTime(String.valueOf(Instant.now().getEpochSecond()));
         paramConfigService.save(paramConfig);
         return R.ok();
     }
-    @PostMapping("/update")
+    @PostMapping("/sys/update")
     public R<?> updateParamConfig(@RequestBody ParamConfig paramConfig) {
         paramConfig.setUpdateTime(String.valueOf(Instant.now().getEpochSecond()));
         paramConfigService.updateById(paramConfig);
         return R.ok();
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/sys/delete")
     public R<?> deleteParamConfig(@RequestBody ParamConfig paramConfig) {
         paramConfigService.removeById(paramConfig.getId());
         return R.ok();
     }
 
-    @PostMapping("/getList")
+    @PostMapping("/sys/getList")
     public R<?> getParamConfigList(@RequestBody ParamConfigVO paramConfigVO) {
         return R.ok(paramConfigService.getList(paramConfigVO));
     }

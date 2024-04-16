@@ -238,6 +238,7 @@
                 <version>${aliyun-sdk-oss.version}</version>
             </dependency>
 
+
         </dependencies>
     </dependencyManagement>
 

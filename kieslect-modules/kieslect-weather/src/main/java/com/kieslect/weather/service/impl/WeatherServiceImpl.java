@@ -1,6 +1,7 @@
 package com.kieslect.weather.service.impl;
 
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.kieslect.common.core.constant.CacheConstants;
@@ -28,7 +29,7 @@ public class WeatherServiceImpl implements IWeatherService {
     private static final String CITY_SEARCH_URL = "https://geoapi.qweather.com/v2/city/lookup?key=" + apiKey + "&location=%s&lang=%s";
 
     // 实况天气
-    private static final String THREE_WEATHER_URL = "https://devapi.qweather.com/v7/weather/now?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
+    private static final String NOW_WEATHER_URL = "https://devapi.qweather.com/v7/weather/now?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
     // 逐小时预报（未来24小时）
     private static final String HOURLY_WEATHER_FORECAST_URL = "https://devapi.qweather.com/v7/weather/24h?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
 
@@ -38,6 +39,9 @@ public class WeatherServiceImpl implements IWeatherService {
     private static final String GEO_KEY = CacheConstants.LOCATION_KEY; // Redis 中存储经纬度的键名
 
     private static final String WEATHER_PREFIX = "weather:";
+
+    // 实况天气redis key前缀
+    private static final String NOW_WEATHER_KEY_PREFIX = "now_weather_forecast:";
 
     // 逐小时redis key前缀
     private static final String HOURLY_WEATHER_FORECAST_KEY_PREFIX = "hourly_weather_forecast:";
@@ -68,13 +72,17 @@ public class WeatherServiceImpl implements IWeatherService {
         String unitFormatted = unit;
         Object hourlyObj;
         Object sevenObj;
+        Object nowObj;
 
         // 构建 Redis 键（key）
         String redisKey = buildRedisKey(id, latitude, longitude);
+        String nowRedisKey = getWeatherRedisKey(NOW_WEATHER_KEY_PREFIX, redisKey);
         String hourlyRedisKey = getWeatherRedisKey(HOURLY_WEATHER_FORECAST_KEY_PREFIX, redisKey);
         String sevenRedisKey = getWeatherRedisKey(SEVEN_WEATHER_FORECAST_KEY_PREFIX, redisKey);
+        nowObj = getObject(latitudeFormatted, longitudeFormatted, langFormatted, unitFormatted, nowRedisKey, NOW_WEATHER_URL);
         hourlyObj = getObject(latitudeFormatted, longitudeFormatted, langFormatted, unitFormatted, hourlyRedisKey, HOURLY_WEATHER_FORECAST_URL);
         sevenObj = getObject(latitudeFormatted, longitudeFormatted, langFormatted, unitFormatted, sevenRedisKey, SEVEN_WEATHER_FORECAST_URL);
+        weatherInfo.put("now", nowObj);
         weatherInfo.put("hourly", hourlyObj);
         weatherInfo.put("seven", sevenObj);
         return weatherInfo;
@@ -88,17 +96,35 @@ public class WeatherServiceImpl implements IWeatherService {
         Object weatherObj;
         if (redisService.hasKey(redisKey)) {
             weatherObj = redisService.getCacheObject(redisKey);
-            System.out.println("redis缓存中获取数据"+redisKey+",obj:"+weatherObj);
+            System.out.println("redis缓存中获取数据" + redisKey + ",obj:" + weatherObj);
+            // 处理可能包含@type字段的情况
+            weatherObj = removeTypeField(weatherObj);
         } else {
             String hourlyWeatherForecast = String.format(weatherForecastUrl, longitudeFormatted, latitudeFormatted, langFormatted, unitFormatted);
             String getWeatherForecast = HttpUtil.get(hourlyWeatherForecast);
             System.out.println(getWeatherForecast);
             weatherObj = parseJson(getWeatherForecast);
-            if (redisKey.contains(HOURLY_WEATHER_FORECAST_KEY_PREFIX)) {
+            if (redisKey.contains(NOW_WEATHER_KEY_PREFIX)){
                 redisService.setCacheObject(redisKey, weatherObj, 1L, TimeUnit.HOURS);
+            }else if (redisKey.contains(HOURLY_WEATHER_FORECAST_KEY_PREFIX)) {
+                redisService.setCacheObject(redisKey, weatherObj, 24L, TimeUnit.HOURS);
             } else if (redisKey.contains(SEVEN_WEATHER_FORECAST_KEY_PREFIX)) {
                 redisService.setCacheObject(redisKey, weatherObj, 24L, TimeUnit.HOURS);
             }
+        }
+        return weatherObj;
+    }
+
+    private static Object removeTypeField(Object weatherObj) {
+        if (weatherObj != null) {
+            JSONArray jsonArr = JSONUtil.parseArray(weatherObj);
+            JSONArray updatedJsonArr = new JSONArray();
+            for (int i = 0; i < jsonArr.size(); i++) {
+                JSONObject jsonObject = jsonArr.getJSONObject(i);
+                jsonObject.remove("@type"); // 移除@type字段
+                updatedJsonArr.add(jsonObject);
+            }
+            weatherObj = updatedJsonArr;
         }
         return weatherObj;
     }

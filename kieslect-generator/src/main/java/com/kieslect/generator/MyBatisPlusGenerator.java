@@ -24,7 +24,7 @@ public class MyBatisPlusGenerator {
 
         // 包配置
         PackageConfig pc = new PackageConfig.Builder()
-                .parent("com.kieslect.device")
+                .parent("com.kieslect.user")
                 .entity("domain")
                 .mapper("mapper")
                 .service("service")
@@ -34,7 +34,7 @@ public class MyBatisPlusGenerator {
 
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig.Builder()
-                .addInclude("t_module_config")
+                .addInclude("t_user_health_sport_log")
                 .addTablePrefix("t_")
                 .serviceBuilder().enableFileOverride()
                 .mapperBuilder().enableFileOverride()

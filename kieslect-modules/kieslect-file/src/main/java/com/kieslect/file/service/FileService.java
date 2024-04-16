@@ -1,9 +1,7 @@
 package com.kieslect.file.service;
 
 import com.aliyun.oss.OSS;
-import com.aliyun.oss.model.GetObjectRequest;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.PutObjectRequest;
+import com.aliyun.oss.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,13 +19,14 @@ public class FileService {
 
     public void uploadFile(MultipartFile file, String bucketName, String ossFilePath) throws IOException {
 
-
-
         File tempFile = convertMultiPartFileToFile(file);
         try {
             ossClient.putObject(new PutObjectRequest(bucketName, ossFilePath, tempFile));
         } finally {
-            tempFile.delete();
+            // 删除临时文件
+            if (tempFile != null) {
+                tempFile.delete();
+            }
         }
     }
 
@@ -45,7 +44,7 @@ public class FileService {
         }
     }
 
-    public OSSObject downloadFile(String filename, String bucketName) throws IOException {
+    public OSSObject getObject(String filename, String bucketName) throws IOException {
         return ossClient.getObject(new GetObjectRequest(bucketName, filename));
     }
 
@@ -56,4 +55,9 @@ public class FileService {
         }
         return convFile;
     }
+
+    public ObjectListing listObjects(ListObjectsRequest listRequest) {
+        return ossClient.listObjects(listRequest);
+    }
+
 }

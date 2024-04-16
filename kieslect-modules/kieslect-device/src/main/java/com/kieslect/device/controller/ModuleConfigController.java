@@ -21,11 +21,11 @@ import java.time.Instant;
 public class ModuleConfigController {
     @Autowired
     IModuleConfigService moduleConfigService;
-    @GetMapping("/getList")
+    @GetMapping("/sys/getList")
     public R<?> getModuleConfigList() {
         return R.ok(moduleConfigService.list());
     }
-    @PostMapping("/save")
+    @PostMapping("/sys/save")
     public R<?> saveModuleConfig(@RequestBody ModuleConfig moduleConfig) {
         String now = String.valueOf(Instant.now().getEpochSecond());
         moduleConfig.setEnable((byte) 1).setCreateTime(now).setUpdateTime(now);
@@ -33,13 +33,13 @@ public class ModuleConfigController {
         return R.ok();
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/sys/delete")
     public R<?> deleteModuleConfig(@RequestBody ModuleConfig moduleConfig) {
         moduleConfigService.removeById(moduleConfig.getId());
         return R.ok();
     }
 
-    @PostMapping("/update")
+    @PostMapping("/sys/update")
     public R<?> updateModuleConfig(@RequestBody ModuleConfig moduleConfig) {
         moduleConfig.setUpdateTime(String.valueOf(Instant.now().getEpochSecond()));
         moduleConfigService.updateById(moduleConfig);
