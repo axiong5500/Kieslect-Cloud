@@ -37,7 +37,8 @@ public class GatewayConfig {
             "/kieslect-user/issue/issues_suggestions",
             "/kieslect-device/device/paramConfig/sys/**",
             "/kieslect-device/device/moduleConfig/sys/**",
-            "/kieslect-device/device/sys/**"
+            "/kieslect-device/device/sys/**",
+            "/kieslect-device/device/getList"
     };
 
     @Bean

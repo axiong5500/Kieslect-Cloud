@@ -3,6 +3,7 @@ package com.kieslect.device.service.impl;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kieslect.device.domain.DeviceManage;
 import com.kieslect.device.domain.ParamConfig;
@@ -62,7 +63,51 @@ public class DeviceManageServiceImpl extends ServiceImpl<DeviceManageMapper, Dev
             });
             deviceManageVO.setParams(updatedParamCollection);
 
-            deviceManageVO.setDeviceId(deviceManage.getForm());
+            deviceManageVO.setDeviceId(deviceManage.getFirmwareId());
+            deviceManageVO.setProducers(deviceManage.getForm());
+            deviceManageVO.setInnerId(deviceManage.getId());
+
+            // 将转换后的 DeviceManageVO 对象添加到 result 列表
+            result.add(deviceManageVO);
+        }
+        return result;
+    }
+
+    @Override
+    public List<DeviceManageVO> getDeviceManageList(Integer deviceId, Integer producers) {
+        // 获取所有paramConfig
+        List<ParamConfig> paramConfigList = paramConfigService.list();
+        Map<String, String> paramConfigMap = new HashMap<>();
+        for (ParamConfig paramConfig : paramConfigList) {
+            paramConfigMap.put(String.valueOf(paramConfig.getId()), paramConfig.getParamName());
+        }
+
+        QueryWrapper<DeviceManage> queryWrapper = new QueryWrapper<>();
+        if (deviceId != null) {
+            queryWrapper.eq("firmware_id", deviceId);
+        }
+        if (producers != null) {
+            queryWrapper.eq("form", producers);
+        }
+
+        List<DeviceManage> list = this.list(queryWrapper);
+        List<DeviceManageVO> result = new ArrayList<>();
+        for (DeviceManage deviceManage : list) {
+            // 创建新的 DeviceManageVO 对象，将 DeviceManage 对象的属性复制到 DeviceManageVO
+            DeviceManageVO deviceManageVO = new DeviceManageVO();
+            BeanUtils.copyProperties(deviceManage, deviceManageVO);
+
+            Map<String, Object> updatedParamCollection = new HashMap<>();
+            // 添加其他属性复制...
+            Map<String, Object> paramCollectionJson = JSONUtil.toBean(deviceManage.getParamCollection(), Map.class);
+            paramCollectionJson.forEach((k, v) -> {
+                if (paramConfigMap.containsKey(k)) {
+                    updatedParamCollection.put(paramConfigMap.get(k), v);
+                }
+            });
+            deviceManageVO.setParams(updatedParamCollection);
+
+            deviceManageVO.setDeviceId(deviceManage.getFirmwareId());
             deviceManageVO.setProducers(deviceManage.getForm());
             deviceManageVO.setInnerId(deviceManage.getId());
 

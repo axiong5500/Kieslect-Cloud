@@ -19,6 +19,8 @@ message KActivityListData {
     repeated DetailStress detail_stress = 6;
     repeated DetailSleep detail_sleep = 7;
     repeated DetailWeight detail_weight = 8;
+    repeated DetailSleepAnalyze detail_sleep_analyze = 9;
+    repeated DetailSport detail_sport = 10;
 }
 
 message DetailSteps {
@@ -59,18 +61,48 @@ message DetailStress {
 }
 
 message DetailSleep {
-    int64 start_time = 1;//开始睡觉
-    int64 end_time = 2;//结束睡觉
-    int64 time = 3;//睡眠时长
-    int32 code = 4;//睡眠类型 1 深睡，2浅睡，3清醒,4眼动
-    string mac = 5;
-    int64 only = 6;
+    int64 date = 1;
+    int64 start_time = 2;//开始睡觉
+    int64 end_time = 3;//结束睡觉
+    int64 time = 4;//睡眠时长
+    int32 code = 5;//睡眠类型 1 深睡，2浅睡，3清醒,4眼动
+    string mac = 6;
+    int64 only = 7;
 }
 
+message DetailSleepAnalyze {
+    int64 start_time = 1;//开始睡觉
+    int64 end_time = 2;//结束睡觉
+    int32 type = 3;//1-Kieslect,2-IDO
+    int32 sleep_time = 4;//睡眠时间
+    int32 wake_time = 5;//清醒时间
+    int32 rem_time = 6;//眼动时间
+    int32 deep_time = 7;//深睡时间
+    int32 light_time = 8;//浅睡时间
+    int32 wake_count = 9;//清醒次数
+    int32 rem_count = 10;//眼动次数
+    int32 deep_count = 11;//深睡次数
+    int32 light_count = 12;//浅睡次数
+    int32 breath_status = 13;//呼吸状况
+    int32 sleep_score = 14;//得分
+    int32 breath_quality = 15;//呼吸质量
+    int32 sleep_avg_hr = 16;//心率平均
+    int32 sleep_avg_spo2 = 17;//血氧平均
+    int32 sleep_avg_breath = 18;//呼吸平均
+    int32 count = 19;//详情数
+    string mac = 20;
+    int32 exceed_user = 21;//超过人数0-100
+    int64 only = 22;
+}
 
 message DetailWeight {
     int64 date = 1;
     double weight = 2;//体重 KG
     string mac = 3;
     int64 only = 4;
+}
+
+message DetailSport {
+    int64 date = 1;
+    int64 only = 2;
 }

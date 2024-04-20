@@ -16,7 +16,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author kieslect
- * @since 2024-03-20
+ * @since 2024-04-18
  */
 @Getter
 @Setter
@@ -28,10 +28,11 @@ public class UserInfo implements Serializable {
 
       @TableId(value = "id", type = IdType.AUTO)
       private Long id;
-    /**
+
+      /**
      * 用户key
      */
-    @TableField("user_key")
+      @TableField("user_key")
     private String userKey;
 
       /**
@@ -119,7 +120,7 @@ public class UserInfo implements Serializable {
     private String headImage;
 
       /**
-     * app名字
+     * app名字，0：Kieslect Fashion
      */
       @TableField("app_name")
     private Byte appName;
@@ -179,7 +180,7 @@ public class UserInfo implements Serializable {
     private Byte firstLogin;
 
       /**
-     * 是否删除，0：否，1：是
+     * 是否删除，0：否，1：是，2：注销超过7天永久删除
      */
       @TableField("del_status")
     private Byte delStatus;
@@ -195,4 +196,34 @@ public class UserInfo implements Serializable {
      */
       @TableField("update_time")
     private Long updateTime;
+
+      /**
+     * 步数目标
+     */
+      @TableField("steps_aim")
+    private int stepsAim;
+
+      /**
+     * 活动时长目标
+     */
+      @TableField("activity_aim")
+    private int activityAim;
+
+      /**
+     * 活动距离目标
+     */
+      @TableField("distance_aim")
+    private double distanceAim;
+
+      /**
+     * 卡路里目标
+     */
+      @TableField("calories_aim")
+    private double caloriesAim;
+
+      /**
+     * 睡眠时长目标
+     */
+      @TableField("sleep_aim")
+    private int sleepAim;
 }

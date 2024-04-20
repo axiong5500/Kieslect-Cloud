@@ -25,6 +25,7 @@ spring:
         file-extension: yml
         # 共享配置
         shared-configs:
-          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+          - data-id: kieslect-common.${spring.cloud.nacos.config.file-extension}
+            group: DEFAULT_GROUP
 
 

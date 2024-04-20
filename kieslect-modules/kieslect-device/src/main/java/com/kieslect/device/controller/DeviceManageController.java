@@ -7,7 +7,9 @@ import com.kieslect.device.service.IDeviceManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -25,8 +27,10 @@ public class DeviceManageController {
 
 
     @GetMapping("/getList")
-    public R<List<DeviceManageVO>> getDeviceManageList() {
-        List<DeviceManageVO> result = deviceManageService.getDeviceManageList();
+    public R<?> getDeviceManageList(@RequestParam(value = "deviceId", required = false) Integer deviceId,@RequestParam(value ="producers", required = false) Integer producers ) {
+        List<DeviceManageVO> list = deviceManageService.getDeviceManageList(deviceId,producers);
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", list);
         return R.ok(result);
     }
     @GetMapping("/sys/getList")

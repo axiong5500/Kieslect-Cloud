@@ -9,9 +9,9 @@ public class MyBatisPlusGenerator {
     public static void main(String[] args) {
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig
-                .Builder("jdbc:mysql://localhost:3306/kieslect_cloud?serverTimezone=Asia/Shanghai",
-                "root",
-                "123456")
+                .Builder("jdbc:mysql://rm-wz99q840v7hy00iw1uo.mysql.rds.aliyuncs.com:3306/kieslect_cloud?serverTimezone=Asia/Shanghai",
+                "kieslectroot",
+                "@kieslectroot123456")
                 .build();
 
         // 全局配置
@@ -34,7 +34,7 @@ public class MyBatisPlusGenerator {
 
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig.Builder()
-                .addInclude("t_user_health_sport_log")
+                .addInclude("t_user_info")
                 .addTablePrefix("t_")
                 .serviceBuilder().enableFileOverride()
                 .mapperBuilder().enableFileOverride()

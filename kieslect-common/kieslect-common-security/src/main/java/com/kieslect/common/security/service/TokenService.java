@@ -126,7 +126,7 @@ public class TokenService
 
     public void delLoginUserByUserkey(String userkey)
     {
-        if (StringUtils.isNotEmpty(userkey))
+        if (StringUtils.isNotEmpty(userkey) && redisService.hasKey(getTokenKey(userkey)))
         {
             redisService.deleteObject(getTokenKey(userkey));
         }

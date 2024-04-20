@@ -68,13 +68,13 @@ public class DeviceManage implements Serializable {
      * 宽度
      */
       @TableField("width")
-    private String width;
+    private Integer width;
 
       /**
      * 高度
      */
       @TableField("height")
-    private String height;
+    private Integer height;
 
       /**
      * 表盘图片地址

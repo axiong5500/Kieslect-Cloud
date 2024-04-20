@@ -14,10 +14,6 @@ public class WeatherController {
 
     @Autowired
     private IWeatherService weatherService;
-    @GetMapping("/getWeatherInfoWithCache")
-    public R<?> getWeatherInfoWithCache(@RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude) {
-        return R.ok(weatherService.getWeatherInfoWithCache(latitude, longitude));
-    }
 
     @GetMapping("/getWeatherInfo")
     public R<?> getWeatherInfo(@RequestParam(value = "id", required = false) int id,

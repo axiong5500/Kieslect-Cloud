@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
@@ -75,12 +74,10 @@ public class HealthSportController {
                     // 获取输入流
                     byte[] fileBytes = response.getBody();
 
-                    ByteArrayInputStream downFileinputStream = new ByteArrayInputStream(fileBytes);
-
-                    kActivityBuilder.mergeFrom(inputStream);
+                    kActivityBuilder.mergeFrom(fileBytes);
 
                     // 将新数据添加到 Builder 中
-                    kActivityBuilder.addList(list.get(0));
+                    kActivityBuilder.addAllList(list);
 
                     // 序列化消息 Builder
                     byte[] serializedBytes = ProtobufParser.serializeBuilder(kActivityBuilder);
@@ -88,8 +85,6 @@ public class HealthSportController {
                     multipartFile = new ByteArrayMultipartFile(
                             "file", uploadFileName, "application/octet-stream", serializedBytes);
 
-                    // 完成后关闭输入流
-                    downFileinputStream.close();
                 }
             }
             // 调用远程文件上传服务
@@ -137,6 +132,10 @@ public class HealthSportController {
                 .eq(UserHealthSportLog::getUserId, userId)
                 .orderByDesc(UserHealthSportLog::getUpdateTime).list();
 
+        if (userHealthSportLogs.isEmpty()) {
+            return ResponseEntity.notFound().build(); // 没有找到日志，返回404
+        }
+
         UserHealthSportLog latestLog = userHealthSportLogs.get(0);
 
         String uploadFile = latestLog.getUploadFile();
@@ -146,6 +145,13 @@ public class HealthSportController {
 
         // 返回响应
         ResponseEntity<byte[]> downloadResponse = remoteFileService.downloadFileByFilePath(filePath);
+
+        // 检查文件下载的响应状态码
+        if (downloadResponse.getStatusCode().is2xxSuccessful() && downloadResponse.getBody() == null) {
+            // 文件未找到，返回空响应
+            return ResponseEntity.ok().build(); // 返回空响应
+        }
+
         // 设置响应头
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

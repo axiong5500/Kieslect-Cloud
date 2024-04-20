@@ -60,4 +60,8 @@ public class FileService {
         return ossClient.listObjects(listRequest);
     }
 
+    public boolean doesObjectExist(String filename, String bucketName) {
+        return ossClient.doesObjectExist(bucketName, filename);
+    }
+
 }

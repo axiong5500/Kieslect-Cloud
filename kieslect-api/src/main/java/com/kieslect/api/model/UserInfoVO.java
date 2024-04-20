@@ -37,8 +37,13 @@ public class UserInfoVO implements Serializable {
     private Byte hourly;
     private Byte temperature;
     private Byte firstLogin;
-    private Byte delStatus;
+    private byte delStatus;
     private Long createTime;
     private Long updateTime;
     private String userKey;
+    private int stepsAim;
+    private int activityAim;
+    private double distanceAim;
+    private double caloriesAim;
+    private int sleepAim;
 }

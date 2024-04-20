@@ -19,4 +19,6 @@ public interface IDeviceManageService extends IService<DeviceManage> {
     void updateEntity(DeviceManage deviceManage);
 
     List<DeviceManageVO> getDeviceManageList();
+
+    List<DeviceManageVO> getDeviceManageList(Integer deviceId, Integer producers);
 }

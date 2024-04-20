@@ -37,5 +37,9 @@ public class SaveUserInfoVO implements Serializable {
     private Byte hourly;
     private Byte temperature;
     private Long updateTime;
-
+    private int stepsAim;
+    private int activityAim;
+    private double distanceAim;
+    private double caloriesAim;
+    private int sleepAim;
 }

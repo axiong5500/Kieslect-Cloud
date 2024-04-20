@@ -76,13 +76,13 @@ public class DeviceManageVO {
      * 宽度
      */
 
-    private String width;
+    private Integer width;
 
     /**
      * 高度
      */
 
-    private String height;
+    private Integer height;
 
     /**
      * 表盘图片地址

@@ -13,6 +13,7 @@ import com.kieslect.file.enums.PathTypeEnum;
 import com.kieslect.file.service.FileService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +36,10 @@ import java.util.List;
 @RestController
 @RequestMapping("")
 public class FileController {
+
+    // 日志
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(FileController.class);
+
     @Autowired
     private FileService fileService;
 
@@ -138,8 +143,12 @@ public class FileController {
     @GetMapping("/downloadFileByFilePath")
     public ResponseEntity<byte[]> downloadFile(@RequestParam("filePath") String filePath) {
         try {
+            if (!fileService.doesObjectExist(filePath, ossConfig.getBucketName())) {
+                logger.error(filePath + "文件不存在");
+                return ResponseEntity.ok().build();
+            }
             // 下载指定文件
-            OSSObject object = fileService.getObject( filePath,ossConfig.getBucketName());
+            OSSObject object = fileService.getObject(filePath, ossConfig.getBucketName());
             InputStream inputStream = object.getObjectContent();
 
             // 读取文件内容到字节数组
@@ -165,7 +174,7 @@ public class FileController {
         } catch (OSSException e) {
             // 处理 OSS 异常
             e.printStackTrace();
-            return ResponseEntity.notFound().build(); // 文件不存在，返回 404 Not Found
+            return ResponseEntity.ok().build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

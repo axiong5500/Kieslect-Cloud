@@ -50,6 +50,10 @@ public class LoginUserInfo implements Serializable {
      * 过期时间
      */
     private Long expireTime;
-
+    private int stepsAim;
+    private int activityAim;
+    private double distanceAim;
+    private double caloriesAim;
+    private int sleepAim;
 
 }
