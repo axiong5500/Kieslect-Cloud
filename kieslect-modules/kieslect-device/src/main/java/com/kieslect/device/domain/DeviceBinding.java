@@ -16,7 +16,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author kieslect
- * @since 2024-04-12
+ * @since 2024-04-20
  */
 @Getter
 @Setter
@@ -58,4 +58,22 @@ public class DeviceBinding implements Serializable {
 
     @TableField("update_time")
     private String updateTime;
+
+      /**
+     * 绑定状态，0：未绑定，1：已绑定
+     */
+      @TableField("binding_status")
+    private Integer bindingStatus;
+
+      /**
+     * 激活时间
+     */
+      @TableField("active_time")
+    private Long activeTime;
+
+    /**
+     * 激活时间
+     */
+    @TableField("device_id")
+    private Integer deviceId;
 }

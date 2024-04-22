@@ -12,12 +12,12 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: 39.105.119.235:8848
       config:
 #        import-check:
 #          enabled: false
         # 配置中心地址
-        server-addr: 127.0.0.1:8848
+        server-addr: 39.105.119.235:8848
         # 配置文件格式
         file-extension: yml
         # 共享配置

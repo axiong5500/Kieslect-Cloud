@@ -12,10 +12,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @RefreshScope
 @MapperScan("com.kieslect.**.mapper")
 @ComponentScan(basePackages = {"com.kieslect"})
-public class KieslectDeviceController {
+public class KieslectDeviceApplication {
     public static void main(String[] args)
     {
-        SpringApplication.run(KieslectDeviceController.class, args);
+        SpringApplication.run(KieslectDeviceApplication.class, args);
         System.out.println("(♥◠‿◠)ﾉﾞ  设备模块启动成功   ლ(´ڡ`ლ)ﾞ  \n" );
     }
 }

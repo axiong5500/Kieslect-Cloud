@@ -133,7 +133,7 @@ public class HealthSportController {
                 .orderByDesc(UserHealthSportLog::getUpdateTime).list();
 
         if (userHealthSportLogs.isEmpty()) {
-            return ResponseEntity.notFound().build(); // 没有找到日志，返回404
+            return ResponseEntity.ok().header("kcode", String.valueOf(404)).build(); // 没有找到日志，返回404
         }
 
         UserHealthSportLog latestLog = userHealthSportLogs.get(0);
@@ -149,16 +149,18 @@ public class HealthSportController {
         // 检查文件下载的响应状态码
         if (downloadResponse.getStatusCode().is2xxSuccessful() && downloadResponse.getBody() == null) {
             // 文件未找到，返回空响应
-            return ResponseEntity.ok().build(); // 返回空响应
+            return ResponseEntity.ok().header("kcode", String.valueOf(404)).build(); // 返回空响应
         }
 
         // 设置响应头
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", fileName);
+        headers.set("kcode", String.valueOf(200));
 
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(downloadResponse.getBody());
+
     }
 }

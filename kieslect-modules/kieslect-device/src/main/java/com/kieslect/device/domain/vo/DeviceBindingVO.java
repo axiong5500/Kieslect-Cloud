@@ -27,14 +27,20 @@ public class DeviceBindingVO implements Serializable {
 
     private String mac;
 
+    private Integer deviceId;
 
     private String form;
 
     private String deviceVersion;
+
+    private Integer bindingStatus;
+
+    private Long activeTime;
 
     @JsonIgnore
     private String createTime;
 
     @JsonIgnore
     private String updateTime;
+
 }

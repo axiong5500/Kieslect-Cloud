@@ -5,6 +5,7 @@ import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.common.security.service.TokenService;
 import com.kieslect.device.domain.DeviceBinding;
+import com.kieslect.device.domain.vo.DeviceBindingUpdateVO;
 import com.kieslect.device.domain.vo.DeviceBindingVO;
 import com.kieslect.device.service.IDeviceBindingService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +44,7 @@ public class DeviceBindingController {
         QueryWrapper<DeviceBinding> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userid);
         queryWrapper.orderByDesc("update_time");
-        List<DeviceBinding> deviceBindingList = deviceBindingService.list();
+        List<DeviceBinding> deviceBindingList = deviceBindingService.list(queryWrapper);
         List<DeviceBindingVO> deviceBindingVOList = new ArrayList<>();
         deviceBindingList.forEach(deviceBinding -> {
             DeviceBindingVO deviceBindingVO = new DeviceBindingVO();
@@ -55,7 +56,11 @@ public class DeviceBindingController {
     }
 
     @PostMapping("/update")
-    public R<?> updateDeviceBinding(HttpServletRequest request, @RequestBody List<DeviceBindingVO> DeviceBindingVos) {
+    public R<?> updateDeviceBinding(HttpServletRequest request, @RequestBody DeviceBindingUpdateVO deviceBindingList) {
+        List<DeviceBindingVO> DeviceBindingVos = deviceBindingList.getDeviceBindingList();
+        if (DeviceBindingVos == null || DeviceBindingVos.size() == 0) {
+            return R.fail("设备列表不能为空");
+        }
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
         Long userid = loginUser.getId();
         deviceBindingService.remove(new QueryWrapper<DeviceBinding>().eq("user_id", userid));
