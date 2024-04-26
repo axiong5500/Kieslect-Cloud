@@ -19,7 +19,7 @@ public class UserInfoVO implements Serializable {
     private String thirdToken;
     private Byte thirdTokenType;
     private Byte sex;
-    private String birthday;
+    private Long birthday;
     private Double height;
     private Double weight;
     private String country;
@@ -46,4 +46,5 @@ public class UserInfoVO implements Serializable {
     private double distanceAim;
     private double caloriesAim;
     private int sleepAim;
+    private double weightAim;
 }

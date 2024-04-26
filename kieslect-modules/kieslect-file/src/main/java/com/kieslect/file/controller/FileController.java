@@ -113,7 +113,7 @@ public class FileController {
         // 获取应用名称
         String appName = ossConfig.getAppName();
 
-        return appName + contextPath + "/download/" + filePath;
+        return "/" + appName + contextPath + "/download/" + filePath;
     }
 
     @GetMapping("/listFilesInFolder")

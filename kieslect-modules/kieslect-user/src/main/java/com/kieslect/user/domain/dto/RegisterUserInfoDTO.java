@@ -18,7 +18,7 @@ public class RegisterUserInfoDTO {
     private String thirdToken;
     private Byte thirdTokenType;
     private Byte sex;
-    private String birthday;
+    private Long birthday;
     private Double height;
     private Double weight;
     private String country;

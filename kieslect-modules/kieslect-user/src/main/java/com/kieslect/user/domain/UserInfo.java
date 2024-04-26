@@ -75,7 +75,7 @@ public class UserInfo implements Serializable {
      * 生日
      */
       @TableField("birthday")
-    private String birthday;
+    private Long birthday;
 
       /**
      * 身高
@@ -226,4 +226,10 @@ public class UserInfo implements Serializable {
      */
       @TableField("sleep_aim")
     private int sleepAim;
+
+    /**
+     * 体重目标
+     */
+    @TableField("weight_aim")
+    private double weightAim;
 }
