@@ -1,5 +1,6 @@
 package com.kieslect.device.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -15,7 +16,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author kieslect
- * @since 2024-04-01
+ * @since 2024-04-28
  */
 @Getter
 @Setter
@@ -25,7 +26,7 @@ public class AppDownload implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-      @TableId("id")
+      @TableId(value = "id", type = IdType.AUTO)
       private Integer id;
 
       /**
@@ -47,14 +48,38 @@ public class AppDownload implements Serializable {
     private String appChannel;
 
       /**
+     * app发布版本号
+     */
+      @TableField("version")
+    private String version;
+
+      /**
+     * 包名
+     */
+      @TableField("package_name")
+    private String packageName;
+
+      /**
+     * app内部版本号
+     */
+      @TableField("app_internal_version")
+    private String appInternalVersion;
+
+      /**
      * 创建时间
      */
       @TableField("create_time")
-    private String createTime;
+    private long createTime;
 
       /**
      * 更新时间
      */
       @TableField("update_time")
-    private String updateTime;
+    private long updateTime;
+
+      /**
+     * app下载链接状态
+     */
+      @TableField("app_download_status")
+    private Byte appDownloadStatus;
 }

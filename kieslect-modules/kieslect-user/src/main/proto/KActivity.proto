@@ -105,4 +105,31 @@ message DetailWeight {
 message DetailSport {
     int64 date = 1;
     int64 only = 2;
+    int32 type = 3;//运动类型
+    int64 start_time = 4;//开始时间 秒
+    int64 end_time = 5;//结束时间 秒
+    int32 time = 6;//运动时间 秒
+    int32 steps = 7;//总计步数
+    float distance = 8;//总路程-米
+    float max_speed = 9;//最大速度-米/秒
+    float avg_hr = 10;
+    repeated DetailSportData sport_data = 11;
+    repeated DetailDevice sport_device = 12;
+}
+
+
+message DetailSportData {
+    int32 time = 1;//运动时间 秒
+    int32 total_time = 2;//总时间 秒
+    double latitude = 3;
+    double longitude = 4;
+    float speed = 5;//米/秒
+    int32 cadence=6;//步数/分钟
+    int32 hr = 7;
+}
+
+message DetailDevice {
+    int32 type = 1;//0-手机，1-手表
+    string mac = 2;
+    string name = 3;
 }

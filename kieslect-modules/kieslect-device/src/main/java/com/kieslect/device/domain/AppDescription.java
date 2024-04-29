@@ -1,5 +1,6 @@
 package com.kieslect.device.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -15,7 +16,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author kieslect
- * @since 2024-04-01
+ * @since 2024-04-28
  */
 @Getter
 @Setter
@@ -25,7 +26,7 @@ public class AppDescription implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-      @TableId("id")
+      @TableId(value = "id", type = IdType.AUTO)
       private Integer id;
 
       /**
@@ -47,14 +48,20 @@ public class AppDescription implements Serializable {
     private Integer languageVersion;
 
       /**
+     * 产品描述状态
+     */
+      @TableField("product_desc_status")
+    private Byte productDescStatus;
+
+      /**
      * 创建时间
      */
       @TableField("create_time")
-    private String createTime;
+    private long createTime;
 
       /**
      * 更新时间
      */
       @TableField("update_time")
-    private String updateTime;
+    private long updateTime;
 }

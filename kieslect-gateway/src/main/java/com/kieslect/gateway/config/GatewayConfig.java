@@ -35,9 +35,7 @@ public class GatewayConfig {
             "/kieslect-auth/auth/logout",
             "/kieslect-user/user/notify/getAppList",
             "/kieslect-user/issue/issues_suggestions",
-            "/kieslect-device/device/paramConfig/sys/**",
-            "/kieslect-device/device/moduleConfig/sys/**",
-            "/kieslect-device/device/sys/**",
+            "/kieslect-device/device/**/sys/**",
             "/kieslect-device/device/getList"
     };
 
@@ -98,6 +96,7 @@ public class GatewayConfig {
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         for (String path : WHITELIST) {
             if (antPathMatcher.match(path, requestPath)) {
+                System.out.println("匹配到白名单路径：" + path);
                 return true;
             }
         }

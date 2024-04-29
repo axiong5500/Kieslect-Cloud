@@ -1,7 +1,10 @@
 package com.kieslect.device.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.stereotype.Controller;
+import com.kieslect.common.core.domain.R;
+import com.kieslect.device.domain.AppManage;
+import com.kieslect.device.service.IAppManageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -11,8 +14,31 @@ import org.springframework.stereotype.Controller;
  * @author kieslect
  * @since 2024-04-01
  */
-@Controller
-@RequestMapping("//appManage")
+@RestController
+@RequestMapping("/appManage")
 public class AppManageController {
+    @Autowired
+    IAppManageService appManageService;
+    @GetMapping("/sys/getList")
+    public R<?> sysGetAppManageList() {
+        return R.ok(appManageService.list());
+    }
+    // update
+    @PostMapping("/sys/update")
+    public R<?> updateAppManage(@RequestBody AppManage appManage) {
+        return R.ok(appManageService.updateById(appManage));
+    }
+    // delete
+    @PostMapping("/sys/delete")
+    public R<?> deleteAppManage(@RequestBody AppManage appManage) {
+        appManageService.removeById(appManage.getId());
+        return R.ok();
+    }
 
+    @PostMapping("/sys/save")
+    public R<?> saveAppManage(@RequestBody AppManage appManage) {
+        appManageService.save(appManage);
+        int savedId = appManage.getId();
+        return R.ok(savedId);
+    }
 }
