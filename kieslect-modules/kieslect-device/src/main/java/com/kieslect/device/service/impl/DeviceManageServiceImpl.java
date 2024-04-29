@@ -99,12 +99,15 @@ public class DeviceManageServiceImpl extends ServiceImpl<DeviceManageMapper, Dev
 
             Map<String, Object> updatedParamCollection = new HashMap<>();
             // 添加其他属性复制...
-            Map<String, Object> paramCollectionJson = JSONUtil.toBean(deviceManage.getParamCollection(), Map.class);
-            paramCollectionJson.forEach((k, v) -> {
-                if (paramConfigMap.containsKey(k)) {
-                    updatedParamCollection.put(paramConfigMap.get(k), v);
-                }
-            });
+            if (StrUtil.isNotBlank(deviceManage.getParamCollection())){
+                Map<String, Object> paramCollectionJson = JSONUtil.toBean(deviceManage.getParamCollection(), Map.class);
+                paramCollectionJson.forEach((k, v) -> {
+                    if (paramConfigMap.containsKey(k)) {
+                        updatedParamCollection.put(paramConfigMap.get(k), v);
+                    }
+                });
+            }
+
             deviceManageVO.setParams(updatedParamCollection);
 
             deviceManageVO.setDeviceId(deviceManage.getFirmwareId());

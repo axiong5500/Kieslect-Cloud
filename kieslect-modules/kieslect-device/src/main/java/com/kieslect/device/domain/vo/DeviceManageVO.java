@@ -105,6 +105,12 @@ public class DeviceManageVO {
 
 
     /**
+     * 是否支持bt,0：不支持，1：支持
+     */
+    private Integer btStatus;
+
+
+    /**
      * 参数设置值json集合
      */
 

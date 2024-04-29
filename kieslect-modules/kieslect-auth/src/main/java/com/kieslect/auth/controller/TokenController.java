@@ -104,6 +104,9 @@ public class TokenController {
             if (!validCode) {
                 return R.fail(ResponseCodeEnum.CAPTCHA_ERROR);
             }
+
+            // 删除验证码
+            redisService.deleteObject(email);
         }
 
         // 账号注册校验是否包含@邮箱格式

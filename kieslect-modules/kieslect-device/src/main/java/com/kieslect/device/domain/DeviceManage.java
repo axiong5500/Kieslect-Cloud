@@ -124,15 +124,21 @@ public class DeviceManage implements Serializable {
       @TableField("param_collection")
     private String paramCollection;
 
+    /**
+     * 是否支持BT,0:不支持，1:支持
+     */
+    @TableField("bt_status")
+    private int btStatus;
+
       /**
      * 创建时间
      */
       @TableField("create_time")
-    private String createTime;
+    private int createTime;
 
       /**
      * 更新时间
      */
       @TableField("update_time")
-    private String updateTime;
+    private int updateTime;
 }

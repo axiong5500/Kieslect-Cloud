@@ -105,8 +105,7 @@ public class UserInfoController {
         if (!validCode) {
             return R.fail(ResponseCodeEnum.CAPTCHA_ERROR);
         }
-        // 删除验证码
-        redisService.deleteObject(emailRediskey);
+
 
         SaveUserInfoVO saveUserInfoVO = new SaveUserInfoVO().setId(loginUser.getId()).setEmail(email);
         // 保存用户信息

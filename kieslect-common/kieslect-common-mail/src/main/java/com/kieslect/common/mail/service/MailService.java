@@ -41,7 +41,6 @@ public class MailService {
         // 验证码验证
         if (storedCode.equals(code)) {
             // 验证码正确
-
             return true;
         } else {
             // 验证码错误
