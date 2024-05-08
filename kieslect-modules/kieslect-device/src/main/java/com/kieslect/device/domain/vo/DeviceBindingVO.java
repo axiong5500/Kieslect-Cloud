@@ -27,7 +27,7 @@ public class DeviceBindingVO implements Serializable {
 
     private String mac;
 
-    private Integer deviceId;
+    private String deviceId;
 
     private String form;
 

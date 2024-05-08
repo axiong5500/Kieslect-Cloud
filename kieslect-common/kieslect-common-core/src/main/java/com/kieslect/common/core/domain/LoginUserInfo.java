@@ -26,6 +26,7 @@ public class LoginUserInfo implements Serializable {
     private String country;
     private String province;
     private String city;
+    private int cityId;
     private String nickName;
     private String headImage;
     private Byte appName;

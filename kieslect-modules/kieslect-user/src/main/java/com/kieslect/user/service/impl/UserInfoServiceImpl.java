@@ -1,5 +1,6 @@
 package com.kieslect.user.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kieslect.api.domain.ForgetPasswordBody;
@@ -97,7 +98,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         // 封装返回值
         UserInfoVO userInfoVO = new UserInfoVO();
-        BeanUtils.copyProperties(userInfo, userInfoVO);
+        BeanUtil.copyProperties(userInfo, userInfoVO);
         return userInfoVO;
     }
 

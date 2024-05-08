@@ -75,5 +75,5 @@ public class DeviceBinding implements Serializable {
      * 激活时间
      */
     @TableField("device_id")
-    private Integer deviceId;
+    private String deviceId;
 }

@@ -202,6 +202,9 @@ public class UserInfoController {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("code", ((KAppNotificationTypeEnum) enumValue).getCode());
             jsonObject.put("savePackName", ((KAppNotificationTypeEnum) enumValue).getSavePackName());
+            jsonObject.put("uteValue", ((KAppNotificationTypeEnum) enumValue).getValue());
+            jsonObject.put("desc", ((KAppNotificationTypeEnum) enumValue).getDesc());
+            jsonObject.put("icon", ((KAppNotificationTypeEnum) enumValue).getIcon());
 
             jsonArray.add(jsonObject);
         }

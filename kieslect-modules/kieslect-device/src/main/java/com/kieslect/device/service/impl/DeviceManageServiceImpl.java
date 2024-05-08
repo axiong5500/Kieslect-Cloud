@@ -74,7 +74,7 @@ public class DeviceManageServiceImpl extends ServiceImpl<DeviceManageMapper, Dev
     }
 
     @Override
-    public List<DeviceManageVO> getDeviceManageList(Integer deviceId, Integer producers) {
+    public List<DeviceManageVO> getDeviceManageList(String deviceId, Integer producers) {
         // 获取所有paramConfig
         List<ParamConfig> paramConfigList = paramConfigService.list();
         Map<String, String> paramConfigMap = new HashMap<>();

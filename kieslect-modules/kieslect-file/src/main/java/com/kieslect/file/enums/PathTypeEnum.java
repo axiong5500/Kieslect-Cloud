@@ -10,6 +10,8 @@ public enum PathTypeEnum {
     BACKGROUND_MANAGE(5,"backgroundmanage", "后台管理"),
     // 健康运动数据
     HEALTH_SPORT_DATA(6,"healthsportdata", "健康运动数据"),
+    // 通知ico
+    NOTICE_ICO(7,"noticeico", "通知ico"),
     OTHER(9999,"other", "其他");
 
     private final int code;

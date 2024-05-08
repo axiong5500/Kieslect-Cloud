@@ -107,6 +107,9 @@ public class UserInfo implements Serializable {
       @TableField("city")
     private String city;
 
+    @TableField("city_id")
+    private Integer cityId;
+
       /**
      * 昵称，支持emoji表情符
      */
@@ -201,35 +204,35 @@ public class UserInfo implements Serializable {
      * 步数目标
      */
       @TableField("steps_aim")
-    private int stepsAim;
+    private Integer stepsAim;
 
       /**
      * 活动时长目标
      */
       @TableField("activity_aim")
-    private int activityAim;
+    private Integer activityAim;
 
       /**
      * 活动距离目标
      */
       @TableField("distance_aim")
-    private double distanceAim;
+    private Double distanceAim;
 
       /**
      * 卡路里目标
      */
       @TableField("calories_aim")
-    private double caloriesAim;
+    private Double caloriesAim;
 
       /**
      * 睡眠时长目标
      */
       @TableField("sleep_aim")
-    private int sleepAim;
+    private Integer sleepAim;
 
     /**
      * 体重目标
      */
     @TableField("weight_aim")
-    private double weightAim;
+    private Double weightAim;
 }

@@ -1,10 +1,16 @@
 package com.kieslect.device.controller;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.device.domain.Article;
 import com.kieslect.device.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -22,7 +28,9 @@ public class ArticleController {
 
     @GetMapping("/sys/getList")
     private R<?> sysGetArticleList(){
-        return R.ok(articleService.list());
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        queryWrapper.isNull("father_id");
+        return R.ok(articleService.list(queryWrapper));
     }
 
     // update
@@ -42,5 +50,45 @@ public class ArticleController {
         articleService.save(article);
         return R.ok();
     }
+
+
+    @GetMapping("/sys/getArticleById")
+    public R<?> getPrivacyPolicy(@RequestParam(value = "id", required = false) Integer id,@RequestParam(value = "language", required = false) Integer language){
+        Article article =  articleService.getById(id);
+        if (article == null) {
+            return R.fail();
+        }
+        String title = article.getTitle();
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("title", title);
+        queryWrapper.eq("language", language);
+        article = articleService.getOne(queryWrapper);
+        Map<String, Object> result = BeanUtil.beanToMap(article);
+        return R.ok(result);
+    }
+
+    @GetMapping("/sys/getMultilingualismList")
+    private R<?> sysGetMultilingualismList(@RequestParam(value = "id", required = false) Integer id){
+        String title;
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        if (id != null) {
+            queryWrapper.eq("id", id);
+        }
+        Article article = articleService.getById(id);
+        if (article != null){
+            title = article.getTitle();
+            queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("title", title);
+            queryWrapper.eq("father_id",id);
+
+            List<Article> articles = articleService.list(queryWrapper);
+            if (articles.size() > 0) {
+                return R.ok(articles);
+            }
+        }
+
+        return R.ok(new ArrayList<Article>());
+    }
+
 
 }

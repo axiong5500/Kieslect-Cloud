@@ -27,7 +27,7 @@ public class DeviceManageController {
 
 
     @GetMapping("/getList")
-    public R<?> getDeviceManageList(@RequestParam(value = "deviceId", required = false) Integer deviceId,@RequestParam(value ="producers", required = false) Integer producers ) {
+    public R<?> getDeviceManageList(@RequestParam(value = "deviceId", required = false) String deviceId,@RequestParam(value ="producers", required = false) Integer producers ) {
         List<DeviceManageVO> list = deviceManageService.getDeviceManageList(deviceId,producers);
         Map<String, Object> result = new HashMap<>();
         result.put("list", list);

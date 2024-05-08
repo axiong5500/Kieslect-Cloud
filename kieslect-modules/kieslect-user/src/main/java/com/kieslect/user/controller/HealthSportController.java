@@ -11,6 +11,8 @@ import com.kieslect.user.utils.ByteArrayMultipartFile;
 import com.kieslect.user.utils.ProtobufParser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,10 +25,15 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @RestController
 @RequestMapping("/healthSport")
 public class HealthSportController {
+
+    private static final Logger logger = LoggerFactory.getLogger(HealthSportController.class);
+    ExecutorService executorService = Executors.newFixedThreadPool(5);
 
     @Autowired
     private TokenService tokenService;
@@ -37,6 +44,7 @@ public class HealthSportController {
     @Autowired
     private IUserHealthSportLogService userHealthSportLogService;
 
+
     @PostMapping("/upload")
     public R<?> upload(HttpServletRequest request, @RequestParam("file") @NotNull(message = "文件不能为空") MultipartFile file) throws IOException {
         try {
@@ -44,20 +52,28 @@ public class HealthSportController {
             LoginUserInfo loginUser = tokenService.getLoginUser(request);
             String userId = String.valueOf(loginUser.getId());
 
+            logger.info("用户 {} 正在上传文件", userId);
+
             // 获取文件输入流
             InputStream inputStream = file.getInputStream();
+            logger.info("用户 {} 文件解析成功", userId);
 
             // 解析上传的 Protocol Buffers 消息
             KActivityProto.KActivity kActivity = ProtobufParser.parseFromInputStream(inputStream);
+            logger.info("用户 {} 消息解析成功", userId);
 
             // 获取消息中的数据列表
             List<KActivityProto.KActivityListData> list = kActivity.getListList();
+            logger.info("用户 {} 数据列表获取成功", userId);
 
             // 获取文件夹路径
             String folderPath = getHealthSportDownloadFilePath(userId);
+            logger.info("用户 {} 文件夹路径获取成功", userId);
+
 
             // 获取文件夹下所有文件名列表
             ResponseEntity<List<String>> listFilesInFolder = remoteFileService.listFilesInFolder(folderPath);
+            logger.info("用户 {} 文件夹下所有文件名列表获取成功", userId);
             List<String> fileNames = listFilesInFolder.getBody();
             // 创建 MultipartFile 对象
             MultipartFile multipartFile = file;
@@ -65,30 +81,38 @@ public class HealthSportController {
             // 遍历文件列表，处理每个文件
             for (String fileName : fileNames) {
                 String uploadFileName = getUploadFileName(fileName);
+                logger.info("用户 {} 遍历文件列表，处理每个文件,{}", userId,fileName);
                 // 下载文件内容并构建消息 Builder
                 ResponseEntity<byte[]> response = remoteFileService.downloadFileByFilePath(fileName);
+                logger.info("用户 {} 下载文件内容并构建消息 Builder", userId);
                 if (response.getBody() != null) {
                     // 创建 KActivityProto.KActivity.Builder 实例
                     KActivityProto.KActivity.Builder kActivityBuilder = KActivityProto.KActivity.newBuilder();
+                    logger.info("用户 {} 创建 KActivityProto.KActivity.Builder 实例", userId);
                     // 获取输入流，并传递给解析方法
                     // 获取输入流
                     byte[] fileBytes = response.getBody();
 
                     kActivityBuilder.mergeFrom(fileBytes);
+                    logger.info("用户 {} 获取输入流，并传递给解析方法", userId);
 
                     // 将新数据添加到 Builder 中
                     kActivityBuilder.addAllList(list);
+                    logger.info("用户 {} 将新数据添加到 Builder 中", userId);
 
                     // 序列化消息 Builder
                     byte[] serializedBytes = ProtobufParser.serializeBuilder(kActivityBuilder);
+                    logger.info("用户 {} 序列化消息 Builder", userId);
 
                     multipartFile = new ByteArrayMultipartFile(
                             "file", uploadFileName, "application/octet-stream", serializedBytes);
+
 
                 }
             }
             // 调用远程文件上传服务
             R<?> uploadResult = remoteFileService.uploadFile(multipartFile, 6, Long.parseLong(userId));
+            logger.info("用户 {} 调用远程文件上传服务", userId);
             if (R.isError(uploadResult)) {
                 throw new RuntimeException("文件上传失败: " + uploadResult.getMsg());
             }
@@ -102,6 +126,7 @@ public class HealthSportController {
             log.setCreateTime(Instant.now().getEpochSecond());
             log.setUpdateTime(Instant.now().getEpochSecond());
             userHealthSportLogService.save(log);
+            logger.info("用户 {} 文件上传成功后记录日志", userId);
 
             return R.ok("文件上传成功");
         } catch (IOException e) {

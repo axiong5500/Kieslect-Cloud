@@ -50,7 +50,7 @@ public class DeviceManage implements Serializable {
      * 固件id
      */
       @TableField("firmware_id")
-    private Integer firmwareId;
+    private String firmwareId;
 
       /**
      * 类别，
@@ -141,4 +141,7 @@ public class DeviceManage implements Serializable {
      */
       @TableField("update_time")
     private int updateTime;
+
+      @TableField("app_ids")
+    private String appIds;
 }

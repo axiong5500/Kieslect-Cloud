@@ -26,54 +26,57 @@ public class Article implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-      @TableId(value = "id", type = IdType.AUTO)
-      private Integer id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
-      /**
+    /**
      * 标题
      */
-      @TableField("title")
+    @TableField("title")
     private String title;
 
-      /**
+    /**
      * 见 t_app_manage 表 的 id
      */
-      @TableField("app_id")
+    @TableField("app_id")
     private Integer appId;
 
-      /**
+    /**
      * 见 t_article_type 表 的 id
      */
-      @TableField("article_type_id")
+    @TableField("article_type_id")
     private Integer articleTypeId;
 
-      /**
+    /**
      * 内容
      */
-      @TableField("content")
+    @TableField("content")
     private String content;
 
-      /**
+    /**
      * 语言
      */
-      @TableField("language")
+    @TableField("language")
     private Integer language;
 
-      /**
+    /**
      * 文章状态
      */
-      @TableField("article_status")
-    private Byte articleStatus;
+    @TableField("article_status")
+    private Byte articleStatus = 1;
 
-      /**
+    /**
      * 创建时间
      */
-      @TableField("create_time")
+    @TableField("create_time")
     private Integer createTime;
 
-      /**
+    /**
      * 更新时间
      */
-      @TableField("update_time")
+    @TableField("update_time")
     private Integer updateTime;
+
+    @TableField("father_id")
+    private Integer fatherId;
 }

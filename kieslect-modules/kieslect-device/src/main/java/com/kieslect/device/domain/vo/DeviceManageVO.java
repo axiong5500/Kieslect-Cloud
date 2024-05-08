@@ -1,6 +1,7 @@
 package com.kieslect.device.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class DeviceManageVO {
     /**
      * 设备id(8)，对应firmwareId固件id
      */
-    private Integer deviceId;
+    private String deviceId;
 
     /**
      * 厂商(4),对应类别
@@ -107,6 +108,7 @@ public class DeviceManageVO {
     /**
      * 是否支持bt,0：不支持，1：支持
      */
+    @JsonProperty("otaUpgrade")
     private Integer btStatus;
 
 
