@@ -1,5 +1,6 @@
 package com.kieslect.weather.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -52,17 +53,15 @@ public class WeatherServiceImpl implements IWeatherService {
         String latitudeFormatted = String.format("%.2f", latitude);
         String longitudeFormatted = String.format("%.2f", longitude);
         // lang 为空和null时，默认为中文
-        lang = lang == null ? "" : lang;
+        String langFormatted = StrUtil.isEmpty(lang)  ? "zh" : lang;
         // unit 为空和null时，默认为公制
-        unit = unit == null ? "" : unit;
-        String langFormatted = lang;
-        String unitFormatted = unit;
+        String unitFormatted = StrUtil.isEmpty(unit) ? "m" : unit;
         Object hourlyObj;
         Object sevenObj;
         Object nowObj;
 
         // 构建 Redis 键（key）
-        String redisKey = buildRedisKey(id, latitude, longitude);
+        String redisKey = buildRedisKey(id, latitude, longitude,langFormatted,unitFormatted);
         String nowRedisKey = getWeatherRedisKey(NOW_WEATHER_KEY_PREFIX, redisKey);
         String hourlyRedisKey = getWeatherRedisKey(HOURLY_WEATHER_FORECAST_KEY_PREFIX, redisKey);
         String sevenRedisKey = getWeatherRedisKey(SEVEN_WEATHER_FORECAST_KEY_PREFIX, redisKey);
@@ -129,9 +128,9 @@ public class WeatherServiceImpl implements IWeatherService {
         return weatherObj;
     }
 
-    private static String buildRedisKey(int id, double latitude, double longitude) {
+    private static String buildRedisKey(int id, double latitude, double longitude,String langFormatted, String unitFormatted) {
         // 将 id、latitude、longitude 拼接成字符串作为 Redis 键
-        return String.format("%d_%f_%f", id, latitude, longitude);
+        return String.format("%d_%f_%f_%s_%s", id, latitude, longitude,langFormatted, unitFormatted);
     }
 
 
