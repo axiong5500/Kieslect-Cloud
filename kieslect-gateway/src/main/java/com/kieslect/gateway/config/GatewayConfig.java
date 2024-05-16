@@ -4,6 +4,7 @@ import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.enums.ResponseCodeEnum;
 import com.kieslect.common.security.service.TokenService;
 import com.kieslect.common.security.utils.SecurityUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
@@ -21,6 +23,8 @@ import reactor.core.publisher.Mono;
 
 @Configuration
 public class GatewayConfig {
+
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(GatewayConfig.class);
 
     @Autowired
     private TokenService tokenService;
@@ -36,7 +40,11 @@ public class GatewayConfig {
             "/kieslect-user/user/notify/getAppList",
             "/kieslect-user/issue/issues_suggestions",
             "/kieslect-device/device/**/sys/**",
-            "/kieslect-device/device/getList"
+            "/kieslect-device/device/getList",
+            "/kieslect-file/file/upload",
+            "/kieslect-file/file/download/**",
+            "/kieslect-weather/weather/getWeatherInfo"
+
     };
 
     @Bean
@@ -46,19 +54,35 @@ public class GatewayConfig {
                 .route("auth_service", r -> r.path("/kieslect-auth/**")
                         .filters(f -> f.filter(tokenValidationFilter()).rewritePath("/kieslect-auth/(?<path>.*)", "/${path}"))
                         .uri("lb://kieslect-auth"))
+                .route("file_service", r -> r.path("/kieslect-file/**")
+                        .filters(f -> f.filter(tokenValidationFilter()).rewritePath("/kieslect-file/(?<path>.*)", "/${path}"))
+                        .uri("lb://kieslect-file"))
                 .route("user_service", r -> r.path("/kieslect-user/**")
                         .filters(f -> f.filter(tokenValidationFilter()).rewritePath("/kieslect-user/(?<path>.*)", "/${path}"))
                         .uri("lb://kieslect-user"))
                 .route("device_service", r -> r.path("/kieslect-device/**")
                         .filters(f -> f.filter(tokenValidationFilter()).rewritePath("/kieslect-device/(?<path>.*)", "/${path}"))
                         .uri("lb://kieslect-device"))
+                .route("weather_service", r -> r.path("/kieslect-weather/**")
+                        .filters(f -> f.filter(tokenValidationFilter()).rewritePath("/kieslect-weather/(?<path>.*)", "/${path}"))
+                        .uri("lb://kieslect-weather"))
                 .build();
     }
 
     @Bean
     public GatewayFilter tokenValidationFilter() {
         return (exchange, chain) -> {
-            String requestPath = exchange.getRequest().getPath().value();
+            // 获取客户端请求对象
+            ServerHttpRequest request = exchange.getRequest();
+            String clientIp = request.getRemoteAddress().getAddress().getHostAddress();
+
+            // 获取请求路径
+            String requestPath = request.getPath().value();
+
+
+            //输出日志
+            logger.info("客户端IP：" + clientIp + "，请求路径：" + requestPath);
+
 
             // 如果请求路径在白名单中，则直接放行
             if (isInWhiteList(requestPath)) {
@@ -96,7 +120,7 @@ public class GatewayConfig {
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         for (String path : WHITELIST) {
             if (antPathMatcher.match(path, requestPath)) {
-                System.out.println("匹配到白名单路径：" + path);
+                logger.info("匹配到白名单路径：" + path);
                 return true;
             }
         }

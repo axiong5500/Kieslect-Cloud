@@ -1014,6 +1014,30 @@ public final class KActivityProto {
      */
     com.kieslect.kdata.proto.dto.KActivityProto.DetailWeightOrBuilder getDetailWeightOrBuilder(
         int index);
+
+    /**
+     * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+     */
+    java.util.List<com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze> 
+        getDetailSleepAnalyzeList();
+    /**
+     * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+     */
+    com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze getDetailSleepAnalyze(int index);
+    /**
+     * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+     */
+    int getDetailSleepAnalyzeCount();
+    /**
+     * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+     */
+    java.util.List<? extends com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyzeOrBuilder> 
+        getDetailSleepAnalyzeOrBuilderList();
+    /**
+     * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+     */
+    com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyzeOrBuilder getDetailSleepAnalyzeOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code KActivityListData}
@@ -1044,6 +1068,7 @@ public final class KActivityProto {
       detailStress_ = java.util.Collections.emptyList();
       detailSleep_ = java.util.Collections.emptyList();
       detailWeight_ = java.util.Collections.emptyList();
+      detailSleepAnalyze_ = java.util.Collections.emptyList();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -1357,6 +1382,47 @@ public final class KActivityProto {
       return detailWeight_.get(index);
     }
 
+    public static final int DETAIL_SLEEP_ANALYZE_FIELD_NUMBER = 9;
+    @SuppressWarnings("serial")
+    private java.util.List<com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze> detailSleepAnalyze_;
+    /**
+     * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+     */
+    @java.lang.Override
+    public java.util.List<com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze> getDetailSleepAnalyzeList() {
+      return detailSleepAnalyze_;
+    }
+    /**
+     * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyzeOrBuilder> 
+        getDetailSleepAnalyzeOrBuilderList() {
+      return detailSleepAnalyze_;
+    }
+    /**
+     * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+     */
+    @java.lang.Override
+    public int getDetailSleepAnalyzeCount() {
+      return detailSleepAnalyze_.size();
+    }
+    /**
+     * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+     */
+    @java.lang.Override
+    public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze getDetailSleepAnalyze(int index) {
+      return detailSleepAnalyze_.get(index);
+    }
+    /**
+     * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+     */
+    @java.lang.Override
+    public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyzeOrBuilder getDetailSleepAnalyzeOrBuilder(
+        int index) {
+      return detailSleepAnalyze_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1394,6 +1460,9 @@ public final class KActivityProto {
       }
       for (int i = 0; i < detailWeight_.size(); i++) {
         output.writeMessage(8, detailWeight_.get(i));
+      }
+      for (int i = 0; i < detailSleepAnalyze_.size(); i++) {
+        output.writeMessage(9, detailSleepAnalyze_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -1436,6 +1505,10 @@ public final class KActivityProto {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(8, detailWeight_.get(i));
       }
+      for (int i = 0; i < detailSleepAnalyze_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, detailSleepAnalyze_.get(i));
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -1467,6 +1540,8 @@ public final class KActivityProto {
           .equals(other.getDetailSleepList())) return false;
       if (!getDetailWeightList()
           .equals(other.getDetailWeightList())) return false;
+      if (!getDetailSleepAnalyzeList()
+          .equals(other.getDetailSleepAnalyzeList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1508,6 +1583,10 @@ public final class KActivityProto {
       if (getDetailWeightCount() > 0) {
         hash = (37 * hash) + DETAIL_WEIGHT_FIELD_NUMBER;
         hash = (53 * hash) + getDetailWeightList().hashCode();
+      }
+      if (getDetailSleepAnalyzeCount() > 0) {
+        hash = (37 * hash) + DETAIL_SLEEP_ANALYZE_FIELD_NUMBER;
+        hash = (53 * hash) + getDetailSleepAnalyzeList().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -1690,6 +1769,13 @@ public final class KActivityProto {
           detailWeightBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000080);
+        if (detailSleepAnalyzeBuilder_ == null) {
+          detailSleepAnalyze_ = java.util.Collections.emptyList();
+        } else {
+          detailSleepAnalyze_ = null;
+          detailSleepAnalyzeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
 
@@ -1785,6 +1871,15 @@ public final class KActivityProto {
           result.detailWeight_ = detailWeight_;
         } else {
           result.detailWeight_ = detailWeightBuilder_.build();
+        }
+        if (detailSleepAnalyzeBuilder_ == null) {
+          if (((bitField0_ & 0x00000100) != 0)) {
+            detailSleepAnalyze_ = java.util.Collections.unmodifiableList(detailSleepAnalyze_);
+            bitField0_ = (bitField0_ & ~0x00000100);
+          }
+          result.detailSleepAnalyze_ = detailSleepAnalyze_;
+        } else {
+          result.detailSleepAnalyze_ = detailSleepAnalyzeBuilder_.build();
         }
       }
 
@@ -1992,6 +2087,32 @@ public final class KActivityProto {
             }
           }
         }
+        if (detailSleepAnalyzeBuilder_ == null) {
+          if (!other.detailSleepAnalyze_.isEmpty()) {
+            if (detailSleepAnalyze_.isEmpty()) {
+              detailSleepAnalyze_ = other.detailSleepAnalyze_;
+              bitField0_ = (bitField0_ & ~0x00000100);
+            } else {
+              ensureDetailSleepAnalyzeIsMutable();
+              detailSleepAnalyze_.addAll(other.detailSleepAnalyze_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.detailSleepAnalyze_.isEmpty()) {
+            if (detailSleepAnalyzeBuilder_.isEmpty()) {
+              detailSleepAnalyzeBuilder_.dispose();
+              detailSleepAnalyzeBuilder_ = null;
+              detailSleepAnalyze_ = other.detailSleepAnalyze_;
+              bitField0_ = (bitField0_ & ~0x00000100);
+              detailSleepAnalyzeBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getDetailSleepAnalyzeFieldBuilder() : null;
+            } else {
+              detailSleepAnalyzeBuilder_.addAllMessages(other.detailSleepAnalyze_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -2114,6 +2235,19 @@ public final class KActivityProto {
                 }
                 break;
               } // case 66
+              case 74: {
+                com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze m =
+                    input.readMessage(
+                        com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.parser(),
+                        extensionRegistry);
+                if (detailSleepAnalyzeBuilder_ == null) {
+                  ensureDetailSleepAnalyzeIsMutable();
+                  detailSleepAnalyze_.add(m);
+                } else {
+                  detailSleepAnalyzeBuilder_.addMessage(m);
+                }
+                break;
+              } // case 74
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -3841,6 +3975,246 @@ public final class KActivityProto {
           detailWeight_ = null;
         }
         return detailWeightBuilder_;
+      }
+
+      private java.util.List<com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze> detailSleepAnalyze_ =
+        java.util.Collections.emptyList();
+      private void ensureDetailSleepAnalyzeIsMutable() {
+        if (!((bitField0_ & 0x00000100) != 0)) {
+          detailSleepAnalyze_ = new java.util.ArrayList<com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze>(detailSleepAnalyze_);
+          bitField0_ |= 0x00000100;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyzeOrBuilder> detailSleepAnalyzeBuilder_;
+
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public java.util.List<com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze> getDetailSleepAnalyzeList() {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(detailSleepAnalyze_);
+        } else {
+          return detailSleepAnalyzeBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public int getDetailSleepAnalyzeCount() {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          return detailSleepAnalyze_.size();
+        } else {
+          return detailSleepAnalyzeBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze getDetailSleepAnalyze(int index) {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          return detailSleepAnalyze_.get(index);
+        } else {
+          return detailSleepAnalyzeBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public Builder setDetailSleepAnalyze(
+          int index, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze value) {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDetailSleepAnalyzeIsMutable();
+          detailSleepAnalyze_.set(index, value);
+          onChanged();
+        } else {
+          detailSleepAnalyzeBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public Builder setDetailSleepAnalyze(
+          int index, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder builderForValue) {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          ensureDetailSleepAnalyzeIsMutable();
+          detailSleepAnalyze_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          detailSleepAnalyzeBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public Builder addDetailSleepAnalyze(com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze value) {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDetailSleepAnalyzeIsMutable();
+          detailSleepAnalyze_.add(value);
+          onChanged();
+        } else {
+          detailSleepAnalyzeBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public Builder addDetailSleepAnalyze(
+          int index, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze value) {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDetailSleepAnalyzeIsMutable();
+          detailSleepAnalyze_.add(index, value);
+          onChanged();
+        } else {
+          detailSleepAnalyzeBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public Builder addDetailSleepAnalyze(
+          com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder builderForValue) {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          ensureDetailSleepAnalyzeIsMutable();
+          detailSleepAnalyze_.add(builderForValue.build());
+          onChanged();
+        } else {
+          detailSleepAnalyzeBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public Builder addDetailSleepAnalyze(
+          int index, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder builderForValue) {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          ensureDetailSleepAnalyzeIsMutable();
+          detailSleepAnalyze_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          detailSleepAnalyzeBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public Builder addAllDetailSleepAnalyze(
+          java.lang.Iterable<? extends com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze> values) {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          ensureDetailSleepAnalyzeIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, detailSleepAnalyze_);
+          onChanged();
+        } else {
+          detailSleepAnalyzeBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public Builder clearDetailSleepAnalyze() {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          detailSleepAnalyze_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000100);
+          onChanged();
+        } else {
+          detailSleepAnalyzeBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public Builder removeDetailSleepAnalyze(int index) {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          ensureDetailSleepAnalyzeIsMutable();
+          detailSleepAnalyze_.remove(index);
+          onChanged();
+        } else {
+          detailSleepAnalyzeBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder getDetailSleepAnalyzeBuilder(
+          int index) {
+        return getDetailSleepAnalyzeFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyzeOrBuilder getDetailSleepAnalyzeOrBuilder(
+          int index) {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          return detailSleepAnalyze_.get(index);  } else {
+          return detailSleepAnalyzeBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public java.util.List<? extends com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyzeOrBuilder> 
+           getDetailSleepAnalyzeOrBuilderList() {
+        if (detailSleepAnalyzeBuilder_ != null) {
+          return detailSleepAnalyzeBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(detailSleepAnalyze_);
+        }
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder addDetailSleepAnalyzeBuilder() {
+        return getDetailSleepAnalyzeFieldBuilder().addBuilder(
+            com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder addDetailSleepAnalyzeBuilder(
+          int index) {
+        return getDetailSleepAnalyzeFieldBuilder().addBuilder(
+            index, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .DetailSleepAnalyze detail_sleep_analyze = 9;</code>
+       */
+      public java.util.List<com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder> 
+           getDetailSleepAnalyzeBuilderList() {
+        return getDetailSleepAnalyzeFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyzeOrBuilder> 
+          getDetailSleepAnalyzeFieldBuilder() {
+        if (detailSleepAnalyzeBuilder_ == null) {
+          detailSleepAnalyzeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyzeOrBuilder>(
+                  detailSleepAnalyze_,
+                  ((bitField0_ & 0x00000100) != 0),
+                  getParentForChildren(),
+                  isClean());
+          detailSleepAnalyze_ = null;
+        }
+        return detailSleepAnalyzeBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:KActivityListData)
@@ -7855,11 +8229,17 @@ public final class KActivityProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <code>int64 date = 1;</code>
+     * @return The date.
+     */
+    long getDate();
+
+    /**
      * <pre>
      * 开始睡觉
      * </pre>
      *
-     * <code>int64 start_time = 1;</code>
+     * <code>int64 start_time = 2;</code>
      * @return The startTime.
      */
     long getStartTime();
@@ -7869,7 +8249,7 @@ public final class KActivityProto {
      * 结束睡觉
      * </pre>
      *
-     * <code>int64 end_time = 2;</code>
+     * <code>int64 end_time = 3;</code>
      * @return The endTime.
      */
     long getEndTime();
@@ -7879,7 +8259,7 @@ public final class KActivityProto {
      * 睡眠时长
      * </pre>
      *
-     * <code>int64 time = 3;</code>
+     * <code>int64 time = 4;</code>
      * @return The time.
      */
     long getTime();
@@ -7889,25 +8269,25 @@ public final class KActivityProto {
      * 睡眠类型 1 深睡，2浅睡，3清醒,4眼动
      * </pre>
      *
-     * <code>int32 code = 4;</code>
+     * <code>int32 code = 5;</code>
      * @return The code.
      */
     int getCode();
 
     /**
-     * <code>string mac = 5;</code>
+     * <code>string mac = 6;</code>
      * @return The mac.
      */
     java.lang.String getMac();
     /**
-     * <code>string mac = 5;</code>
+     * <code>string mac = 6;</code>
      * @return The bytes for mac.
      */
     com.google.protobuf.ByteString
         getMacBytes();
 
     /**
-     * <code>int64 only = 6;</code>
+     * <code>int64 only = 7;</code>
      * @return The only.
      */
     long getOnly();
@@ -7950,14 +8330,25 @@ public final class KActivityProto {
               com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep.class, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep.Builder.class);
     }
 
-    public static final int START_TIME_FIELD_NUMBER = 1;
+    public static final int DATE_FIELD_NUMBER = 1;
+    private long date_ = 0L;
+    /**
+     * <code>int64 date = 1;</code>
+     * @return The date.
+     */
+    @java.lang.Override
+    public long getDate() {
+      return date_;
+    }
+
+    public static final int START_TIME_FIELD_NUMBER = 2;
     private long startTime_ = 0L;
     /**
      * <pre>
      * 开始睡觉
      * </pre>
      *
-     * <code>int64 start_time = 1;</code>
+     * <code>int64 start_time = 2;</code>
      * @return The startTime.
      */
     @java.lang.Override
@@ -7965,14 +8356,14 @@ public final class KActivityProto {
       return startTime_;
     }
 
-    public static final int END_TIME_FIELD_NUMBER = 2;
+    public static final int END_TIME_FIELD_NUMBER = 3;
     private long endTime_ = 0L;
     /**
      * <pre>
      * 结束睡觉
      * </pre>
      *
-     * <code>int64 end_time = 2;</code>
+     * <code>int64 end_time = 3;</code>
      * @return The endTime.
      */
     @java.lang.Override
@@ -7980,14 +8371,14 @@ public final class KActivityProto {
       return endTime_;
     }
 
-    public static final int TIME_FIELD_NUMBER = 3;
+    public static final int TIME_FIELD_NUMBER = 4;
     private long time_ = 0L;
     /**
      * <pre>
      * 睡眠时长
      * </pre>
      *
-     * <code>int64 time = 3;</code>
+     * <code>int64 time = 4;</code>
      * @return The time.
      */
     @java.lang.Override
@@ -7995,14 +8386,14 @@ public final class KActivityProto {
       return time_;
     }
 
-    public static final int CODE_FIELD_NUMBER = 4;
+    public static final int CODE_FIELD_NUMBER = 5;
     private int code_ = 0;
     /**
      * <pre>
      * 睡眠类型 1 深睡，2浅睡，3清醒,4眼动
      * </pre>
      *
-     * <code>int32 code = 4;</code>
+     * <code>int32 code = 5;</code>
      * @return The code.
      */
     @java.lang.Override
@@ -8010,11 +8401,11 @@ public final class KActivityProto {
       return code_;
     }
 
-    public static final int MAC_FIELD_NUMBER = 5;
+    public static final int MAC_FIELD_NUMBER = 6;
     @SuppressWarnings("serial")
     private volatile java.lang.Object mac_ = "";
     /**
-     * <code>string mac = 5;</code>
+     * <code>string mac = 6;</code>
      * @return The mac.
      */
     @java.lang.Override
@@ -8031,7 +8422,7 @@ public final class KActivityProto {
       }
     }
     /**
-     * <code>string mac = 5;</code>
+     * <code>string mac = 6;</code>
      * @return The bytes for mac.
      */
     @java.lang.Override
@@ -8049,10 +8440,10 @@ public final class KActivityProto {
       }
     }
 
-    public static final int ONLY_FIELD_NUMBER = 6;
+    public static final int ONLY_FIELD_NUMBER = 7;
     private long only_ = 0L;
     /**
-     * <code>int64 only = 6;</code>
+     * <code>int64 only = 7;</code>
      * @return The only.
      */
     @java.lang.Override
@@ -8074,23 +8465,26 @@ public final class KActivityProto {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (date_ != 0L) {
+        output.writeInt64(1, date_);
+      }
       if (startTime_ != 0L) {
-        output.writeInt64(1, startTime_);
+        output.writeInt64(2, startTime_);
       }
       if (endTime_ != 0L) {
-        output.writeInt64(2, endTime_);
+        output.writeInt64(3, endTime_);
       }
       if (time_ != 0L) {
-        output.writeInt64(3, time_);
+        output.writeInt64(4, time_);
       }
       if (code_ != 0) {
-        output.writeInt32(4, code_);
+        output.writeInt32(5, code_);
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(mac_)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 5, mac_);
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, mac_);
       }
       if (only_ != 0L) {
-        output.writeInt64(6, only_);
+        output.writeInt64(7, only_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -8101,28 +8495,32 @@ public final class KActivityProto {
       if (size != -1) return size;
 
       size = 0;
+      if (date_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, date_);
+      }
       if (startTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, startTime_);
+          .computeInt64Size(2, startTime_);
       }
       if (endTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, endTime_);
+          .computeInt64Size(3, endTime_);
       }
       if (time_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, time_);
+          .computeInt64Size(4, time_);
       }
       if (code_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, code_);
+          .computeInt32Size(5, code_);
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(mac_)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, mac_);
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, mac_);
       }
       if (only_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(6, only_);
+          .computeInt64Size(7, only_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -8139,6 +8537,8 @@ public final class KActivityProto {
       }
       com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep other = (com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep) obj;
 
+      if (getDate()
+          != other.getDate()) return false;
       if (getStartTime()
           != other.getStartTime()) return false;
       if (getEndTime()
@@ -8162,6 +8562,9 @@ public final class KActivityProto {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getDate());
       hash = (37 * hash) + START_TIME_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getStartTime());
@@ -8309,6 +8712,7 @@ public final class KActivityProto {
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
+        date_ = 0L;
         startTime_ = 0L;
         endTime_ = 0L;
         time_ = 0L;
@@ -8349,21 +8753,24 @@ public final class KActivityProto {
       private void buildPartial0(com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.startTime_ = startTime_;
+          result.date_ = date_;
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.endTime_ = endTime_;
+          result.startTime_ = startTime_;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.time_ = time_;
+          result.endTime_ = endTime_;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.code_ = code_;
+          result.time_ = time_;
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.mac_ = mac_;
+          result.code_ = code_;
         }
         if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.mac_ = mac_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
           result.only_ = only_;
         }
       }
@@ -8380,6 +8787,9 @@ public final class KActivityProto {
 
       public Builder mergeFrom(com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep other) {
         if (other == com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep.getDefaultInstance()) return this;
+        if (other.getDate() != 0L) {
+          setDate(other.getDate());
+        }
         if (other.getStartTime() != 0L) {
           setStartTime(other.getStartTime());
         }
@@ -8394,8 +8804,1686 @@ public final class KActivityProto {
         }
         if (!other.getMac().isEmpty()) {
           mac_ = other.mac_;
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000020;
           onChanged();
+        }
+        if (other.getOnly() != 0L) {
+          setOnly(other.getOnly());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                date_ = input.readInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                startTime_ = input.readInt64();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                endTime_ = input.readInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 32: {
+                time_ = input.readInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 40: {
+                code_ = input.readInt32();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              case 50: {
+                mac_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 56: {
+                only_ = input.readInt64();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long date_ ;
+      /**
+       * <code>int64 date = 1;</code>
+       * @return The date.
+       */
+      @java.lang.Override
+      public long getDate() {
+        return date_;
+      }
+      /**
+       * <code>int64 date = 1;</code>
+       * @param value The date to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDate(long value) {
+
+        date_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 date = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDate() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        date_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long startTime_ ;
+      /**
+       * <pre>
+       * 开始睡觉
+       * </pre>
+       *
+       * <code>int64 start_time = 2;</code>
+       * @return The startTime.
+       */
+      @java.lang.Override
+      public long getStartTime() {
+        return startTime_;
+      }
+      /**
+       * <pre>
+       * 开始睡觉
+       * </pre>
+       *
+       * <code>int64 start_time = 2;</code>
+       * @param value The startTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStartTime(long value) {
+
+        startTime_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 开始睡觉
+       * </pre>
+       *
+       * <code>int64 start_time = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStartTime() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        startTime_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long endTime_ ;
+      /**
+       * <pre>
+       * 结束睡觉
+       * </pre>
+       *
+       * <code>int64 end_time = 3;</code>
+       * @return The endTime.
+       */
+      @java.lang.Override
+      public long getEndTime() {
+        return endTime_;
+      }
+      /**
+       * <pre>
+       * 结束睡觉
+       * </pre>
+       *
+       * <code>int64 end_time = 3;</code>
+       * @param value The endTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEndTime(long value) {
+
+        endTime_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 结束睡觉
+       * </pre>
+       *
+       * <code>int64 end_time = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEndTime() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        endTime_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long time_ ;
+      /**
+       * <pre>
+       * 睡眠时长
+       * </pre>
+       *
+       * <code>int64 time = 4;</code>
+       * @return The time.
+       */
+      @java.lang.Override
+      public long getTime() {
+        return time_;
+      }
+      /**
+       * <pre>
+       * 睡眠时长
+       * </pre>
+       *
+       * <code>int64 time = 4;</code>
+       * @param value The time to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTime(long value) {
+
+        time_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 睡眠时长
+       * </pre>
+       *
+       * <code>int64 time = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTime() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        time_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int code_ ;
+      /**
+       * <pre>
+       * 睡眠类型 1 深睡，2浅睡，3清醒,4眼动
+       * </pre>
+       *
+       * <code>int32 code = 5;</code>
+       * @return The code.
+       */
+      @java.lang.Override
+      public int getCode() {
+        return code_;
+      }
+      /**
+       * <pre>
+       * 睡眠类型 1 深睡，2浅睡，3清醒,4眼动
+       * </pre>
+       *
+       * <code>int32 code = 5;</code>
+       * @param value The code to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCode(int value) {
+
+        code_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 睡眠类型 1 深睡，2浅睡，3清醒,4眼动
+       * </pre>
+       *
+       * <code>int32 code = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCode() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        code_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object mac_ = "";
+      /**
+       * <code>string mac = 6;</code>
+       * @return The mac.
+       */
+      public java.lang.String getMac() {
+        java.lang.Object ref = mac_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          mac_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string mac = 6;</code>
+       * @return The bytes for mac.
+       */
+      public com.google.protobuf.ByteString
+          getMacBytes() {
+        java.lang.Object ref = mac_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          mac_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string mac = 6;</code>
+       * @param value The mac to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMac(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        mac_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string mac = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMac() {
+        mac_ = getDefaultInstance().getMac();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string mac = 6;</code>
+       * @param value The bytes for mac to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMacBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        mac_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private long only_ ;
+      /**
+       * <code>int64 only = 7;</code>
+       * @return The only.
+       */
+      @java.lang.Override
+      public long getOnly() {
+        return only_;
+      }
+      /**
+       * <code>int64 only = 7;</code>
+       * @param value The only to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOnly(long value) {
+
+        only_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 only = 7;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOnly() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        only_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:DetailSleep)
+    }
+
+    // @@protoc_insertion_point(class_scope:DetailSleep)
+    private static final com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep();
+    }
+
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<DetailSleep>
+        PARSER = new com.google.protobuf.AbstractParser<DetailSleep>() {
+      @java.lang.Override
+      public DetailSleep parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<DetailSleep> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DetailSleep> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface DetailSleepAnalyzeOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:DetailSleepAnalyze)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 开始睡觉
+     * </pre>
+     *
+     * <code>int64 start_time = 1;</code>
+     * @return The startTime.
+     */
+    long getStartTime();
+
+    /**
+     * <pre>
+     * 结束睡觉
+     * </pre>
+     *
+     * <code>int64 end_time = 2;</code>
+     * @return The endTime.
+     */
+    long getEndTime();
+
+    /**
+     * <pre>
+     * 1-Kieslect,2-IDO
+     * </pre>
+     *
+     * <code>int32 type = 3;</code>
+     * @return The type.
+     */
+    int getType();
+
+    /**
+     * <pre>
+     * 睡眠时间
+     * </pre>
+     *
+     * <code>int32 sleep_time = 4;</code>
+     * @return The sleepTime.
+     */
+    int getSleepTime();
+
+    /**
+     * <pre>
+     * 清醒时间
+     * </pre>
+     *
+     * <code>int32 wake_time = 5;</code>
+     * @return The wakeTime.
+     */
+    int getWakeTime();
+
+    /**
+     * <pre>
+     * 眼动时间
+     * </pre>
+     *
+     * <code>int32 rem_time = 6;</code>
+     * @return The remTime.
+     */
+    int getRemTime();
+
+    /**
+     * <pre>
+     * 深睡时间
+     * </pre>
+     *
+     * <code>int32 deep_time = 7;</code>
+     * @return The deepTime.
+     */
+    int getDeepTime();
+
+    /**
+     * <pre>
+     * 浅睡时间
+     * </pre>
+     *
+     * <code>int32 light_time = 8;</code>
+     * @return The lightTime.
+     */
+    int getLightTime();
+
+    /**
+     * <pre>
+     * 清醒次数
+     * </pre>
+     *
+     * <code>int32 wake_count = 9;</code>
+     * @return The wakeCount.
+     */
+    int getWakeCount();
+
+    /**
+     * <pre>
+     * 眼动次数
+     * </pre>
+     *
+     * <code>int32 rem_count = 10;</code>
+     * @return The remCount.
+     */
+    int getRemCount();
+
+    /**
+     * <pre>
+     * 深睡次数
+     * </pre>
+     *
+     * <code>int32 deep_count = 11;</code>
+     * @return The deepCount.
+     */
+    int getDeepCount();
+
+    /**
+     * <pre>
+     * 浅睡次数
+     * </pre>
+     *
+     * <code>int32 light_count = 12;</code>
+     * @return The lightCount.
+     */
+    int getLightCount();
+
+    /**
+     * <pre>
+     * 呼吸状况
+     * </pre>
+     *
+     * <code>int32 breath_status = 13;</code>
+     * @return The breathStatus.
+     */
+    int getBreathStatus();
+
+    /**
+     * <pre>
+     * 得分
+     * </pre>
+     *
+     * <code>int32 sleep_score = 14;</code>
+     * @return The sleepScore.
+     */
+    int getSleepScore();
+
+    /**
+     * <pre>
+     * 呼吸质量
+     * </pre>
+     *
+     * <code>int32 breath_quality = 15;</code>
+     * @return The breathQuality.
+     */
+    int getBreathQuality();
+
+    /**
+     * <pre>
+     * 心率平均
+     * </pre>
+     *
+     * <code>int32 sleep_avg_hr = 16;</code>
+     * @return The sleepAvgHr.
+     */
+    int getSleepAvgHr();
+
+    /**
+     * <pre>
+     * 血氧平均
+     * </pre>
+     *
+     * <code>int32 sleep_avg_spo2 = 17;</code>
+     * @return The sleepAvgSpo2.
+     */
+    int getSleepAvgSpo2();
+
+    /**
+     * <pre>
+     * 呼吸平均
+     * </pre>
+     *
+     * <code>int32 sleep_avg_breath = 18;</code>
+     * @return The sleepAvgBreath.
+     */
+    int getSleepAvgBreath();
+
+    /**
+     * <pre>
+     * 详情数
+     * </pre>
+     *
+     * <code>int32 count = 19;</code>
+     * @return The count.
+     */
+    int getCount();
+
+    /**
+     * <code>string mac = 20;</code>
+     * @return The mac.
+     */
+    java.lang.String getMac();
+    /**
+     * <code>string mac = 20;</code>
+     * @return The bytes for mac.
+     */
+    com.google.protobuf.ByteString
+        getMacBytes();
+
+    /**
+     * <pre>
+     * 超过人数0-100
+     * </pre>
+     *
+     * <code>int32 exceed_user = 21;</code>
+     * @return The exceedUser.
+     */
+    int getExceedUser();
+
+    /**
+     * <code>int64 only = 22;</code>
+     * @return The only.
+     */
+    long getOnly();
+  }
+  /**
+   * Protobuf type {@code DetailSleepAnalyze}
+   */
+  public static final class DetailSleepAnalyze extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:DetailSleepAnalyze)
+      DetailSleepAnalyzeOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 26,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        DetailSleepAnalyze.class.getName());
+    }
+    // Use DetailSleepAnalyze.newBuilder() to construct.
+    private DetailSleepAnalyze(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private DetailSleepAnalyze() {
+      mac_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.kieslect.kdata.proto.dto.KActivityProto.internal_static_DetailSleepAnalyze_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.kieslect.kdata.proto.dto.KActivityProto.internal_static_DetailSleepAnalyze_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.class, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder.class);
+    }
+
+    public static final int START_TIME_FIELD_NUMBER = 1;
+    private long startTime_ = 0L;
+    /**
+     * <pre>
+     * 开始睡觉
+     * </pre>
+     *
+     * <code>int64 start_time = 1;</code>
+     * @return The startTime.
+     */
+    @java.lang.Override
+    public long getStartTime() {
+      return startTime_;
+    }
+
+    public static final int END_TIME_FIELD_NUMBER = 2;
+    private long endTime_ = 0L;
+    /**
+     * <pre>
+     * 结束睡觉
+     * </pre>
+     *
+     * <code>int64 end_time = 2;</code>
+     * @return The endTime.
+     */
+    @java.lang.Override
+    public long getEndTime() {
+      return endTime_;
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 3;
+    private int type_ = 0;
+    /**
+     * <pre>
+     * 1-Kieslect,2-IDO
+     * </pre>
+     *
+     * <code>int32 type = 3;</code>
+     * @return The type.
+     */
+    @java.lang.Override
+    public int getType() {
+      return type_;
+    }
+
+    public static final int SLEEP_TIME_FIELD_NUMBER = 4;
+    private int sleepTime_ = 0;
+    /**
+     * <pre>
+     * 睡眠时间
+     * </pre>
+     *
+     * <code>int32 sleep_time = 4;</code>
+     * @return The sleepTime.
+     */
+    @java.lang.Override
+    public int getSleepTime() {
+      return sleepTime_;
+    }
+
+    public static final int WAKE_TIME_FIELD_NUMBER = 5;
+    private int wakeTime_ = 0;
+    /**
+     * <pre>
+     * 清醒时间
+     * </pre>
+     *
+     * <code>int32 wake_time = 5;</code>
+     * @return The wakeTime.
+     */
+    @java.lang.Override
+    public int getWakeTime() {
+      return wakeTime_;
+    }
+
+    public static final int REM_TIME_FIELD_NUMBER = 6;
+    private int remTime_ = 0;
+    /**
+     * <pre>
+     * 眼动时间
+     * </pre>
+     *
+     * <code>int32 rem_time = 6;</code>
+     * @return The remTime.
+     */
+    @java.lang.Override
+    public int getRemTime() {
+      return remTime_;
+    }
+
+    public static final int DEEP_TIME_FIELD_NUMBER = 7;
+    private int deepTime_ = 0;
+    /**
+     * <pre>
+     * 深睡时间
+     * </pre>
+     *
+     * <code>int32 deep_time = 7;</code>
+     * @return The deepTime.
+     */
+    @java.lang.Override
+    public int getDeepTime() {
+      return deepTime_;
+    }
+
+    public static final int LIGHT_TIME_FIELD_NUMBER = 8;
+    private int lightTime_ = 0;
+    /**
+     * <pre>
+     * 浅睡时间
+     * </pre>
+     *
+     * <code>int32 light_time = 8;</code>
+     * @return The lightTime.
+     */
+    @java.lang.Override
+    public int getLightTime() {
+      return lightTime_;
+    }
+
+    public static final int WAKE_COUNT_FIELD_NUMBER = 9;
+    private int wakeCount_ = 0;
+    /**
+     * <pre>
+     * 清醒次数
+     * </pre>
+     *
+     * <code>int32 wake_count = 9;</code>
+     * @return The wakeCount.
+     */
+    @java.lang.Override
+    public int getWakeCount() {
+      return wakeCount_;
+    }
+
+    public static final int REM_COUNT_FIELD_NUMBER = 10;
+    private int remCount_ = 0;
+    /**
+     * <pre>
+     * 眼动次数
+     * </pre>
+     *
+     * <code>int32 rem_count = 10;</code>
+     * @return The remCount.
+     */
+    @java.lang.Override
+    public int getRemCount() {
+      return remCount_;
+    }
+
+    public static final int DEEP_COUNT_FIELD_NUMBER = 11;
+    private int deepCount_ = 0;
+    /**
+     * <pre>
+     * 深睡次数
+     * </pre>
+     *
+     * <code>int32 deep_count = 11;</code>
+     * @return The deepCount.
+     */
+    @java.lang.Override
+    public int getDeepCount() {
+      return deepCount_;
+    }
+
+    public static final int LIGHT_COUNT_FIELD_NUMBER = 12;
+    private int lightCount_ = 0;
+    /**
+     * <pre>
+     * 浅睡次数
+     * </pre>
+     *
+     * <code>int32 light_count = 12;</code>
+     * @return The lightCount.
+     */
+    @java.lang.Override
+    public int getLightCount() {
+      return lightCount_;
+    }
+
+    public static final int BREATH_STATUS_FIELD_NUMBER = 13;
+    private int breathStatus_ = 0;
+    /**
+     * <pre>
+     * 呼吸状况
+     * </pre>
+     *
+     * <code>int32 breath_status = 13;</code>
+     * @return The breathStatus.
+     */
+    @java.lang.Override
+    public int getBreathStatus() {
+      return breathStatus_;
+    }
+
+    public static final int SLEEP_SCORE_FIELD_NUMBER = 14;
+    private int sleepScore_ = 0;
+    /**
+     * <pre>
+     * 得分
+     * </pre>
+     *
+     * <code>int32 sleep_score = 14;</code>
+     * @return The sleepScore.
+     */
+    @java.lang.Override
+    public int getSleepScore() {
+      return sleepScore_;
+    }
+
+    public static final int BREATH_QUALITY_FIELD_NUMBER = 15;
+    private int breathQuality_ = 0;
+    /**
+     * <pre>
+     * 呼吸质量
+     * </pre>
+     *
+     * <code>int32 breath_quality = 15;</code>
+     * @return The breathQuality.
+     */
+    @java.lang.Override
+    public int getBreathQuality() {
+      return breathQuality_;
+    }
+
+    public static final int SLEEP_AVG_HR_FIELD_NUMBER = 16;
+    private int sleepAvgHr_ = 0;
+    /**
+     * <pre>
+     * 心率平均
+     * </pre>
+     *
+     * <code>int32 sleep_avg_hr = 16;</code>
+     * @return The sleepAvgHr.
+     */
+    @java.lang.Override
+    public int getSleepAvgHr() {
+      return sleepAvgHr_;
+    }
+
+    public static final int SLEEP_AVG_SPO2_FIELD_NUMBER = 17;
+    private int sleepAvgSpo2_ = 0;
+    /**
+     * <pre>
+     * 血氧平均
+     * </pre>
+     *
+     * <code>int32 sleep_avg_spo2 = 17;</code>
+     * @return The sleepAvgSpo2.
+     */
+    @java.lang.Override
+    public int getSleepAvgSpo2() {
+      return sleepAvgSpo2_;
+    }
+
+    public static final int SLEEP_AVG_BREATH_FIELD_NUMBER = 18;
+    private int sleepAvgBreath_ = 0;
+    /**
+     * <pre>
+     * 呼吸平均
+     * </pre>
+     *
+     * <code>int32 sleep_avg_breath = 18;</code>
+     * @return The sleepAvgBreath.
+     */
+    @java.lang.Override
+    public int getSleepAvgBreath() {
+      return sleepAvgBreath_;
+    }
+
+    public static final int COUNT_FIELD_NUMBER = 19;
+    private int count_ = 0;
+    /**
+     * <pre>
+     * 详情数
+     * </pre>
+     *
+     * <code>int32 count = 19;</code>
+     * @return The count.
+     */
+    @java.lang.Override
+    public int getCount() {
+      return count_;
+    }
+
+    public static final int MAC_FIELD_NUMBER = 20;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object mac_ = "";
+    /**
+     * <code>string mac = 20;</code>
+     * @return The mac.
+     */
+    @java.lang.Override
+    public java.lang.String getMac() {
+      java.lang.Object ref = mac_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        mac_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string mac = 20;</code>
+     * @return The bytes for mac.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMacBytes() {
+      java.lang.Object ref = mac_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        mac_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EXCEED_USER_FIELD_NUMBER = 21;
+    private int exceedUser_ = 0;
+    /**
+     * <pre>
+     * 超过人数0-100
+     * </pre>
+     *
+     * <code>int32 exceed_user = 21;</code>
+     * @return The exceedUser.
+     */
+    @java.lang.Override
+    public int getExceedUser() {
+      return exceedUser_;
+    }
+
+    public static final int ONLY_FIELD_NUMBER = 22;
+    private long only_ = 0L;
+    /**
+     * <code>int64 only = 22;</code>
+     * @return The only.
+     */
+    @java.lang.Override
+    public long getOnly() {
+      return only_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (startTime_ != 0L) {
+        output.writeInt64(1, startTime_);
+      }
+      if (endTime_ != 0L) {
+        output.writeInt64(2, endTime_);
+      }
+      if (type_ != 0) {
+        output.writeInt32(3, type_);
+      }
+      if (sleepTime_ != 0) {
+        output.writeInt32(4, sleepTime_);
+      }
+      if (wakeTime_ != 0) {
+        output.writeInt32(5, wakeTime_);
+      }
+      if (remTime_ != 0) {
+        output.writeInt32(6, remTime_);
+      }
+      if (deepTime_ != 0) {
+        output.writeInt32(7, deepTime_);
+      }
+      if (lightTime_ != 0) {
+        output.writeInt32(8, lightTime_);
+      }
+      if (wakeCount_ != 0) {
+        output.writeInt32(9, wakeCount_);
+      }
+      if (remCount_ != 0) {
+        output.writeInt32(10, remCount_);
+      }
+      if (deepCount_ != 0) {
+        output.writeInt32(11, deepCount_);
+      }
+      if (lightCount_ != 0) {
+        output.writeInt32(12, lightCount_);
+      }
+      if (breathStatus_ != 0) {
+        output.writeInt32(13, breathStatus_);
+      }
+      if (sleepScore_ != 0) {
+        output.writeInt32(14, sleepScore_);
+      }
+      if (breathQuality_ != 0) {
+        output.writeInt32(15, breathQuality_);
+      }
+      if (sleepAvgHr_ != 0) {
+        output.writeInt32(16, sleepAvgHr_);
+      }
+      if (sleepAvgSpo2_ != 0) {
+        output.writeInt32(17, sleepAvgSpo2_);
+      }
+      if (sleepAvgBreath_ != 0) {
+        output.writeInt32(18, sleepAvgBreath_);
+      }
+      if (count_ != 0) {
+        output.writeInt32(19, count_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(mac_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 20, mac_);
+      }
+      if (exceedUser_ != 0) {
+        output.writeInt32(21, exceedUser_);
+      }
+      if (only_ != 0L) {
+        output.writeInt64(22, only_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (startTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, startTime_);
+      }
+      if (endTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(2, endTime_);
+      }
+      if (type_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, type_);
+      }
+      if (sleepTime_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, sleepTime_);
+      }
+      if (wakeTime_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, wakeTime_);
+      }
+      if (remTime_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, remTime_);
+      }
+      if (deepTime_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(7, deepTime_);
+      }
+      if (lightTime_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, lightTime_);
+      }
+      if (wakeCount_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(9, wakeCount_);
+      }
+      if (remCount_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(10, remCount_);
+      }
+      if (deepCount_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(11, deepCount_);
+      }
+      if (lightCount_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(12, lightCount_);
+      }
+      if (breathStatus_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(13, breathStatus_);
+      }
+      if (sleepScore_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(14, sleepScore_);
+      }
+      if (breathQuality_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(15, breathQuality_);
+      }
+      if (sleepAvgHr_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(16, sleepAvgHr_);
+      }
+      if (sleepAvgSpo2_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(17, sleepAvgSpo2_);
+      }
+      if (sleepAvgBreath_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(18, sleepAvgBreath_);
+      }
+      if (count_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(19, count_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(mac_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(20, mac_);
+      }
+      if (exceedUser_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(21, exceedUser_);
+      }
+      if (only_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(22, only_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze)) {
+        return super.equals(obj);
+      }
+      com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze other = (com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze) obj;
+
+      if (getStartTime()
+          != other.getStartTime()) return false;
+      if (getEndTime()
+          != other.getEndTime()) return false;
+      if (getType()
+          != other.getType()) return false;
+      if (getSleepTime()
+          != other.getSleepTime()) return false;
+      if (getWakeTime()
+          != other.getWakeTime()) return false;
+      if (getRemTime()
+          != other.getRemTime()) return false;
+      if (getDeepTime()
+          != other.getDeepTime()) return false;
+      if (getLightTime()
+          != other.getLightTime()) return false;
+      if (getWakeCount()
+          != other.getWakeCount()) return false;
+      if (getRemCount()
+          != other.getRemCount()) return false;
+      if (getDeepCount()
+          != other.getDeepCount()) return false;
+      if (getLightCount()
+          != other.getLightCount()) return false;
+      if (getBreathStatus()
+          != other.getBreathStatus()) return false;
+      if (getSleepScore()
+          != other.getSleepScore()) return false;
+      if (getBreathQuality()
+          != other.getBreathQuality()) return false;
+      if (getSleepAvgHr()
+          != other.getSleepAvgHr()) return false;
+      if (getSleepAvgSpo2()
+          != other.getSleepAvgSpo2()) return false;
+      if (getSleepAvgBreath()
+          != other.getSleepAvgBreath()) return false;
+      if (getCount()
+          != other.getCount()) return false;
+      if (!getMac()
+          .equals(other.getMac())) return false;
+      if (getExceedUser()
+          != other.getExceedUser()) return false;
+      if (getOnly()
+          != other.getOnly()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + START_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getStartTime());
+      hash = (37 * hash) + END_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getEndTime());
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getType();
+      hash = (37 * hash) + SLEEP_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + getSleepTime();
+      hash = (37 * hash) + WAKE_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + getWakeTime();
+      hash = (37 * hash) + REM_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + getRemTime();
+      hash = (37 * hash) + DEEP_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + getDeepTime();
+      hash = (37 * hash) + LIGHT_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + getLightTime();
+      hash = (37 * hash) + WAKE_COUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getWakeCount();
+      hash = (37 * hash) + REM_COUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getRemCount();
+      hash = (37 * hash) + DEEP_COUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getDeepCount();
+      hash = (37 * hash) + LIGHT_COUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getLightCount();
+      hash = (37 * hash) + BREATH_STATUS_FIELD_NUMBER;
+      hash = (53 * hash) + getBreathStatus();
+      hash = (37 * hash) + SLEEP_SCORE_FIELD_NUMBER;
+      hash = (53 * hash) + getSleepScore();
+      hash = (37 * hash) + BREATH_QUALITY_FIELD_NUMBER;
+      hash = (53 * hash) + getBreathQuality();
+      hash = (37 * hash) + SLEEP_AVG_HR_FIELD_NUMBER;
+      hash = (53 * hash) + getSleepAvgHr();
+      hash = (37 * hash) + SLEEP_AVG_SPO2_FIELD_NUMBER;
+      hash = (53 * hash) + getSleepAvgSpo2();
+      hash = (37 * hash) + SLEEP_AVG_BREATH_FIELD_NUMBER;
+      hash = (53 * hash) + getSleepAvgBreath();
+      hash = (37 * hash) + COUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getCount();
+      hash = (37 * hash) + MAC_FIELD_NUMBER;
+      hash = (53 * hash) + getMac().hashCode();
+      hash = (37 * hash) + EXCEED_USER_FIELD_NUMBER;
+      hash = (53 * hash) + getExceedUser();
+      hash = (37 * hash) + ONLY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getOnly());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code DetailSleepAnalyze}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:DetailSleepAnalyze)
+        com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyzeOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.kieslect.kdata.proto.dto.KActivityProto.internal_static_DetailSleepAnalyze_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.kieslect.kdata.proto.dto.KActivityProto.internal_static_DetailSleepAnalyze_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.class, com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.Builder.class);
+      }
+
+      // Construct using com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        startTime_ = 0L;
+        endTime_ = 0L;
+        type_ = 0;
+        sleepTime_ = 0;
+        wakeTime_ = 0;
+        remTime_ = 0;
+        deepTime_ = 0;
+        lightTime_ = 0;
+        wakeCount_ = 0;
+        remCount_ = 0;
+        deepCount_ = 0;
+        lightCount_ = 0;
+        breathStatus_ = 0;
+        sleepScore_ = 0;
+        breathQuality_ = 0;
+        sleepAvgHr_ = 0;
+        sleepAvgSpo2_ = 0;
+        sleepAvgBreath_ = 0;
+        count_ = 0;
+        mac_ = "";
+        exceedUser_ = 0;
+        only_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.kieslect.kdata.proto.dto.KActivityProto.internal_static_DetailSleepAnalyze_descriptor;
+      }
+
+      @java.lang.Override
+      public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze getDefaultInstanceForType() {
+        return com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze build() {
+        com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze buildPartial() {
+        com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze result = new com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.startTime_ = startTime_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.endTime_ = endTime_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.type_ = type_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.sleepTime_ = sleepTime_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.wakeTime_ = wakeTime_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.remTime_ = remTime_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.deepTime_ = deepTime_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.lightTime_ = lightTime_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.wakeCount_ = wakeCount_;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.remCount_ = remCount_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.deepCount_ = deepCount_;
+        }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.lightCount_ = lightCount_;
+        }
+        if (((from_bitField0_ & 0x00001000) != 0)) {
+          result.breathStatus_ = breathStatus_;
+        }
+        if (((from_bitField0_ & 0x00002000) != 0)) {
+          result.sleepScore_ = sleepScore_;
+        }
+        if (((from_bitField0_ & 0x00004000) != 0)) {
+          result.breathQuality_ = breathQuality_;
+        }
+        if (((from_bitField0_ & 0x00008000) != 0)) {
+          result.sleepAvgHr_ = sleepAvgHr_;
+        }
+        if (((from_bitField0_ & 0x00010000) != 0)) {
+          result.sleepAvgSpo2_ = sleepAvgSpo2_;
+        }
+        if (((from_bitField0_ & 0x00020000) != 0)) {
+          result.sleepAvgBreath_ = sleepAvgBreath_;
+        }
+        if (((from_bitField0_ & 0x00040000) != 0)) {
+          result.count_ = count_;
+        }
+        if (((from_bitField0_ & 0x00080000) != 0)) {
+          result.mac_ = mac_;
+        }
+        if (((from_bitField0_ & 0x00100000) != 0)) {
+          result.exceedUser_ = exceedUser_;
+        }
+        if (((from_bitField0_ & 0x00200000) != 0)) {
+          result.only_ = only_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze) {
+          return mergeFrom((com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze other) {
+        if (other == com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze.getDefaultInstance()) return this;
+        if (other.getStartTime() != 0L) {
+          setStartTime(other.getStartTime());
+        }
+        if (other.getEndTime() != 0L) {
+          setEndTime(other.getEndTime());
+        }
+        if (other.getType() != 0) {
+          setType(other.getType());
+        }
+        if (other.getSleepTime() != 0) {
+          setSleepTime(other.getSleepTime());
+        }
+        if (other.getWakeTime() != 0) {
+          setWakeTime(other.getWakeTime());
+        }
+        if (other.getRemTime() != 0) {
+          setRemTime(other.getRemTime());
+        }
+        if (other.getDeepTime() != 0) {
+          setDeepTime(other.getDeepTime());
+        }
+        if (other.getLightTime() != 0) {
+          setLightTime(other.getLightTime());
+        }
+        if (other.getWakeCount() != 0) {
+          setWakeCount(other.getWakeCount());
+        }
+        if (other.getRemCount() != 0) {
+          setRemCount(other.getRemCount());
+        }
+        if (other.getDeepCount() != 0) {
+          setDeepCount(other.getDeepCount());
+        }
+        if (other.getLightCount() != 0) {
+          setLightCount(other.getLightCount());
+        }
+        if (other.getBreathStatus() != 0) {
+          setBreathStatus(other.getBreathStatus());
+        }
+        if (other.getSleepScore() != 0) {
+          setSleepScore(other.getSleepScore());
+        }
+        if (other.getBreathQuality() != 0) {
+          setBreathQuality(other.getBreathQuality());
+        }
+        if (other.getSleepAvgHr() != 0) {
+          setSleepAvgHr(other.getSleepAvgHr());
+        }
+        if (other.getSleepAvgSpo2() != 0) {
+          setSleepAvgSpo2(other.getSleepAvgSpo2());
+        }
+        if (other.getSleepAvgBreath() != 0) {
+          setSleepAvgBreath(other.getSleepAvgBreath());
+        }
+        if (other.getCount() != 0) {
+          setCount(other.getCount());
+        }
+        if (!other.getMac().isEmpty()) {
+          mac_ = other.mac_;
+          bitField0_ |= 0x00080000;
+          onChanged();
+        }
+        if (other.getExceedUser() != 0) {
+          setExceedUser(other.getExceedUser());
         }
         if (other.getOnly() != 0L) {
           setOnly(other.getOnly());
@@ -8437,25 +10525,105 @@ public final class KActivityProto {
                 break;
               } // case 16
               case 24: {
-                time_ = input.readInt64();
+                type_ = input.readInt32();
                 bitField0_ |= 0x00000004;
                 break;
               } // case 24
               case 32: {
-                code_ = input.readInt32();
+                sleepTime_ = input.readInt32();
                 bitField0_ |= 0x00000008;
                 break;
               } // case 32
-              case 42: {
-                mac_ = input.readStringRequireUtf8();
+              case 40: {
+                wakeTime_ = input.readInt32();
                 bitField0_ |= 0x00000010;
                 break;
-              } // case 42
+              } // case 40
               case 48: {
-                only_ = input.readInt64();
+                remTime_ = input.readInt32();
                 bitField0_ |= 0x00000020;
                 break;
               } // case 48
+              case 56: {
+                deepTime_ = input.readInt32();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
+              case 64: {
+                lightTime_ = input.readInt32();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
+              case 72: {
+                wakeCount_ = input.readInt32();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
+              case 80: {
+                remCount_ = input.readInt32();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 80
+              case 88: {
+                deepCount_ = input.readInt32();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 88
+              case 96: {
+                lightCount_ = input.readInt32();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 96
+              case 104: {
+                breathStatus_ = input.readInt32();
+                bitField0_ |= 0x00001000;
+                break;
+              } // case 104
+              case 112: {
+                sleepScore_ = input.readInt32();
+                bitField0_ |= 0x00002000;
+                break;
+              } // case 112
+              case 120: {
+                breathQuality_ = input.readInt32();
+                bitField0_ |= 0x00004000;
+                break;
+              } // case 120
+              case 128: {
+                sleepAvgHr_ = input.readInt32();
+                bitField0_ |= 0x00008000;
+                break;
+              } // case 128
+              case 136: {
+                sleepAvgSpo2_ = input.readInt32();
+                bitField0_ |= 0x00010000;
+                break;
+              } // case 136
+              case 144: {
+                sleepAvgBreath_ = input.readInt32();
+                bitField0_ |= 0x00020000;
+                break;
+              } // case 144
+              case 152: {
+                count_ = input.readInt32();
+                bitField0_ |= 0x00040000;
+                break;
+              } // case 152
+              case 162: {
+                mac_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00080000;
+                break;
+              } // case 162
+              case 168: {
+                exceedUser_ = input.readInt32();
+                bitField0_ |= 0x00100000;
+                break;
+              } // case 168
+              case 176: {
+                only_ = input.readInt64();
+                bitField0_ |= 0x00200000;
+                break;
+              } // case 176
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -8561,97 +10729,757 @@ public final class KActivityProto {
         return this;
       }
 
-      private long time_ ;
+      private int type_ ;
       /**
        * <pre>
-       * 睡眠时长
+       * 1-Kieslect,2-IDO
        * </pre>
        *
-       * <code>int64 time = 3;</code>
-       * @return The time.
+       * <code>int32 type = 3;</code>
+       * @return The type.
        */
       @java.lang.Override
-      public long getTime() {
-        return time_;
+      public int getType() {
+        return type_;
       }
       /**
        * <pre>
-       * 睡眠时长
+       * 1-Kieslect,2-IDO
        * </pre>
        *
-       * <code>int64 time = 3;</code>
-       * @param value The time to set.
+       * <code>int32 type = 3;</code>
+       * @param value The type to set.
        * @return This builder for chaining.
        */
-      public Builder setTime(long value) {
+      public Builder setType(int value) {
 
-        time_ = value;
+        type_ = value;
         bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 睡眠时长
+       * 1-Kieslect,2-IDO
        * </pre>
        *
-       * <code>int64 time = 3;</code>
+       * <code>int32 type = 3;</code>
        * @return This builder for chaining.
        */
-      public Builder clearTime() {
+      public Builder clearType() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        time_ = 0L;
+        type_ = 0;
         onChanged();
         return this;
       }
 
-      private int code_ ;
+      private int sleepTime_ ;
       /**
        * <pre>
-       * 睡眠类型 1 深睡，2浅睡，3清醒,4眼动
+       * 睡眠时间
        * </pre>
        *
-       * <code>int32 code = 4;</code>
-       * @return The code.
+       * <code>int32 sleep_time = 4;</code>
+       * @return The sleepTime.
        */
       @java.lang.Override
-      public int getCode() {
-        return code_;
+      public int getSleepTime() {
+        return sleepTime_;
       }
       /**
        * <pre>
-       * 睡眠类型 1 深睡，2浅睡，3清醒,4眼动
+       * 睡眠时间
        * </pre>
        *
-       * <code>int32 code = 4;</code>
-       * @param value The code to set.
+       * <code>int32 sleep_time = 4;</code>
+       * @param value The sleepTime to set.
        * @return This builder for chaining.
        */
-      public Builder setCode(int value) {
+      public Builder setSleepTime(int value) {
 
-        code_ = value;
+        sleepTime_ = value;
         bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 睡眠类型 1 深睡，2浅睡，3清醒,4眼动
+       * 睡眠时间
        * </pre>
        *
-       * <code>int32 code = 4;</code>
+       * <code>int32 sleep_time = 4;</code>
        * @return This builder for chaining.
        */
-      public Builder clearCode() {
+      public Builder clearSleepTime() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        code_ = 0;
+        sleepTime_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int wakeTime_ ;
+      /**
+       * <pre>
+       * 清醒时间
+       * </pre>
+       *
+       * <code>int32 wake_time = 5;</code>
+       * @return The wakeTime.
+       */
+      @java.lang.Override
+      public int getWakeTime() {
+        return wakeTime_;
+      }
+      /**
+       * <pre>
+       * 清醒时间
+       * </pre>
+       *
+       * <code>int32 wake_time = 5;</code>
+       * @param value The wakeTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWakeTime(int value) {
+
+        wakeTime_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 清醒时间
+       * </pre>
+       *
+       * <code>int32 wake_time = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWakeTime() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        wakeTime_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int remTime_ ;
+      /**
+       * <pre>
+       * 眼动时间
+       * </pre>
+       *
+       * <code>int32 rem_time = 6;</code>
+       * @return The remTime.
+       */
+      @java.lang.Override
+      public int getRemTime() {
+        return remTime_;
+      }
+      /**
+       * <pre>
+       * 眼动时间
+       * </pre>
+       *
+       * <code>int32 rem_time = 6;</code>
+       * @param value The remTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRemTime(int value) {
+
+        remTime_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 眼动时间
+       * </pre>
+       *
+       * <code>int32 rem_time = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRemTime() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        remTime_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int deepTime_ ;
+      /**
+       * <pre>
+       * 深睡时间
+       * </pre>
+       *
+       * <code>int32 deep_time = 7;</code>
+       * @return The deepTime.
+       */
+      @java.lang.Override
+      public int getDeepTime() {
+        return deepTime_;
+      }
+      /**
+       * <pre>
+       * 深睡时间
+       * </pre>
+       *
+       * <code>int32 deep_time = 7;</code>
+       * @param value The deepTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeepTime(int value) {
+
+        deepTime_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 深睡时间
+       * </pre>
+       *
+       * <code>int32 deep_time = 7;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDeepTime() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        deepTime_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int lightTime_ ;
+      /**
+       * <pre>
+       * 浅睡时间
+       * </pre>
+       *
+       * <code>int32 light_time = 8;</code>
+       * @return The lightTime.
+       */
+      @java.lang.Override
+      public int getLightTime() {
+        return lightTime_;
+      }
+      /**
+       * <pre>
+       * 浅睡时间
+       * </pre>
+       *
+       * <code>int32 light_time = 8;</code>
+       * @param value The lightTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLightTime(int value) {
+
+        lightTime_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 浅睡时间
+       * </pre>
+       *
+       * <code>int32 light_time = 8;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLightTime() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        lightTime_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int wakeCount_ ;
+      /**
+       * <pre>
+       * 清醒次数
+       * </pre>
+       *
+       * <code>int32 wake_count = 9;</code>
+       * @return The wakeCount.
+       */
+      @java.lang.Override
+      public int getWakeCount() {
+        return wakeCount_;
+      }
+      /**
+       * <pre>
+       * 清醒次数
+       * </pre>
+       *
+       * <code>int32 wake_count = 9;</code>
+       * @param value The wakeCount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWakeCount(int value) {
+
+        wakeCount_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 清醒次数
+       * </pre>
+       *
+       * <code>int32 wake_count = 9;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWakeCount() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        wakeCount_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int remCount_ ;
+      /**
+       * <pre>
+       * 眼动次数
+       * </pre>
+       *
+       * <code>int32 rem_count = 10;</code>
+       * @return The remCount.
+       */
+      @java.lang.Override
+      public int getRemCount() {
+        return remCount_;
+      }
+      /**
+       * <pre>
+       * 眼动次数
+       * </pre>
+       *
+       * <code>int32 rem_count = 10;</code>
+       * @param value The remCount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRemCount(int value) {
+
+        remCount_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 眼动次数
+       * </pre>
+       *
+       * <code>int32 rem_count = 10;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRemCount() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        remCount_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int deepCount_ ;
+      /**
+       * <pre>
+       * 深睡次数
+       * </pre>
+       *
+       * <code>int32 deep_count = 11;</code>
+       * @return The deepCount.
+       */
+      @java.lang.Override
+      public int getDeepCount() {
+        return deepCount_;
+      }
+      /**
+       * <pre>
+       * 深睡次数
+       * </pre>
+       *
+       * <code>int32 deep_count = 11;</code>
+       * @param value The deepCount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeepCount(int value) {
+
+        deepCount_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 深睡次数
+       * </pre>
+       *
+       * <code>int32 deep_count = 11;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDeepCount() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        deepCount_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int lightCount_ ;
+      /**
+       * <pre>
+       * 浅睡次数
+       * </pre>
+       *
+       * <code>int32 light_count = 12;</code>
+       * @return The lightCount.
+       */
+      @java.lang.Override
+      public int getLightCount() {
+        return lightCount_;
+      }
+      /**
+       * <pre>
+       * 浅睡次数
+       * </pre>
+       *
+       * <code>int32 light_count = 12;</code>
+       * @param value The lightCount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLightCount(int value) {
+
+        lightCount_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 浅睡次数
+       * </pre>
+       *
+       * <code>int32 light_count = 12;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLightCount() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        lightCount_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int breathStatus_ ;
+      /**
+       * <pre>
+       * 呼吸状况
+       * </pre>
+       *
+       * <code>int32 breath_status = 13;</code>
+       * @return The breathStatus.
+       */
+      @java.lang.Override
+      public int getBreathStatus() {
+        return breathStatus_;
+      }
+      /**
+       * <pre>
+       * 呼吸状况
+       * </pre>
+       *
+       * <code>int32 breath_status = 13;</code>
+       * @param value The breathStatus to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBreathStatus(int value) {
+
+        breathStatus_ = value;
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 呼吸状况
+       * </pre>
+       *
+       * <code>int32 breath_status = 13;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBreathStatus() {
+        bitField0_ = (bitField0_ & ~0x00001000);
+        breathStatus_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int sleepScore_ ;
+      /**
+       * <pre>
+       * 得分
+       * </pre>
+       *
+       * <code>int32 sleep_score = 14;</code>
+       * @return The sleepScore.
+       */
+      @java.lang.Override
+      public int getSleepScore() {
+        return sleepScore_;
+      }
+      /**
+       * <pre>
+       * 得分
+       * </pre>
+       *
+       * <code>int32 sleep_score = 14;</code>
+       * @param value The sleepScore to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSleepScore(int value) {
+
+        sleepScore_ = value;
+        bitField0_ |= 0x00002000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 得分
+       * </pre>
+       *
+       * <code>int32 sleep_score = 14;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSleepScore() {
+        bitField0_ = (bitField0_ & ~0x00002000);
+        sleepScore_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int breathQuality_ ;
+      /**
+       * <pre>
+       * 呼吸质量
+       * </pre>
+       *
+       * <code>int32 breath_quality = 15;</code>
+       * @return The breathQuality.
+       */
+      @java.lang.Override
+      public int getBreathQuality() {
+        return breathQuality_;
+      }
+      /**
+       * <pre>
+       * 呼吸质量
+       * </pre>
+       *
+       * <code>int32 breath_quality = 15;</code>
+       * @param value The breathQuality to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBreathQuality(int value) {
+
+        breathQuality_ = value;
+        bitField0_ |= 0x00004000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 呼吸质量
+       * </pre>
+       *
+       * <code>int32 breath_quality = 15;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBreathQuality() {
+        bitField0_ = (bitField0_ & ~0x00004000);
+        breathQuality_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int sleepAvgHr_ ;
+      /**
+       * <pre>
+       * 心率平均
+       * </pre>
+       *
+       * <code>int32 sleep_avg_hr = 16;</code>
+       * @return The sleepAvgHr.
+       */
+      @java.lang.Override
+      public int getSleepAvgHr() {
+        return sleepAvgHr_;
+      }
+      /**
+       * <pre>
+       * 心率平均
+       * </pre>
+       *
+       * <code>int32 sleep_avg_hr = 16;</code>
+       * @param value The sleepAvgHr to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSleepAvgHr(int value) {
+
+        sleepAvgHr_ = value;
+        bitField0_ |= 0x00008000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 心率平均
+       * </pre>
+       *
+       * <code>int32 sleep_avg_hr = 16;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSleepAvgHr() {
+        bitField0_ = (bitField0_ & ~0x00008000);
+        sleepAvgHr_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int sleepAvgSpo2_ ;
+      /**
+       * <pre>
+       * 血氧平均
+       * </pre>
+       *
+       * <code>int32 sleep_avg_spo2 = 17;</code>
+       * @return The sleepAvgSpo2.
+       */
+      @java.lang.Override
+      public int getSleepAvgSpo2() {
+        return sleepAvgSpo2_;
+      }
+      /**
+       * <pre>
+       * 血氧平均
+       * </pre>
+       *
+       * <code>int32 sleep_avg_spo2 = 17;</code>
+       * @param value The sleepAvgSpo2 to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSleepAvgSpo2(int value) {
+
+        sleepAvgSpo2_ = value;
+        bitField0_ |= 0x00010000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 血氧平均
+       * </pre>
+       *
+       * <code>int32 sleep_avg_spo2 = 17;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSleepAvgSpo2() {
+        bitField0_ = (bitField0_ & ~0x00010000);
+        sleepAvgSpo2_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int sleepAvgBreath_ ;
+      /**
+       * <pre>
+       * 呼吸平均
+       * </pre>
+       *
+       * <code>int32 sleep_avg_breath = 18;</code>
+       * @return The sleepAvgBreath.
+       */
+      @java.lang.Override
+      public int getSleepAvgBreath() {
+        return sleepAvgBreath_;
+      }
+      /**
+       * <pre>
+       * 呼吸平均
+       * </pre>
+       *
+       * <code>int32 sleep_avg_breath = 18;</code>
+       * @param value The sleepAvgBreath to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSleepAvgBreath(int value) {
+
+        sleepAvgBreath_ = value;
+        bitField0_ |= 0x00020000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 呼吸平均
+       * </pre>
+       *
+       * <code>int32 sleep_avg_breath = 18;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSleepAvgBreath() {
+        bitField0_ = (bitField0_ & ~0x00020000);
+        sleepAvgBreath_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int count_ ;
+      /**
+       * <pre>
+       * 详情数
+       * </pre>
+       *
+       * <code>int32 count = 19;</code>
+       * @return The count.
+       */
+      @java.lang.Override
+      public int getCount() {
+        return count_;
+      }
+      /**
+       * <pre>
+       * 详情数
+       * </pre>
+       *
+       * <code>int32 count = 19;</code>
+       * @param value The count to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCount(int value) {
+
+        count_ = value;
+        bitField0_ |= 0x00040000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 详情数
+       * </pre>
+       *
+       * <code>int32 count = 19;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCount() {
+        bitField0_ = (bitField0_ & ~0x00040000);
+        count_ = 0;
         onChanged();
         return this;
       }
 
       private java.lang.Object mac_ = "";
       /**
-       * <code>string mac = 5;</code>
+       * <code>string mac = 20;</code>
        * @return The mac.
        */
       public java.lang.String getMac() {
@@ -8667,7 +11495,7 @@ public final class KActivityProto {
         }
       }
       /**
-       * <code>string mac = 5;</code>
+       * <code>string mac = 20;</code>
        * @return The bytes for mac.
        */
       public com.google.protobuf.ByteString
@@ -8684,7 +11512,7 @@ public final class KActivityProto {
         }
       }
       /**
-       * <code>string mac = 5;</code>
+       * <code>string mac = 20;</code>
        * @param value The mac to set.
        * @return This builder for chaining.
        */
@@ -8692,22 +11520,22 @@ public final class KActivityProto {
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         mac_ = value;
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00080000;
         onChanged();
         return this;
       }
       /**
-       * <code>string mac = 5;</code>
+       * <code>string mac = 20;</code>
        * @return This builder for chaining.
        */
       public Builder clearMac() {
         mac_ = getDefaultInstance().getMac();
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00080000);
         onChanged();
         return this;
       }
       /**
-       * <code>string mac = 5;</code>
+       * <code>string mac = 20;</code>
        * @param value The bytes for mac to set.
        * @return This builder for chaining.
        */
@@ -8716,14 +11544,58 @@ public final class KActivityProto {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
         mac_ = value;
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00080000;
+        onChanged();
+        return this;
+      }
+
+      private int exceedUser_ ;
+      /**
+       * <pre>
+       * 超过人数0-100
+       * </pre>
+       *
+       * <code>int32 exceed_user = 21;</code>
+       * @return The exceedUser.
+       */
+      @java.lang.Override
+      public int getExceedUser() {
+        return exceedUser_;
+      }
+      /**
+       * <pre>
+       * 超过人数0-100
+       * </pre>
+       *
+       * <code>int32 exceed_user = 21;</code>
+       * @param value The exceedUser to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExceedUser(int value) {
+
+        exceedUser_ = value;
+        bitField0_ |= 0x00100000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 超过人数0-100
+       * </pre>
+       *
+       * <code>int32 exceed_user = 21;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExceedUser() {
+        bitField0_ = (bitField0_ & ~0x00100000);
+        exceedUser_ = 0;
         onChanged();
         return this;
       }
 
       private long only_ ;
       /**
-       * <code>int64 only = 6;</code>
+       * <code>int64 only = 22;</code>
        * @return The only.
        */
       @java.lang.Override
@@ -8731,45 +11603,45 @@ public final class KActivityProto {
         return only_;
       }
       /**
-       * <code>int64 only = 6;</code>
+       * <code>int64 only = 22;</code>
        * @param value The only to set.
        * @return This builder for chaining.
        */
       public Builder setOnly(long value) {
 
         only_ = value;
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00200000;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 only = 6;</code>
+       * <code>int64 only = 22;</code>
        * @return This builder for chaining.
        */
       public Builder clearOnly() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00200000);
         only_ = 0L;
         onChanged();
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:DetailSleep)
+      // @@protoc_insertion_point(builder_scope:DetailSleepAnalyze)
     }
 
-    // @@protoc_insertion_point(class_scope:DetailSleep)
-    private static final com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:DetailSleepAnalyze)
+    private static final com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep();
+      DEFAULT_INSTANCE = new com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze();
     }
 
-    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep getDefaultInstance() {
+    public static com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<DetailSleep>
-        PARSER = new com.google.protobuf.AbstractParser<DetailSleep>() {
+    private static final com.google.protobuf.Parser<DetailSleepAnalyze>
+        PARSER = new com.google.protobuf.AbstractParser<DetailSleepAnalyze>() {
       @java.lang.Override
-      public DetailSleep parsePartialFrom(
+      public DetailSleepAnalyze parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -8788,17 +11660,17 @@ public final class KActivityProto {
       }
     };
 
-    public static com.google.protobuf.Parser<DetailSleep> parser() {
+    public static com.google.protobuf.Parser<DetailSleepAnalyze> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<DetailSleep> getParserForType() {
+    public com.google.protobuf.Parser<DetailSleepAnalyze> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleep getDefaultInstanceForType() {
+    public com.kieslect.kdata.proto.dto.KActivityProto.DetailSleepAnalyze getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -9595,6 +12467,11 @@ public final class KActivityProto {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_DetailSleep_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_DetailSleepAnalyze_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_DetailSleepAnalyze_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_DetailWeight_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -9610,30 +12487,43 @@ public final class KActivityProto {
     java.lang.String[] descriptorData = {
       "\n\017KActivity.proto\">\n\tKActivity\022\017\n\007user_i" +
       "d\030\001 \001(\003\022 \n\004list\030\002 \003(\0132\022.KActivityListDat" +
-      "a\"\240\002\n\021KActivityListData\022\014\n\004date\030\001 \001(\003\022\"\n" +
+      "a\"\323\002\n\021KActivityListData\022\014\n\004date\030\001 \001(\003\022\"\n" +
       "\014detail_steps\030\002 \003(\0132\014.DetailSteps\022\034\n\tdet" +
       "ail_hr\030\003 \003(\0132\t.DetailHr\022)\n\020detail_silent" +
       "_hr\030\004 \003(\0132\017.DetailSilentHr\022 \n\013detail_spo" +
       "2\030\005 \003(\0132\013.DetailSpo2\022$\n\rdetail_stress\030\006 " +
       "\003(\0132\r.DetailStress\022\"\n\014detail_sleep\030\007 \003(\013" +
       "2\014.DetailSleep\022$\n\rdetail_weight\030\010 \003(\0132\r." +
-      "DetailWeight\"i\n\013DetailSteps\022\014\n\004date\030\001 \001(" +
-      "\003\022\r\n\005steps\030\002 \001(\005\022\020\n\010calories\030\003 \001(\005\022\020\n\010di" +
-      "stance\030\004 \001(\005\022\013\n\003mac\030\005 \001(\t\022\014\n\004only\030\006 \001(\003\"" +
-      "L\n\016DetailSilentHr\022\014\n\004date\030\001 \001(\003\022\021\n\tsilen" +
-      "t_hr\030\002 \001(\005\022\013\n\003mac\030\003 \001(\t\022\014\n\004only\030\004 \001(\003\"?\n" +
-      "\010DetailHr\022\014\n\004date\030\001 \001(\003\022\n\n\002hr\030\002 \001(\005\022\013\n\003m" +
-      "ac\030\003 \001(\t\022\014\n\004only\030\004 \001(\003\"O\n\nDetailSpo2\022\014\n\004" +
-      "date\030\001 \001(\003\022\014\n\004spo2\030\002 \001(\005\022\n\n\002pi\030\003 \001(\005\022\013\n\003" +
-      "mac\030\004 \001(\t\022\014\n\004only\030\005 \001(\003\"G\n\014DetailStress\022" +
-      "\014\n\004date\030\001 \001(\003\022\016\n\006stress\030\002 \001(\005\022\013\n\003mac\030\003 \001" +
-      "(\t\022\014\n\004only\030\004 \001(\003\"j\n\013DetailSleep\022\022\n\nstart" +
-      "_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\014\n\004time\030\003 " +
-      "\001(\003\022\014\n\004code\030\004 \001(\005\022\013\n\003mac\030\005 \001(\t\022\014\n\004only\030\006" +
-      " \001(\003\"G\n\014DetailWeight\022\014\n\004date\030\001 \001(\003\022\016\n\006we" +
-      "ight\030\002 \001(\001\022\013\n\003mac\030\003 \001(\t\022\014\n\004only\030\004 \001(\003B.\n" +
-      "\034com.kieslect.kdata.proto.dtoB\016KActivity" +
-      "Protob\006proto3"
+      "DetailWeight\0221\n\024detail_sleep_analyze\030\t \003" +
+      "(\0132\023.DetailSleepAnalyze\"i\n\013DetailSteps\022\014" +
+      "\n\004date\030\001 \001(\003\022\r\n\005steps\030\002 \001(\005\022\020\n\010calories\030" +
+      "\003 \001(\005\022\020\n\010distance\030\004 \001(\005\022\013\n\003mac\030\005 \001(\t\022\014\n\004" +
+      "only\030\006 \001(\003\"L\n\016DetailSilentHr\022\014\n\004date\030\001 \001" +
+      "(\003\022\021\n\tsilent_hr\030\002 \001(\005\022\013\n\003mac\030\003 \001(\t\022\014\n\004on" +
+      "ly\030\004 \001(\003\"?\n\010DetailHr\022\014\n\004date\030\001 \001(\003\022\n\n\002hr" +
+      "\030\002 \001(\005\022\013\n\003mac\030\003 \001(\t\022\014\n\004only\030\004 \001(\003\"O\n\nDet" +
+      "ailSpo2\022\014\n\004date\030\001 \001(\003\022\014\n\004spo2\030\002 \001(\005\022\n\n\002p" +
+      "i\030\003 \001(\005\022\013\n\003mac\030\004 \001(\t\022\014\n\004only\030\005 \001(\003\"G\n\014De" +
+      "tailStress\022\014\n\004date\030\001 \001(\003\022\016\n\006stress\030\002 \001(\005" +
+      "\022\013\n\003mac\030\003 \001(\t\022\014\n\004only\030\004 \001(\003\"x\n\013DetailSle" +
+      "ep\022\014\n\004date\030\001 \001(\003\022\022\n\nstart_time\030\002 \001(\003\022\020\n\010" +
+      "end_time\030\003 \001(\003\022\014\n\004time\030\004 \001(\003\022\014\n\004code\030\005 \001" +
+      "(\005\022\013\n\003mac\030\006 \001(\t\022\014\n\004only\030\007 \001(\003\"\303\003\n\022Detail" +
+      "SleepAnalyze\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_" +
+      "time\030\002 \001(\003\022\014\n\004type\030\003 \001(\005\022\022\n\nsleep_time\030\004" +
+      " \001(\005\022\021\n\twake_time\030\005 \001(\005\022\020\n\010rem_time\030\006 \001(" +
+      "\005\022\021\n\tdeep_time\030\007 \001(\005\022\022\n\nlight_time\030\010 \001(\005" +
+      "\022\022\n\nwake_count\030\t \001(\005\022\021\n\trem_count\030\n \001(\005\022" +
+      "\022\n\ndeep_count\030\013 \001(\005\022\023\n\013light_count\030\014 \001(\005" +
+      "\022\025\n\rbreath_status\030\r \001(\005\022\023\n\013sleep_score\030\016" +
+      " \001(\005\022\026\n\016breath_quality\030\017 \001(\005\022\024\n\014sleep_av" +
+      "g_hr\030\020 \001(\005\022\026\n\016sleep_avg_spo2\030\021 \001(\005\022\030\n\020sl" +
+      "eep_avg_breath\030\022 \001(\005\022\r\n\005count\030\023 \001(\005\022\013\n\003m" +
+      "ac\030\024 \001(\t\022\023\n\013exceed_user\030\025 \001(\005\022\014\n\004only\030\026 " +
+      "\001(\003\"G\n\014DetailWeight\022\014\n\004date\030\001 \001(\003\022\016\n\006wei" +
+      "ght\030\002 \001(\001\022\013\n\003mac\030\003 \001(\t\022\014\n\004only\030\004 \001(\003B.\n\034" +
+      "com.kieslect.kdata.proto.dtoB\016KActivityP" +
+      "rotob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9650,7 +12540,7 @@ public final class KActivityProto {
     internal_static_KActivityListData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_KActivityListData_descriptor,
-        new java.lang.String[] { "Date", "DetailSteps", "DetailHr", "DetailSilentHr", "DetailSpo2", "DetailStress", "DetailSleep", "DetailWeight", });
+        new java.lang.String[] { "Date", "DetailSteps", "DetailHr", "DetailSilentHr", "DetailSpo2", "DetailStress", "DetailSleep", "DetailWeight", "DetailSleepAnalyze", });
     internal_static_DetailSteps_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_DetailSteps_fieldAccessorTable = new
@@ -9686,9 +12576,15 @@ public final class KActivityProto {
     internal_static_DetailSleep_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_DetailSleep_descriptor,
-        new java.lang.String[] { "StartTime", "EndTime", "Time", "Code", "Mac", "Only", });
-    internal_static_DetailWeight_descriptor =
+        new java.lang.String[] { "Date", "StartTime", "EndTime", "Time", "Code", "Mac", "Only", });
+    internal_static_DetailSleepAnalyze_descriptor =
       getDescriptor().getMessageTypes().get(8);
+    internal_static_DetailSleepAnalyze_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_DetailSleepAnalyze_descriptor,
+        new java.lang.String[] { "StartTime", "EndTime", "Type", "SleepTime", "WakeTime", "RemTime", "DeepTime", "LightTime", "WakeCount", "RemCount", "DeepCount", "LightCount", "BreathStatus", "SleepScore", "BreathQuality", "SleepAvgHr", "SleepAvgSpo2", "SleepAvgBreath", "Count", "Mac", "ExceedUser", "Only", });
+    internal_static_DetailWeight_descriptor =
+      getDescriptor().getMessageTypes().get(9);
     internal_static_DetailWeight_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_DetailWeight_descriptor,

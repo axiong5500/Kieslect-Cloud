@@ -30,8 +30,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("")
@@ -117,23 +115,38 @@ public class FileController {
     }
 
     @GetMapping("/listFilesInFolder")
-    public ResponseEntity<List<String>> listFilesInFolder(@RequestParam("folderPath") String folderPath) {
+    public ResponseEntity<byte[]> listFilesInFolder(@RequestParam("folderPath") String folderPath) {
         try {
             // 列举指定前缀（文件夹路径）下的所有文件
             ListObjectsRequest listRequest = new ListObjectsRequest(ossConfig.getBucketName());
             listRequest.setPrefix(folderPath); // 设置前缀为文件夹路径
             ObjectListing objectListing = fileService.listObjects(listRequest);
 
-            List<String> fileNames = new ArrayList<>();
+            // 创建 ByteArrayOutputStream 用于保存所有文件内容
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
             // 遍历文件列表，并获取文件名
             for (OSSObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-                fileNames.add(objectSummary.getKey()); // 添加文件名到列表
+                // 获取文件内容
+                OSSObject ossObject = fileService.getObject(objectSummary.getKey(), ossConfig.getBucketName());
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = ossObject.getObjectContent().read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead); // 将文件内容写入 ByteArrayOutputStream
+                }
+                ossObject.getObjectContent().close(); // 关闭对象内容流
+                // 记录文件名和大小
+                logger.info("Retrieved file: {} - Size: {} bytes", objectSummary.getKey(), objectSummary.getSize());
             }
 
-            return ResponseEntity.ok(fileNames);
+            // 将 ByteArrayOutputStream 中的内容作为字节数组返回
+            byte[] fileBytes = outputStream.toByteArray();
 
-        } catch (OSSException e) {
+            return ResponseEntity.ok()
+                    .body(fileBytes);
+
+
+        } catch (OSSException | IOException e) {
             // 处理 OSS 异常
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

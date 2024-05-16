@@ -46,11 +46,35 @@ public class WeatherInfoVO {
      * 紫外线指数
      */
     private String uv;
+
+    /**
+     * 风向360角度
+     */
+    private String wind360;
+    /**
+     * 风向
+     */
+    private String windDir;
+    /**
+     * 风速
+     */
+    private String windSpeed;
+    /**
+     * 风级
+     */
+    private String windScale;
+
+
+
     /**
      * 紫外线指数强度描述
      */
-    private String uvDescription;
+//    private String uvDescription;
 
+    /**
+     * 能见度
+     */
+    private String visibility;
     /**
      * 体感温度
      */
@@ -68,6 +92,10 @@ public class WeatherInfoVO {
      * 日落时间
      */
     private String sunset;
+    /**
+     * 降水概率
+     */
+    private String pop;
 
     /**
      * 每小时天气预报列表
@@ -104,6 +132,10 @@ public class WeatherInfoVO {
          * 时间点，通常为小时形式
          */
         private String time;
+        /**
+         * 降水概率
+         */
+        private String pop;
     }
 
     /**
@@ -115,11 +147,11 @@ public class WeatherInfoVO {
         /**
          * 日期
          */
-        private String date;
+        private Long date;
         /**
          * 星期几
          */
-        private String week;
+//        private String week;
 
         /**
          * 日最低温度
@@ -140,6 +172,21 @@ public class WeatherInfoVO {
          * 当日天气图标代码
          */
         private String weatherIcon;
+
+        /**
+         * 日出时间
+         */
+        private String sunrise;
+
+        /**
+         * 日落时间
+         */
+        private String sunset;
+
+        /**
+         * 紫外线指数
+         */
+        private String uv;
     }
 }
 

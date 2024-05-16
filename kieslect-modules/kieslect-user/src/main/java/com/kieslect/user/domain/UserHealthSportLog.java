@@ -43,4 +43,8 @@ public class UserHealthSportLog implements Serializable {
 
     @TableField("update_time")
     private long updateTime;
+
+    @TableField("file_type")
+    private int fileType;
+
 }

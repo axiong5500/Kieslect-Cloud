@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 /**
  * 用户服务
  *
@@ -28,12 +26,16 @@ public interface RemoteFileService {
                     @RequestParam("pathType") @NotNull(message = "路径类型不能为空") Integer pathType,
                     @RequestParam(value = "userId", required = false) Long userId);
 
-
     @GetMapping("/file/listFilesInFolder")
-    ResponseEntity<List<String>> listFilesInFolder(@RequestParam("folderPath") String folderPath);
+    @Headers("Content-Type: application/octet-stream")
+    ResponseEntity<byte[]> listFilesInFolder(@RequestParam("folderPath") String folderPath);
 
     @GetMapping("/file/downloadFileByFilePath")
     @Headers("Content-Type: application/octet-stream")
     ResponseEntity<byte[]> downloadFileByFilePath(@RequestParam("filePath") String filePath);
+
+
+    @PostMapping("/file/healthSport/uploadLocalFileToOSS")
+    R<?> uploadLocalFileToOSS(@RequestParam("userId") Long userId,@RequestParam("pathType")  Integer pathType);
 
 }

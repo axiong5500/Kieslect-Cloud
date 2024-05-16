@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+//option java_multiple_files = false;
+option java_package = "com.kieslect.user.proto";
+option java_outer_classname = "KSportProto";
+
+message KSport {
+    int64 user_id = 1;
+    repeated DetailSport detail_sport = 2;
+}
+
+message DetailSport {
+    int64 only = 1;
+    int32 type = 2;//运动类型
+    int64 start_time = 3;//开始时间 秒
+    int64 end_time = 4;//结束时间 秒
+    int32 time = 5;//运动时间 秒
+    int32 steps = 6;//总计步数
+    float distance = 7;//总路程-米
+    float max_speed = 8;//最大速度-米/秒
+    float avg_hr = 9;
+    repeated DetailSportData sport_data = 10;
+    repeated DetailDevice sport_device = 11;
+    int32 device_type = 12;//哪个端发起的运动，0-手机，1-手表
+    float distance_aim = 13;//距离目标
+    float calories_aim = 14;//热量目标
+}
+
+
+message DetailSportData {
+    int32 time = 1;//运动时间 秒
+    int32 total_time = 2;//总时间 秒
+    double latitude = 3;
+    double longitude = 4;
+    float speed = 5;//米/秒
+    int32 cadence = 6;//步频 步数/分钟
+    int32 hr = 7;
+    int32 lap = 8;//圈数
+    float distance = 9;//总路程-米
+    int32 steps = 10;//步数
+}
+
+message DetailDevice {
+    int32 device_type = 1;//0-手机，1-手表
+    string mac = 2;
+    string name = 3;
+}

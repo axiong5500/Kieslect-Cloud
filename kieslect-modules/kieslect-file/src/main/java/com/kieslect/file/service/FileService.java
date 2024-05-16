@@ -1,7 +1,10 @@
 package com.kieslect.file.service;
 
 import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,8 +17,31 @@ import java.io.IOException;
 @Service
 public class FileService {
 
+    private static final Logger logger = LoggerFactory.getLogger(FileService.class);
+
     @Autowired
     private OSS ossClient;
+
+    public boolean uploadFileToOSS(File file, String bucketName, String ossFilePath) {
+        try {
+            // 检查文件是否存在
+            if (file == null || !file.exists()) {
+                logger.error("File does not exist: {}", file);
+                return false;
+            }
+
+            // 上传文件到 OSS
+            ossClient.putObject(new PutObjectRequest(bucketName, ossFilePath, file));
+            logger.info("Uploaded file to OSS: {}", ossFilePath);
+            return true;
+        } catch (OSSException e) {
+            logger.error("Failed to upload file to OSS: {}", e.getMessage());
+            return false;
+        } catch (Exception e) {
+            logger.error("An unexpected error occurred: {}", e.getMessage());
+            return false;
+        }
+    }
 
     public void uploadFile(MultipartFile file, String bucketName, String ossFilePath) throws IOException {
 
@@ -44,7 +70,7 @@ public class FileService {
         }
     }
 
-    public OSSObject getObject(String filename, String bucketName) throws IOException {
+    public OSSObject getObject(String filename, String bucketName)  {
         return ossClient.getObject(new GetObjectRequest(bucketName, filename));
     }
 

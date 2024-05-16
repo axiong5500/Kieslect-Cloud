@@ -1,17 +1,31 @@
 package com.kieslect.user.utils;
 
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.kieslect.user.proto.KActivityProto;
+import com.kieslect.user.proto.KSportProto;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class ProtobufParser {
+
+    public static KSportProto.KSport parseFromKSportInputStream(InputStream inputStream)
+            throws IOException {
+        // 创建 KActivity.Builder 对象
+        KSportProto.KSport.Builder builder = KSportProto.KSport.newBuilder();
+
+        // 从 InputStream 中读取数据并解析到 Builder 中
+        builder.mergeFrom(inputStream);
+
+        // 构建最终的 Protocol Buffers 消息对象
+        KSportProto.KSport kSport = builder.build();
+
+        return kSport;
+    }
     public static KActivityProto.KActivity parseFromInputStream(InputStream inputStream)
-            throws IOException, InvalidProtocolBufferException {
+            throws IOException {
         // 创建 KActivity.Builder 对象
         KActivityProto.KActivity.Builder builder = KActivityProto.KActivity.newBuilder();
 
