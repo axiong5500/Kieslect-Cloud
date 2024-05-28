@@ -171,7 +171,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
         // 删除该账号
         logout(userInfo.getId());
-        BeanUtils.copyProperties(userInfo, userInfoVO);
+        BeanUtil.copyProperties(userInfo, userInfoVO,false);
         return userInfoVO;
     }
 

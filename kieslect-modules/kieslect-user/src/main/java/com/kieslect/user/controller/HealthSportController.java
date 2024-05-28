@@ -54,14 +54,66 @@ public class HealthSportController {
             fileType = FileTypeEnum.HEALTH_DATA.getCode(); // 设置默认值为1
         }
         if (fileType == FileTypeEnum.HEALTH_DATA.getCode()) {
-            return uploadData(request, file , FileTypeEnum.HEALTH_DATA.getPathTypeCode());
+            return uploadData(request, file, FileTypeEnum.HEALTH_DATA.getPathTypeCode());
         } else if (fileType == FileTypeEnum.SPORT_DATA.getCode()) {
-            return uploadData(request, file , FileTypeEnum.SPORT_DATA.getPathTypeCode());
+            return uploadData(request, file, FileTypeEnum.SPORT_DATA.getPathTypeCode());
         }
         return R.fail("上传失败");
     }
 
-    public R<?> uploadData(HttpServletRequest request,MultipartFile file,int pathTypeCode) {
+    @GetMapping("/removeData")
+    public R<?> removeData(HttpServletRequest request,
+                           @RequestParam(value = "fileType", required = false) Integer fileType) {
+        if (fileType == null) {
+            fileType = FileTypeEnum.HEALTH_DATA.getCode(); // 设置默认值为1
+        }
+        if (fileType == FileTypeEnum.HEALTH_DATA.getCode()) {
+            return removeLocalAndRemoteData(request, FileTypeEnum.HEALTH_DATA.getPathTypeCode());
+        } else if (fileType == FileTypeEnum.SPORT_DATA.getCode()) {
+            return removeLocalAndRemoteData(request, FileTypeEnum.SPORT_DATA.getPathTypeCode());
+        }
+        return R.fail("删除失败");
+    }
+
+    private R<?> removeLocalAndRemoteData(HttpServletRequest request, int pathTypeCode) {
+        LoginUserInfo loginUser = tokenService.getLoginUser(request);
+        if (loginUser == null) {
+            return R.fail("用户未登录");
+        }
+        if (loginUser.getUserKey() == null) {
+            return R.fail("用户未登录");
+        }
+        if (loginUser.getId() == null) {
+            return R.fail("用户未登录");
+        }
+        //删除本地文件
+        removeLocalData(loginUser.getId(), pathTypeCode);
+        //删除远程文件
+        removeRemoteData(loginUser.getId(), pathTypeCode);
+        return R.ok();
+    }
+
+    private void removeRemoteData(Long userId, int fileType) {
+        remoteFileService.removeOSSFile(userId, fileType);
+    }
+
+    private void removeLocalData(Long userId, int fileType) {
+        if (userId == null) {
+            return;
+        }
+        File healthDataFolder = new File(getLocalUploadFolder(userId, fileType));
+        if (healthDataFolder.exists()) {
+            File[] files = healthDataFolder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    logger.info("删除本地文件: {}", healthDataFolder.getAbsolutePath());
+                    file.delete();
+                }
+            }
+        }
+    }
+
+    public R<?> uploadData(HttpServletRequest request, MultipartFile file, int pathTypeCode) {
 
         try {
             // 获取登录用户信息
@@ -94,10 +146,9 @@ public class HealthSportController {
     }
 
 
-
     // 获取指定用户ID的本地存储文件总大小
-    private long getTotalLocalSize(Long userId,int fileType) {
-        File userFolder = new File(getLocalUploadFolder(userId,fileType));
+    private long getTotalLocalSize(Long userId, int fileType) {
+        File userFolder = new File(getLocalUploadFolder(userId, fileType));
         long totalSize = 0;
         if (userFolder.exists() && userFolder.isDirectory()) {
             File[] files = userFolder.listFiles();
@@ -113,6 +164,7 @@ public class HealthSportController {
 
     /**
      * 合并文件
+     *
      * @param oldFile
      * @param newFile
      * @throws IOException
@@ -131,6 +183,7 @@ public class HealthSportController {
 
     /**
      * 获取旧文件
+     *
      * @param userId
      * @param fileType
      * @return
@@ -194,20 +247,20 @@ public class HealthSportController {
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
         Long userId = loginUser.getId();
         int fileType = FileTypeEnum.HEALTH_DATA.getPathTypeCode();
-        return getFile(userId,fileType);
+        return getFile(userId, fileType);
 
     }
 
 
     @GetMapping("/getSportData")
-    public ResponseEntity<byte[]> getSportData(HttpServletRequest request){
+    public ResponseEntity<byte[]> getSportData(HttpServletRequest request) {
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
         Long userId = loginUser.getId();
         int fileType = FileTypeEnum.SPORT_DATA.getPathTypeCode();
-        return getFile(userId,fileType);
+        return getFile(userId, fileType);
     }
 
-    public ResponseEntity<byte[]> getFile(Long userId,int fileType) {
+    public ResponseEntity<byte[]> getFile(Long userId, int fileType) {
 
         byte[] mergedFile;
 
@@ -221,7 +274,7 @@ public class HealthSportController {
                 logger.warn("用户ID: {}，本地文件为空", userId);
             }
 
-            byte[] remoteFile = getRemoteFile(userId,fileType);
+            byte[] remoteFile = getRemoteFile(userId, fileType);
 
             logger.info("用户ID: {}，远程文件获取成功", userId);
             if (remoteFile != null) {
@@ -269,7 +322,7 @@ public class HealthSportController {
         return null;
     }
 
-    private byte[] getRemoteFile(Long userId,int fileType) {
+    private byte[] getRemoteFile(Long userId, int fileType) {
         String filePath = getSportDownloadFilePath(userId);
         if (fileType == FileTypeEnum.HEALTH_DATA.getPathTypeCode()) {
             filePath = getHealthSportDownloadFilePath(userId);
