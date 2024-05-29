@@ -1,6 +1,6 @@
 package com.kieslect.device.mapper;
 
-import com.kieslect.device.domain.Article;
+import com.kieslect.device.domain.AppPackeageManage;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author kieslect
- * @since 2024-05-08
+ * @since 2024-05-22
  */
-public interface ArticleMapper extends BaseMapper<Article> {
+public interface AppPackeageManageMapper extends BaseMapper<AppPackeageManage> {
 
 }

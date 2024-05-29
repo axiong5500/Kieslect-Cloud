@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.device.domain.Article;
 import com.kieslect.device.service.IArticleService;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/article")
 public class ArticleController {
+
+     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ArticleController.class);
+
     @Autowired
     IArticleService articleService;
 
@@ -53,7 +58,7 @@ public class ArticleController {
 
 
     @GetMapping("/sys/getArticleById")
-    public R<?> getPrivacyPolicy(@RequestParam(value = "id", required = false) Integer id,@RequestParam(value = "language", required = false) Integer language){
+    public R<?> getPrivacyPolicy(@RequestParam(value = "id", required = false) Integer id,@RequestParam(value = "language", required = false) Integer language) throws UnsupportedEncodingException {
         Article article =  articleService.getById(id);
         if (article == null) {
             return R.fail();
@@ -63,6 +68,9 @@ public class ArticleController {
         queryWrapper.eq("title", title);
         queryWrapper.eq("language", language);
         article = articleService.getOne(queryWrapper);
+        if (article == null) {
+            return R.fail();
+        }
         Map<String, Object> result = BeanUtil.beanToMap(article);
         return R.ok(result);
     }

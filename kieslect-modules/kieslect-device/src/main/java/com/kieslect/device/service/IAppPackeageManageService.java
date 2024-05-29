@@ -1,6 +1,6 @@
 package com.kieslect.device.service;
 
-import com.kieslect.device.domain.Article;
+import com.kieslect.device.domain.AppPackeageManage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author kieslect
- * @since 2024-05-08
+ * @since 2024-05-22
  */
-public interface IArticleService extends IService<Article> {
+public interface IAppPackeageManageService extends IService<AppPackeageManage> {
 
 }

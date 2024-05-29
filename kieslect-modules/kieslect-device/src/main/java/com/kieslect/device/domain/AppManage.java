@@ -65,6 +65,12 @@ public class AppManage implements Serializable {
       @TableField("param_ids")
     private String paramIds;
 
+    /**
+     * 参数设置值json集合
+     */
+    @TableField("param_collection")
+    private String paramCollection;
+
       /**
      * app状态
      */
