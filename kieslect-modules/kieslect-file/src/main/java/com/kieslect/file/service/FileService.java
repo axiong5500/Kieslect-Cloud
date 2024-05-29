@@ -90,4 +90,7 @@ public class FileService {
         return ossClient.doesObjectExist(bucketName, filename);
     }
 
+    public void removeOSSFile(String ossFilePath, String bucketName) {
+        ossClient.deleteObject(bucketName, ossFilePath);
+    }
 }

@@ -70,6 +70,20 @@ public class HealthSportFileController {
         return R.ok();
     }
 
+    //removeOSSFile
+    @PostMapping("/removeOSSFile")
+    public R<?> removeOSSFile(@RequestParam("userId") Long userId, @RequestParam("pathType") Integer pathType) {
+        String path = PathTypeEnum.getByCode(pathType).getPath();
+        if (fileService.doesObjectExist(path, ossConfig.getBucketName())) {
+            // 构建 OSS 存储路径
+            String ossFilePath = path + "/" + userId;
+            fileService.removeOSSFile(ossFilePath, ossConfig.getBucketName());
+            return R.ok();
+        } else {
+            return R.fail("File does not exist");
+        }
+    }
+
 
     private File getLocalFile(Long userId, int fileType) {
         String localUploadFolder = Paths.get(LOCAL_UPLOAD_FOLDER, userId.toString(), "type_" + fileType).toString();
