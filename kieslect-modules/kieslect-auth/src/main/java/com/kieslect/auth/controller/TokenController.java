@@ -209,6 +209,9 @@ public class TokenController {
             // 判断账号和密码是否正确
             R<UserInfoVO> result = remoteUserService.logoutByAccountAndPassword(logoutBody);
             UserInfoVO userInfoVO = result.getData();
+            if (userInfoVO == null){
+                return result;
+            }
             // 删除用户缓存记录
             tokenService.delLoginUserByUserkey(userInfoVO.getUserKey());
             return R.ok();
