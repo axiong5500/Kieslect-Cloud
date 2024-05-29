@@ -43,7 +43,8 @@ public class GatewayConfig {
             "/kieslect-device/device/getList",
             "/kieslect-file/file/upload",
             "/kieslect-file/file/download/**",
-            "/kieslect-weather/weather/getWeatherInfo"
+            "/kieslect-weather/weather/getWeatherInfo",
+            "/kieslect-device/device/appManage/getApp"
 
     };
 
