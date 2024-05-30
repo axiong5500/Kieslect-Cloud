@@ -34,7 +34,7 @@ public class MyBatisPlusGenerator {
 
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig.Builder()
-                .addInclude("t_article")
+                .addInclude("t_app_packeage_manage")
                 .addTablePrefix("t_")
                 .serviceBuilder().enableFileOverride()
                 .mapperBuilder().enableFileOverride()

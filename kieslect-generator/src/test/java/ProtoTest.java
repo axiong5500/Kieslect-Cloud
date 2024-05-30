@@ -1,5 +1,3 @@
-import com.kieslect.kdata.proto.dto.GeoCityBeanProto;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -10,12 +8,12 @@ public class ProtoTest {
 
         try {
             // 使用 Protocol Buffers 生成的 Builder 类构建 GeoCityBean 对象
-            GeoCityBeanProto.GeoCityBean geoCityBean = GeoCityBeanProto.GeoCityBean.parseFrom(fis);
-
-            // 输出反序列化后的数据
-            System.out.println("Version: " + geoCityBean.getVersion());
-            System.out.println("Update Time: " + geoCityBean.getUpdateTime());
-            System.out.println("CityBean List: " + geoCityBean.getCityBeanList().size());
+//            GeoCityBeanProto.GeoCityBean geoCityBean = GeoCityBeanProto.GeoCityBean.parseFrom(fis);
+//
+//            // 输出反序列化后的数据
+//            System.out.println("Version: " + geoCityBean.getVersion());
+//            System.out.println("Update Time: " + geoCityBean.getUpdateTime());
+//            System.out.println("CityBean List: " + geoCityBean.getCityBeanList().size());
 
             // 遍历每个 CityBean 对象
 //            for (GeoCityBeanProto.CityBean city : geoCityBean.getCityBeanList()) {
