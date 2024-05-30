@@ -7,8 +7,13 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kieslect.common.redis.service.RedisService;
+import com.kieslect.weather.domain.Geoname;
+import com.kieslect.weather.domain.GeonameThirdGeo;
 import com.kieslect.weather.domain.vo.WeatherInfoVO;
+import com.kieslect.weather.service.IGeonameService;
+import com.kieslect.weather.service.IGeonameThirdGeoService;
 import com.kieslect.weather.service.IWeatherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +34,17 @@ public class WeatherServiceImpl implements IWeatherService {
     private static final Logger logger = LoggerFactory.getLogger(WeatherServiceImpl.class);
     private static final String apiKey = "ba0fb55d9b5c49ab8b352808ead4dac5";
 
-    // 实况天气
+    // 实况天气 经度（longitude）在前 纬度（latitude）在后
     private static final String NOW_WEATHER_URL = "https://devapi.qweather.com/v7/weather/now?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
-    // 逐小时预报（未来24小时）
+    // 逐小时预报（未来24小时） 经度（longitude）在前 纬度（latitude）在后
     private static final String HOURLY_WEATHER_FORECAST_URL = "https://devapi.qweather.com/v7/weather/24h?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
 
-    // 7天预报
+    // 7天预报 经度（longitude）在前 纬度（latitude）在后
     private static final String SEVEN_WEATHER_FORECAST_URL = "https://devapi.qweather.com/v7/weather/7d?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
+
+    // 和风geo
+    private static final String HEFENG_GEO_URL = "https://geoapi.qweather.com/v2/city/lookup?key=" + apiKey + "&location=%s&number=1";
+
 
     private static final String WEATHER_PREFIX = "weather:";
 
@@ -56,6 +65,12 @@ public class WeatherServiceImpl implements IWeatherService {
     @Autowired
     private RedisService redisService;
 
+    @Autowired
+    private IGeonameService geonameService;
+
+    @Autowired
+    private IGeonameThirdGeoService geonameThirdGeoService;
+
 
     @Override
     public Object getWeatherInfo(int id, double latitude, double longitude, String lang, String unit) {
@@ -67,6 +82,7 @@ public class WeatherServiceImpl implements IWeatherService {
         weatherInfo.put("timestamp", Instant.now().getEpochSecond());
         // 打印日志
         logger.info("id:{}, latitude:{}, longitude:{}, lang:{}, unit:{}", id, latitude, longitude, lang, unit);
+
 
         // lang 为空和null时，默认为中文
         String langFormatted = StrUtil.isEmpty(lang) ? "zh" : lang;
@@ -106,16 +122,18 @@ public class WeatherServiceImpl implements IWeatherService {
         String nowRedisKey = getWeatherRedisKey(NOW_WEATHER_KEY_PREFIX, redisKey);
         String hourlyRedisKey = getWeatherRedisKey(HOURLY_WEATHER_FORECAST_KEY_PREFIX, redisKey);
         String sevenRedisKey = getWeatherRedisKey(SEVEN_WEATHER_FORECAST_KEY_PREFIX, redisKey);
-        nowObj = getObject(latitude, longitude, langFormatted, unitFormatted, nowRedisKey, NOW_WEATHER_URL);
-        hourlyObj = getObject(latitude, longitude, langFormatted, unitFormatted, hourlyRedisKey, HOURLY_WEATHER_FORECAST_URL);
-        sevenObj = getObject(latitude, longitude, langFormatted, unitFormatted, sevenRedisKey, SEVEN_WEATHER_FORECAST_URL);
+        nowObj = getObject(id, latitude, longitude, langFormatted, unitFormatted, nowRedisKey, NOW_WEATHER_URL);
+        hourlyObj = getObject(id, latitude, longitude, langFormatted, unitFormatted, hourlyRedisKey, HOURLY_WEATHER_FORECAST_URL);
+        sevenObj = getObject(id, latitude, longitude, langFormatted, unitFormatted, sevenRedisKey, SEVEN_WEATHER_FORECAST_URL);
 
         WeatherInfoVO weatherInfoVO = new WeatherInfoVO();
         weatherInfoVO.setLang(langFormatted);
         setWeatherInfo(nowObj, weatherInfoVO, hourlyObj, sevenObj);
 
         //放入缓存
-        redisService.setCacheObject(redisKeyVO, weatherInfoVO, 1L, TimeUnit.HOURS);
+        if (nowObj != null) {
+            redisService.setCacheObject(redisKeyVO, weatherInfoVO, 1L, TimeUnit.HOURS);
+        }
 
         weatherInfo.put("weatherInfo", weatherInfoVO);
 
@@ -139,7 +157,7 @@ public class WeatherServiceImpl implements IWeatherService {
 
             // 以下6个字段无法从nowObj对象中获取到，需从sevenObj对象中获取
 
-            weatherInfoVO.setHourlyForecast(getHourlyForecast(weatherInfoVO,hourlyObj));
+            weatherInfoVO.setHourlyForecast(getHourlyForecast(weatherInfoVO, hourlyObj));
             weatherInfoVO.setDailyForecast(getDailyForecast(weatherInfoVO, sevenObj));
         }
     }
@@ -166,7 +184,7 @@ public class WeatherServiceImpl implements IWeatherService {
                     weatherInfoVO.setUv(itemJson.getStr("uvIndex"));
                 }
                 //itemJson.getStr("fxDate"))转为时间戳
-                itemJson.set("date", DateUtil.parse(fxDate).getTime() / 1000 );
+                itemJson.set("date", DateUtil.parse(fxDate).getTime() / 1000);
                 itemJson.set("temperatureLow", itemJson.getStr("tempMin"));
                 itemJson.set("temperatureHigh", itemJson.getStr("tempMax"));
                 itemJson.set("weather", itemJson.getStr("textDay"));
@@ -183,7 +201,7 @@ public class WeatherServiceImpl implements IWeatherService {
         return null;
     }
 
-    private List<WeatherInfoVO.HourlyVO> getHourlyForecast(WeatherInfoVO weatherInfoVO,Object hourlyObj) {
+    private List<WeatherInfoVO.HourlyVO> getHourlyForecast(WeatherInfoVO weatherInfoVO, Object hourlyObj) {
         if (ObjectUtil.isNotEmpty(hourlyObj)) {
             JSONArray hourlyObjJson = JSONUtil.parseArray(hourlyObj);
             List<WeatherInfoVO.HourlyVO> result = new ArrayList<>();
@@ -256,30 +274,95 @@ public class WeatherServiceImpl implements IWeatherService {
         return HEFENG_PREFIX + prefix + redisKey;
     }
 
-    private Object getObject(double latitude, double longitude, String langFormatted, String unitFormatted, String redisKey, String weatherForecastUrl) {
+    private Object getObject(int id, double latitude, double longitude, String langFormatted, String unitFormatted, String redisKey, String weatherForecastUrl) {
         Object weatherObj;
         if (isConditionMet(redisKey)) {
             weatherObj = redisService.getCacheObject(redisKey);
             logger.info("redis缓存中获取数据" + redisKey + ",obj:" + weatherObj);
         } else {
-            String hourlyWeatherForecast = String.format(weatherForecastUrl, longitude,latitude, langFormatted, unitFormatted);
+            //纠正经纬度
+            GeonameThirdGeo hirdGeo = getGeonameThirdGeo(id);
+            if (ObjectUtil.isNotEmpty(hirdGeo)){
+                longitude = Double.valueOf(hirdGeo.getLongitude());
+                latitude = Double.valueOf(hirdGeo.getLatitude());
+            }
+            String hourlyWeatherForecast = String.format(weatherForecastUrl, longitude, latitude, langFormatted, unitFormatted);
             String getWeatherForecast = HttpUtil.get(hourlyWeatherForecast);
-            logger.info(getWeatherForecast);
+            //检查getWeatherForecast返回的信息是不是{"code":"404"}
+            if ("{\"code\":\"404\"}".equals(getWeatherForecast)) {
+                logger.warn("Weather forecast not found: {},result: {}", hourlyWeatherForecast,getWeatherForecast);
+                Geoname geoname = getGeoname(id);
+                String name = null;
+                if (geoname != null) {
+                    name = geoname.getName();
+                }
+                // 请求和风geo接口，获得城市经纬度
+                String geoUrl = String.format(HEFENG_GEO_URL, name);
+                String geoResult = HttpUtil.get(geoUrl);
+                //保存入库
+                if (ObjectUtil.isNotEmpty(geoResult)) {
+                    JSONObject jsonObject = JSONUtil.parseObj(geoResult);
+                    JSONObject jsonObj = (JSONObject) jsonObject.getJSONArray("location").get(0);
+                    String latitudeStr = jsonObj.getStr("lat");
+                    String longitudeStr = jsonObj.getStr("lon");
+
+                    GeonameThirdGeo geonameThirdGeo = new GeonameThirdGeo();
+                    geonameThirdGeo.setGeonameid(id);
+                    geonameThirdGeo.setLatitude(latitudeStr);
+                    geonameThirdGeo.setLongitude(longitudeStr);
+                    geonameThirdGeo.setRequestUrl(geoUrl);
+                    geonameThirdGeo.setSourceResponse(geoResult);
+                    geonameThirdGeo.setSourceType(0);
+                    geonameThirdGeo.setCreateTime(Instant.now().getEpochSecond());
+                    geonameThirdGeo.setUpdateTime(Instant.now().getEpochSecond());
+                    geonameThirdGeoService.saveOrUpdate(geonameThirdGeo);
+
+                    return getObject(id, Double.parseDouble(latitudeStr), Double.parseDouble(longitudeStr), langFormatted, unitFormatted, redisKey, weatherForecastUrl);
+                }
+
+            }
+            logger.info("hourlyWeatherForecast:{},getWeatherForecast:{}",hourlyWeatherForecast, getWeatherForecast);
+
             weatherObj = parseJson(getWeatherForecast);
-            if (redisKey.contains(NOW_WEATHER_KEY_PREFIX)) {
-                redisService.setCacheObject(redisKey, weatherObj, 1L, TimeUnit.HOURS);
-            } else if (redisKey.contains(HOURLY_WEATHER_FORECAST_KEY_PREFIX)) {
-                redisService.setCacheObject(redisKey, weatherObj, 12L, TimeUnit.HOURS);
-            } else if (redisKey.contains(SEVEN_WEATHER_FORECAST_KEY_PREFIX)) {
-                redisService.setCacheObject(redisKey, weatherObj, 24L, TimeUnit.HOURS);
+            if ( weatherObj != null){
+                if (redisKey.contains(NOW_WEATHER_KEY_PREFIX)) {
+                    redisService.setCacheObject(redisKey, weatherObj, 1L, TimeUnit.HOURS);
+                } else if (redisKey.contains(HOURLY_WEATHER_FORECAST_KEY_PREFIX)) {
+                    redisService.setCacheObject(redisKey, weatherObj, 12L, TimeUnit.HOURS);
+                } else if (redisKey.contains(SEVEN_WEATHER_FORECAST_KEY_PREFIX)) {
+                    redisService.setCacheObject(redisKey, weatherObj, 24L, TimeUnit.HOURS);
+                }
             }
         }
         return weatherObj;
     }
 
+    private GeonameThirdGeo getGeonameThirdGeo(int id) {
+        QueryWrapper<GeonameThirdGeo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("geonameid", id);
+        GeonameThirdGeo geonameThirdGeo =  geonameThirdGeoService.getOne(queryWrapper);
+        return geonameThirdGeo;
+    }
+
+    private Geoname getGeoname(int id) {
+        QueryWrapper<Geoname> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("geonameid", id);
+        Geoname geoname = geonameService.getOne(queryWrapper);
+        return geoname;
+    }
+
+    /**
+     * 判断redisKey是否有和风天气缓存
+     *
+     * @param redisKey
+     * @return
+     */
     public boolean isConditionMet(String redisKey) {
         if (redisService.hasKey(redisKey)) {
             Object weatherObj = redisService.getCacheObject(redisKey);
+            if (weatherObj == null) {
+                return false;
+            }
             if (redisKey.contains(NOW_WEATHER_KEY_PREFIX)) {
                 return true;
             } else if (redisKey.contains(HOURLY_WEATHER_FORECAST_KEY_PREFIX)) {
@@ -325,9 +408,9 @@ public class WeatherServiceImpl implements IWeatherService {
         return weatherObj;
     }
 
-    private static String buildRedisKey(int id,  String langFormatted, String unitFormatted) {
+    private static String buildRedisKey(int id, String langFormatted, String unitFormatted) {
         // 将 id、latitude、longitude 拼接成字符串作为 Redis 键
-        return String.format("%d_%s_%s", id,  langFormatted, unitFormatted);
+        return String.format("%d_%s_%s", id, langFormatted, unitFormatted);
     }
 
 
