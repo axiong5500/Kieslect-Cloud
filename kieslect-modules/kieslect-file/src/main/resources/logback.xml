@@ -61,6 +61,8 @@
 	<logger name="com.kieslect.file" level="info" />
 	<!-- Spring日志级别控制  -->
 	<logger name="org.springframework" level="warn" />
+    <!-- nacos级别控制  -->
+    <logger name="com.alibaba.cloud.nacos" level="DEBUG"/>
 
 	<root level="info">
 		<appender-ref ref="console" />

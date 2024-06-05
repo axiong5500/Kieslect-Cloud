@@ -43,12 +43,11 @@ public class DeviceManageController {
         return R.ok();
     }
     @PostMapping("/sys/delete")
-    public R<?> deleteDeviceManage() {
-        return R.ok(deviceManageService.list());
+    public R<?> deleteDeviceManage(@RequestBody DeviceManage deviceManage) {
+        return R.ok(deviceManageService.removeById(deviceManage.getId()));
     }
     @PostMapping("/sys/save")
     public R<?> saveDeviceManage(@RequestBody DeviceManage deviceManage) {
-        deviceManageService.save(deviceManage);
-        return R.ok();
+        return R.ok(deviceManageService.save(deviceManage));
     }
 }

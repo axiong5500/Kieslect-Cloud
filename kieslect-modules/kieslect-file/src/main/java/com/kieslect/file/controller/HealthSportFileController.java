@@ -1,7 +1,7 @@
 package com.kieslect.file.controller;
 
 import com.kieslect.common.core.domain.R;
-import com.kieslect.file.config.OSSConfig;
+import com.kieslect.file.config.OSSProperties;
 import com.kieslect.file.enums.PathTypeEnum;
 import com.kieslect.file.service.FileService;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class HealthSportFileController {
     private FileService fileService;
 
     @Autowired
-    private OSSConfig ossConfig;
+    private OSSProperties ossConfig;
 
     @PostMapping("/uploadLocalFileToOSS")
     public R<?> uploadLocalFileToOSS(@RequestParam("userId") Long userId, @RequestParam("pathType") Integer pathType) {

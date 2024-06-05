@@ -38,4 +38,8 @@ public interface RemoteFileService {
     @PostMapping("/file/healthSport/uploadLocalFileToOSS")
     R<?> uploadLocalFileToOSS(@RequestParam("userId") Long userId,@RequestParam("pathType")  Integer pathType);
 
+
+    @PostMapping("/file/healthSport/removeOSSFile")
+    R<?> removeOSSFile(@RequestParam("userId") Long userId,@RequestParam("pathType")  Integer pathType);
+
 }

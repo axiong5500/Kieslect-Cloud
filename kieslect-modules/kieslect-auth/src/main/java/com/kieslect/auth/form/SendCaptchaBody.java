@@ -9,7 +9,6 @@ import lombok.Data;
 public class SendCaptchaBody {
 
     @NotBlank
-    @Email( message = "邮箱格式错误")
     private String toEmail;
     /**
      * 验证码类型，0：注册，1：忘记密码，2：修改密码，3：修改邮箱

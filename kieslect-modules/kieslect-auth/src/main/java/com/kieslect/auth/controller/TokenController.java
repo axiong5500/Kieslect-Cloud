@@ -134,6 +134,10 @@ public class TokenController {
      */
     @PostMapping("sendCaptcha")
     public R<?> sendCaptcha(@RequestBody @Valid SendCaptchaBody vo) {
+        //校验邮箱格式
+        if (!EmailUtils.isEmail(vo.getToEmail())) {
+            return R.fail(ResponseCodeEnum.EMAIL_FORMAT_ERROR);
+        }
         //发送邮箱验证码之前校验是否已经注册过
         R<Boolean> result = remoteUserService.isEmailExists(vo.getToEmail(), vo.getAppName());
         if (vo.getEmailType().equals(CaptchaEmailTypeEnum.REGISTER.getCode())) {
@@ -165,7 +169,7 @@ public class TokenController {
         // 生成一个6位数字的验证码
         String verificationCode = RandomUtil.randomNumbers(6);
         mailService.sendVerificationCode(vo.getToEmail(),vo.getEmailType(), verificationCode);
-        return R.ok(verificationCode);
+        return R.ok();
     }
 
     @PostMapping("getUserInfo")

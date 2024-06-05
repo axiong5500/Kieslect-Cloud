@@ -7,7 +7,7 @@ import com.aliyun.oss.model.OSSObjectSummary;
 import com.aliyun.oss.model.ObjectListing;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.common.core.enums.ResponseCodeEnum;
-import com.kieslect.file.config.OSSConfig;
+import com.kieslect.file.config.OSSProperties;
 import com.kieslect.file.domain.UploadResponse;
 import com.kieslect.file.enums.PathTypeEnum;
 import com.kieslect.file.service.FileService;
@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,13 @@ public class FileController {
     private FileService fileService;
 
     @Autowired
-    private OSSConfig ossConfig;
+    private OSSProperties ossConfig;
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+
+    @Value("${spring.application.name}")
+    private String appName;
 
     @PostMapping("/upload")
     public R<?> uploadFile(@RequestParam("file") @NotNull(message = "文件不能为空") MultipartFile file,
@@ -105,12 +112,6 @@ public class FileController {
 
     private String generateFileUrl(String filePath) {
         // 在这里根据实际情况生成文件的URL，可以根据域名、路径等信息拼接成完整的URL
-        // 获取context path
-        String contextPath = ossConfig.getContextPath();
-
-        // 获取应用名称
-        String appName = ossConfig.getAppName();
-
         return "/" + appName + contextPath + "/download/" + filePath;
     }
 
