@@ -111,6 +111,11 @@ public class DeviceManageVO {
     @JsonProperty("otaUpgrade")
     private Integer btStatus;
 
+    /**
+     * 是否是模板，0：不是，1：是
+     */
+    private Short templateFlag;
+
 
     /**
      * 参数设置值json集合

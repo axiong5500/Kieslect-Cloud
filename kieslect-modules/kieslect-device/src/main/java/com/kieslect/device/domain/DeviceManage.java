@@ -144,4 +144,7 @@ public class DeviceManage implements Serializable {
 
       @TableField("app_ids")
     private String appIds;
+
+    @TableField("template_flag")
+    private short templateFlag;
 }

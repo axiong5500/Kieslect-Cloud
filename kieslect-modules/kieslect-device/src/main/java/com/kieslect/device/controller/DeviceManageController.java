@@ -1,5 +1,6 @@
 package com.kieslect.device.controller;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.device.domain.DeviceManage;
 import com.kieslect.device.domain.vo.DeviceManageVO;
@@ -41,6 +42,13 @@ public class DeviceManageController {
     public R<?> updateDeviceManage(@RequestBody DeviceManage deviceManage) {
         deviceManageService.updateEntity(deviceManage);
         return R.ok();
+    }
+    @PostMapping("/sys/updateTemplateFlag")
+    public R<?> updateTemplateFlag(@RequestBody DeviceManage deviceManage) {
+        UpdateWrapper<DeviceManage> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("form", deviceManage.getForm());
+        updateWrapper.set("template_flag", deviceManage.getTemplateFlag());
+        return R.ok(deviceManageService.update(updateWrapper));
     }
     @PostMapping("/sys/delete")
     public R<?> deleteDeviceManage(@RequestBody DeviceManage deviceManage) {
