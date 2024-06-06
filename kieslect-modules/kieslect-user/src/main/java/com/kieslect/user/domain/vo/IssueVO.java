@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class IssueVO {
     private Integer type;
+    private Long userId;
     private String description;
     private String imagePaths;
     private String contactEmail;

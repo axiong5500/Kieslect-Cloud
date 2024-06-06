@@ -31,6 +31,9 @@ public class Issue implements Serializable {
       @TableId(value = "id", type = IdType.AUTO)
       private Long id;
 
+    @TableField("user_id")
+    private Long userId;
+
       /**
      * 问题编号
      */

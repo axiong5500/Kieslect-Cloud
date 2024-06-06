@@ -31,6 +31,7 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
         Issue entity = Issue.builder()
                 // 生成一个问题编码 ,后续可能需要有一定生成规则
                 .issueNo(IdUtil.fastSimpleUUID())
+                .userId(issueVO.getUserId())
                 .description(issueVO.getDescription())
                 .contactEmail(issueVO.getContactEmail())
                 .imagePaths(issueVO.getImagePaths())
