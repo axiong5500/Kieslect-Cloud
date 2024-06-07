@@ -2,6 +2,7 @@ package com.kieslect.user.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kieslect.api.domain.ForgetPasswordBody;
 import com.kieslect.api.domain.LoginInfo;
@@ -21,8 +22,11 @@ import com.kieslect.user.service.IUserInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 /**
  * <p>
@@ -173,6 +177,19 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         logout(userInfo.getId());
         BeanUtil.copyProperties(userInfo, userInfoVO,false);
         return userInfoVO;
+    }
+
+    @Override
+    @Transactional
+    public int updateAccountStatusExpire() {
+        long sevenDaysAgoTimestamp = LocalDateTime.now().minusDays(7).toEpochSecond(ZoneOffset.UTC);
+
+        UpdateWrapper<UserInfo> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("del_status", 2)
+                .eq("del_status", 1)
+                .lt("update_time", sevenDaysAgoTimestamp);
+
+        return userInfoMapper.update(null, updateWrapper);
     }
 
     private UserInfo getUserInfo(String column, String value,Byte appName) {

@@ -39,4 +39,6 @@ public interface IUserInfoService extends IService<UserInfo> {
     void logout(Long userId);
 
     UserInfoVO logoutByAccountAndPassword(LogoutBody logoutBody);
+
+    int updateAccountStatusExpire();
 }
