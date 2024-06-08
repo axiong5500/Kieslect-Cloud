@@ -1,5 +1,6 @@
 package com.kieslect.user.controller;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.kieslect.api.domain.ForgetPasswordBody;
@@ -125,7 +126,7 @@ public class UserInfoController {
         String oldCode = changeEmailVO.getOldCode();
         String newCode = changeEmailVO.getNewCode();
 
-        boolean isBindNewEmail = oldEmail == null;
+        boolean isBindNewEmail = StrUtil.isEmpty(oldEmail);
         String oldEmailRediskey = null;
 
         // 如果oldEmail为空，则说明是绑定新邮箱
