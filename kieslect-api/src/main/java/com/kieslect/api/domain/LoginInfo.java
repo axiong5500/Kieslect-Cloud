@@ -15,7 +15,6 @@ public class LoginInfo
     /**
      * 用户名
      */
-    @NotBlank
     private String account;
 
     /**

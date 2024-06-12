@@ -1,6 +1,7 @@
 package com.kieslect.user.handler;
 
 import com.kieslect.common.core.domain.R;
+import com.kieslect.user.exception.CustomException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +16,13 @@ import java.util.regex.Pattern;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(CustomException.class)
+    @ResponseBody
+    public R<?> handlerException(CustomException e){
+        //异常返回false，Result是上一篇接口返回对象。
+        return R.fail(e.getResponseCode());
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public R<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
