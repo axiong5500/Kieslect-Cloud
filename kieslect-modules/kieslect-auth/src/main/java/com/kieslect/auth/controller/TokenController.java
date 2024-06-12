@@ -12,12 +12,12 @@ import com.kieslect.api.enums.RegisterTypeEnum;
 import com.kieslect.api.model.UserInfoVO;
 import com.kieslect.auth.form.RegisterBody;
 import com.kieslect.auth.form.SendCaptchaBody;
+import com.kieslect.auth.utils.ValidationUtils;
 import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.common.core.enums.CaptchaEmailTypeEnum;
 import com.kieslect.common.core.enums.EmailTypeEnum;
 import com.kieslect.common.core.enums.ResponseCodeEnum;
-import com.kieslect.common.core.utils.EmailUtils;
 import com.kieslect.common.core.utils.JwtUtils;
 import com.kieslect.common.core.utils.StringUtils;
 import com.kieslect.common.mail.service.MailService;
@@ -53,7 +53,8 @@ public class TokenController {
     private RedisService redisService;
 
     /**
-     *  登录
+     * 登录
+     *
      * @param loginInfo
      * @return
      */
@@ -111,7 +112,7 @@ public class TokenController {
 
         // 账号注册校验是否包含@邮箱格式
         if (registerBody.getRegisterType() == RegisterTypeEnum.ACCOUNT.getCode()) {
-            if (EmailUtils.isEmail(registerBody.getAccount())) {
+            if (ValidationUtils.isValidEmail(registerBody.getAccount())) {
                 return R.fail(ResponseCodeEnum.ACCOUNT_FORMAT_ERROR);
             }
         }
@@ -120,7 +121,7 @@ public class TokenController {
         RegisterInfo registerInfo = new RegisterInfo();
         BeanUtils.copyProperties(registerBody, registerInfo);
         R<Boolean> result = remoteUserService.registerUserInfo(registerInfo);
-        if (R.isError(result)){
+        if (R.isError(result)) {
             return result;
         }
         return R.ok();
@@ -135,9 +136,10 @@ public class TokenController {
     @PostMapping("sendCaptcha")
     public R<?> sendCaptcha(@RequestBody @Valid SendCaptchaBody vo) {
         //校验邮箱格式
-        if (!EmailUtils.isEmail(vo.getToEmail())) {
+        if (!ValidationUtils.isValidEmail(vo.getToEmail())) {
             return R.fail(ResponseCodeEnum.EMAIL_FORMAT_ERROR);
         }
+
         //发送邮箱验证码之前校验是否已经注册过
         R<Boolean> result = remoteUserService.isEmailExists(vo.getToEmail(), vo.getAppName());
         if (vo.getEmailType().equals(CaptchaEmailTypeEnum.REGISTER.getCode())) {
@@ -168,7 +170,7 @@ public class TokenController {
 
         // 生成一个6位数字的验证码
         String verificationCode = RandomUtil.randomNumbers(6);
-        mailService.sendVerificationCode(vo.getToEmail(),vo.getEmailType(), verificationCode);
+        mailService.sendVerificationCode(vo.getToEmail(), vo.getEmailType(), verificationCode);
         return R.ok();
     }
 
@@ -204,16 +206,16 @@ public class TokenController {
         String token = SecurityUtils.getToken(request);
         if (StringUtils.isNotEmpty(token)) {
             String userKey = JwtUtils.getUserKey(token);
-            Long userId =  JwtUtils.getUserId(token);
+            Long userId = JwtUtils.getUserId(token);
             // 删除用户缓存记录
             tokenService.delLoginUserByUserkey(userKey);
             remoteUserService.logout(userId);
             return R.ok();
-        }else{
+        } else {
             // 判断账号和密码是否正确
             R<UserInfoVO> result = remoteUserService.logoutByAccountAndPassword(logoutBody);
             UserInfoVO userInfoVO = result.getData();
-            if (userInfoVO == null){
+            if (userInfoVO == null) {
                 return result;
             }
             // 删除用户缓存记录

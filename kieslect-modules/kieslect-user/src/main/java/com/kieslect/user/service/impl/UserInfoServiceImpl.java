@@ -19,6 +19,7 @@ import com.kieslect.user.domain.vo.SaveUserInfoVO;
 import com.kieslect.user.exception.CustomException;
 import com.kieslect.user.mapper.UserInfoMapper;
 import com.kieslect.user.service.IUserInfoService;
+import com.kieslect.user.utils.ValidationUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,7 +77,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         String account = loginInfo.getAccount();
         Byte appName = loginInfo.getAppName();
         UserInfo userInfo;
-        if (EmailUtils.isEmail(account)) {
+        if (ValidationUtils.isValidEmail(account)) {
             // 邮箱登录
             userInfo = getUserInfo("email", account,appName);
         } else {
