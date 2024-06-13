@@ -53,7 +53,7 @@ public class ArticleController {
     @PostMapping("/sys/save")
     public R<?> saveAppManage(@RequestBody Article article) {
         articleService.save(article);
-        return R.ok();
+        return R.ok(article);
     }
 
 
