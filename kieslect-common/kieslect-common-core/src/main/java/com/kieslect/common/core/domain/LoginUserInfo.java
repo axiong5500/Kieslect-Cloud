@@ -41,6 +41,7 @@ public class LoginUserInfo implements Serializable {
     private Byte firstLogin;
     private Long createTime;
     private Long updateTime;
+    private byte delStatus;
 
     private String userKey;
     /**

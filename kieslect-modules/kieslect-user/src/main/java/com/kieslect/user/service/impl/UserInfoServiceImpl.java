@@ -1,23 +1,24 @@
 package com.kieslect.user.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.kieslect.api.domain.ForgetPasswordBody;
-import com.kieslect.api.domain.LoginInfo;
-import com.kieslect.api.domain.LogoutBody;
-import com.kieslect.api.domain.RegisterInfo;
+import com.kieslect.api.domain.*;
 import com.kieslect.api.enums.RegisterTypeEnum;
 import com.kieslect.api.model.UserInfoVO;
+import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.enums.ResponseCodeEnum;
 import com.kieslect.common.core.utils.EmailUtils;
 import com.kieslect.common.security.service.TokenService;
+import com.kieslect.user.domain.ThirdUserInfo;
 import com.kieslect.user.domain.UserInfo;
 import com.kieslect.user.domain.dto.RegisterUserInfoDTO;
 import com.kieslect.user.domain.vo.SaveUserInfoVO;
 import com.kieslect.user.exception.CustomException;
 import com.kieslect.user.mapper.UserInfoMapper;
+import com.kieslect.user.service.IThirdUserInfoService;
 import com.kieslect.user.service.IUserInfoService;
 import com.kieslect.user.utils.ValidationUtils;
 import org.springframework.beans.BeanUtils;
@@ -45,6 +46,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private IThirdUserInfoService thirdUserInfoService;
 
     @Override
     public Boolean register(RegisterInfo registerInfo){
@@ -191,6 +195,42 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                 .lt("update_time", sevenDaysAgoTimestamp);
 
         return userInfoMapper.update(null, updateWrapper);
+    }
+
+    @Override
+    public LoginUserInfo thirdLogin(ThirdLoginInfo thirdLoginInfo) {
+        // 保存第三方用户信息
+        ThirdUserInfo thirdUserInfo = new ThirdUserInfo();
+        BeanUtil.copyProperties(thirdLoginInfo, thirdUserInfo);
+        thirdUserInfo.setThirdTokenStatus((byte) 0);
+        thirdUserInfo.setCreateTime(Instant.now().getEpochSecond());
+        thirdUserInfo.setUpdateTime(Instant.now().getEpochSecond());
+        thirdUserInfoService.save(thirdUserInfo);
+
+        // 注册新账号
+        UserInfo user = new UserInfo();
+        RegisterUserInfoDTO userInfoDTO = new RegisterUserInfoDTO();
+        BeanUtil.copyProperties(userInfoDTO, user);
+        this.save(user);
+
+        //反写thirdUserInfo的userid
+        thirdUserInfo.setUserId(user.getId());
+        thirdUserInfoService.updateById(thirdUserInfo);
+
+        // 用户登录
+        String userKey = IdUtil.fastUUID();
+        //删除旧的缓存key，实现单端登录
+        tokenService.delLoginUserByUserkey(userKey);
+        // 当前时间戳 单位秒
+        user.setUpdateTime(Instant.now().getEpochSecond());
+        user.setDelStatus((byte) 0);
+        user.setUserKey(userKey);
+        userInfoMapper.updateById(user);
+
+        LoginUserInfo loginUserInfo = new LoginUserInfo();
+        BeanUtil.copyProperties(user, loginUserInfo);
+
+        return loginUserInfo;
     }
 
     private UserInfo getUserInfo(String column, String value,Byte appName) {

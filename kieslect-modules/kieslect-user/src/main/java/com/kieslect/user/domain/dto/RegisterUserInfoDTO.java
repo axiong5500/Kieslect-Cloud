@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.time.Instant;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -24,6 +23,7 @@ public class RegisterUserInfoDTO {
     private String country;
     private String province;
     private String city;
+    private Integer cityId;
     private String nickName;
     private String headImage;
     private Byte appName;
@@ -45,6 +45,7 @@ public class RegisterUserInfoDTO {
         this.account = "kieslect_" + Instant.now().toEpochMilli();
         this.password = "123456";
         this.sex = 0;
+        this.cityId = 0;
         this.metricBritish = 0;
         this.hourly = 0;
         this.temperature = 0;

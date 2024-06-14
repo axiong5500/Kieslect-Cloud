@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -48,4 +49,5 @@ public class UserInfoVO implements Serializable {
     private double caloriesAim;
     private int sleepAim;
     private double weightAim;
+    private List<ThirdUserInfoVO> thirdUserInfos;
 }

@@ -36,6 +36,7 @@ public class GatewayConfig {
             "/kieslect-auth/auth/register",
             "/kieslect-auth/auth/forgetPassword",
             "/kieslect-auth/auth/login",
+            "/kieslect-auth/auth/third/login",
             "/kieslect-auth/auth/logout",
             "/kieslect-user/user/notify/getAppList",
             "/kieslect-device/device/**/sys/**",
@@ -44,7 +45,7 @@ public class GatewayConfig {
             "/kieslect-file/file/download/**",
             "/kieslect-weather/weather/getWeatherInfo",
             "/kieslect-device/device/appManage/getApp",
-            "/kieslect-**/**/task/**"
+            "/kieslect-**/**/task/**",
 
     };
 

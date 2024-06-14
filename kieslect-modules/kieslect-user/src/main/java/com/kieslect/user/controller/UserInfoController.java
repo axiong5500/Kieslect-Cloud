@@ -1,12 +1,11 @@
 package com.kieslect.user.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
-import com.kieslect.api.domain.ForgetPasswordBody;
-import com.kieslect.api.domain.LoginInfo;
-import com.kieslect.api.domain.LogoutBody;
-import com.kieslect.api.domain.RegisterInfo;
+import com.kieslect.api.domain.*;
+import com.kieslect.api.model.ThirdUserInfoVO;
 import com.kieslect.api.model.UserInfoVO;
 import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.domain.R;
@@ -15,11 +14,14 @@ import com.kieslect.common.core.enums.ResponseCodeEnum;
 import com.kieslect.common.mail.service.MailService;
 import com.kieslect.common.redis.service.RedisService;
 import com.kieslect.common.security.service.TokenService;
+import com.kieslect.user.domain.ThirdUserInfo;
 import com.kieslect.user.domain.UserInfo;
 import com.kieslect.user.domain.vo.BindEmailVO;
+import com.kieslect.user.domain.vo.BindThirdInfoVO;
 import com.kieslect.user.domain.vo.ChangeEmailVO;
 import com.kieslect.user.domain.vo.SaveUserInfoVO;
 import com.kieslect.user.enums.KAppNotificationTypeEnum;
+import com.kieslect.user.service.IThirdUserInfoService;
 import com.kieslect.user.service.IUserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -27,8 +29,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>
@@ -54,6 +59,9 @@ public class UserInfoController {
     @Autowired
     private RedisService redisService;
 
+    @Autowired
+    private IThirdUserInfoService thirdUserInfoService;
+
     @PostMapping("/register")
     public R<Object> registerUserInfo(@RequestBody RegisterInfo registerInfo) {
         return R.ok(userInfoService.register(registerInfo));
@@ -63,6 +71,62 @@ public class UserInfoController {
     public R<UserInfoVO> login(@RequestBody LoginInfo loginInfo) {
         return R.ok(userInfoService.login(loginInfo));
     }
+
+    @PostMapping("/third/login")
+    public R<?> thirdLogin(@RequestBody ThirdLoginInfo thirdLoginInfo) {
+        LoginUserInfo userInfo = userInfoService.thirdLogin(thirdLoginInfo);
+        return R.ok(tokenService.createToken(userInfo));
+    }
+
+    @PostMapping("/third/binding")
+    public R<?> thirdBinding(HttpServletRequest request,@RequestBody BindThirdInfoVO bindThirdInfoVO) {
+        LoginUserInfo loginUser = tokenService.getLoginUser(request);
+        Long userId = loginUser.getId();
+
+        // 检查是否存在已绑定的第三方用户信息
+        Optional<ThirdUserInfo> existingBinding = thirdUserInfoService.findByUserIdAndThirdId(userId, bindThirdInfoVO.getThirdId());
+
+        if (existingBinding.isPresent()) {
+            // 如果存在，更新现有记录
+            ThirdUserInfo thirdUserInfo = existingBinding.get();
+            BeanUtil.copyProperties(bindThirdInfoVO, thirdUserInfo, "thirdId"); // 不覆盖第三方ID
+            thirdUserInfo.setUpdateTime(Instant.now().getEpochSecond());
+            boolean result = thirdUserInfoService.updateById(thirdUserInfo);
+
+            return R.ok(result);
+        } else {
+            // 如果不存在，创建新记录
+            ThirdUserInfo thirdUserInfo = new ThirdUserInfo();
+            BeanUtil.copyProperties(bindThirdInfoVO, thirdUserInfo);
+            thirdUserInfo.setUserId(userId);
+            thirdUserInfo.setThirdTokenStatus((byte) 0);
+            thirdUserInfo.setCreateTime(Instant.now().getEpochSecond());
+            thirdUserInfo.setUpdateTime(Instant.now().getEpochSecond());
+
+            boolean result = thirdUserInfoService.save(thirdUserInfo);
+            return R.ok(result);
+        }
+    }
+
+    @PostMapping("/third/unBinding/{id}")
+    public R<?> thirdUnBinding(@PathVariable Long id) {
+        return R.ok(thirdUserInfoService.removeById(id));
+    }
+
+    @PostMapping("/third/getThirdUserInfo/{userId}")
+    public R<List<ThirdUserInfoVO>> getThirdUserInfo(@PathVariable Long userId) {
+        List<ThirdUserInfo> thirdUserInfoList = thirdUserInfoService.getThirdUserInfo(userId);
+        if (thirdUserInfoList != null) {
+            List<ThirdUserInfoVO> thirdUserInfoVOList = thirdUserInfoList.stream().map(thirdUserInfo -> {
+                ThirdUserInfoVO thirdUserInfoVO = new ThirdUserInfoVO();
+                BeanUtils.copyProperties(thirdUserInfo, thirdUserInfoVO);
+                return thirdUserInfoVO;
+            }).toList();
+            return R.ok(thirdUserInfoVOList);
+        }
+        return R.ok();
+    }
+
 
 
     @PostMapping("/saveUserInfo")

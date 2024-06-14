@@ -4,10 +4,7 @@ package com.kieslect.auth.controller;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.kieslect.api.RemoteUserService;
-import com.kieslect.api.domain.ForgetPasswordBody;
-import com.kieslect.api.domain.LoginInfo;
-import com.kieslect.api.domain.LogoutBody;
-import com.kieslect.api.domain.RegisterInfo;
+import com.kieslect.api.domain.*;
 import com.kieslect.api.enums.RegisterTypeEnum;
 import com.kieslect.api.model.UserInfoVO;
 import com.kieslect.auth.form.RegisterBody;
@@ -55,6 +52,17 @@ public class TokenController {
     /**
      * 登录
      *
+     * @param
+     * @return
+     */
+    @PostMapping("third/login")
+    public R<?> thirdLogin(@RequestBody ThirdLoginInfo thirdLoginInfo) {
+        return remoteUserService.thirdLogin(thirdLoginInfo);
+    }
+
+    /**
+     * 登录
+     *
      * @param loginInfo
      * @return
      */
@@ -96,7 +104,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("register")
-    public R<?> register(@RequestBody RegisterBody registerBody) {
+    public R<?> register(@RequestBody @Valid RegisterBody registerBody) {
         // 邮箱验证码校验
         if (registerBody.getRegisterType() == RegisterTypeEnum.EMAIL.getCode()) {
             String email = EmailTypeEnum.REGISTER.getRedisKey() + registerBody.getAccount();
@@ -182,6 +190,7 @@ public class TokenController {
 
             BeanUtils.copyProperties(loginUser, userInfoVO);
         }
+        userInfoVO.setThirdUserInfos(remoteUserService.getThirdUserInfo(loginUser.getId()).getData());
         return R.ok(userInfoVO);
     }
 

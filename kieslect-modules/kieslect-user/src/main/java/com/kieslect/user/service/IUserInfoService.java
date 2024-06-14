@@ -1,11 +1,9 @@
 package com.kieslect.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.kieslect.api.domain.ForgetPasswordBody;
-import com.kieslect.api.domain.LoginInfo;
-import com.kieslect.api.domain.LogoutBody;
-import com.kieslect.api.domain.RegisterInfo;
+import com.kieslect.api.domain.*;
 import com.kieslect.api.model.UserInfoVO;
+import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.user.domain.UserInfo;
 import com.kieslect.user.domain.vo.SaveUserInfoVO;
 
@@ -41,4 +39,6 @@ public interface IUserInfoService extends IService<UserInfo> {
     UserInfoVO logoutByAccountAndPassword(LogoutBody logoutBody);
 
     int updateAccountStatusExpire();
+
+    LoginUserInfo thirdLogin(ThirdLoginInfo thirdLoginInfo);
 }

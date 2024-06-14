@@ -1,10 +1,8 @@
 package com.kieslect.api;
 
 
-import com.kieslect.api.domain.ForgetPasswordBody;
-import com.kieslect.api.domain.LoginInfo;
-import com.kieslect.api.domain.LogoutBody;
-import com.kieslect.api.domain.RegisterInfo;
+import com.kieslect.api.domain.*;
+import com.kieslect.api.model.ThirdUserInfoVO;
 import com.kieslect.api.model.UserInfoVO;
 import com.kieslect.common.core.constant.ServiceNameConstants;
 import com.kieslect.common.core.domain.R;
@@ -13,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 /**
  * 用户服务
@@ -66,4 +66,10 @@ public interface RemoteUserService
 
     @PostMapping(value = "/user/logoutByAccountAndPassword")
     R<UserInfoVO> logoutByAccountAndPassword(@RequestBody LogoutBody logoutBody);
+
+    @PostMapping(value = "/user/third/login")
+    R<?> thirdLogin(@RequestBody ThirdLoginInfo thirdLoginInfo);
+
+    @PostMapping(value = "/user/third/getThirdUserInfo/{userId}")
+    R<List<ThirdUserInfoVO>> getThirdUserInfo(@PathVariable("userId") Long userId);
 }
