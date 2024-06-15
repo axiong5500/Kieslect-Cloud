@@ -1,6 +1,7 @@
 package com.kieslect.user.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -108,9 +109,9 @@ public class UserInfoController {
         }
     }
 
-    @PostMapping("/third/unBinding/{id}")
-    public R<?> thirdUnBinding(@PathVariable Long id) {
-        return R.ok(thirdUserInfoService.removeById(id));
+    @PostMapping("/third/unBinding")
+    public R<?> thirdUnBinding(@RequestParam Long kid) {
+        return R.ok(thirdUserInfoService.removeById(kid));
     }
 
     @PostMapping("/third/getThirdUserInfo/{userId}")
@@ -119,7 +120,9 @@ public class UserInfoController {
         if (thirdUserInfoList != null) {
             List<ThirdUserInfoVO> thirdUserInfoVOList = thirdUserInfoList.stream().map(thirdUserInfo -> {
                 ThirdUserInfoVO thirdUserInfoVO = new ThirdUserInfoVO();
-                BeanUtils.copyProperties(thirdUserInfo, thirdUserInfoVO);
+                BeanUtil.copyProperties(thirdUserInfo, thirdUserInfoVO, CopyOptions.create().setFieldMapping(
+                        Map.of("id", "kid")
+                ));
                 return thirdUserInfoVO;
             }).toList();
             return R.ok(thirdUserInfoVOList);

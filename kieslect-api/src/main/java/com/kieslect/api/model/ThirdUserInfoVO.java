@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data
 public class ThirdUserInfoVO extends ThirdLoginInfo {
-    private Long id;
+    private Long kid;
 }
