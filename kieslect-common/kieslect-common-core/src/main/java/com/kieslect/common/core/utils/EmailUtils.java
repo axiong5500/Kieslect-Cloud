@@ -19,8 +19,14 @@ public class EmailUtils {
 
         // 设置邮件属性
         Properties props = new Properties();
+        if (port == 465){
+            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            props.put("mail.smtp.socketFactory.fallback", "false");
+            props.put("mail.smtp.socketFactory.port", port);
+        }else if (port == 587){
+            props.put("mail.smtp.starttls.enable", "true");
+        }
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", port);
 
@@ -62,5 +68,21 @@ public class EmailUtils {
         }
         String pattern = "^[\\w-]+(\\.[\\w-]+)*@[\\w-]+(\\.[\\w-]+)+$";
         return str.matches(pattern);
+    }
+
+    public static void main(String[] args) {
+        MailConfig mailConfig = new MailConfig();
+        //QQ
+        mailConfig.setUsername("lianyixiong@qq.com");
+        mailConfig.setPassword("jgbencutyyygbbgj");
+        mailConfig.setHost("smtp.qq.com");
+        mailConfig.setPort(587);
+        sendEmail(mailConfig, "lianyixiong@gmail.com", "Test Subject", "Test Body");
+        //ALi
+        mailConfig.setUsername("KstyleOS@kieslect-cn.com");
+        mailConfig.setPassword("HH123456@");
+        mailConfig.setHost("smtp.qiye.aliyun.com");
+        mailConfig.setPort(465);
+        sendEmail(mailConfig, "lianyixiong@gmail.com", "Test Subject", "Test Body");
     }
 }
