@@ -42,4 +42,8 @@ public interface RemoteFileService {
     @PostMapping("/file/healthSport/removeOSSFile")
     R<?> removeOSSFile(@RequestParam("userId") Long userId,@RequestParam("pathType")  Integer pathType);
 
+    @PostMapping("/file/remoteUrlToOSS")
+    R<?> remoteUrlToOSS(@RequestParam("remoteUrl")  String remoteUrl,
+                        @RequestParam("pathType")  Integer pathType);
+
 }

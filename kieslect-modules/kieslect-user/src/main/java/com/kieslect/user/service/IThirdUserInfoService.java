@@ -1,6 +1,7 @@
 package com.kieslect.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kieslect.api.model.ThirdUserInfoVO;
 import com.kieslect.user.domain.ThirdUserInfo;
 
 import java.util.List;
@@ -18,5 +19,5 @@ public interface IThirdUserInfoService extends IService<ThirdUserInfo> {
 
     Optional<ThirdUserInfo> findByUserIdAndThirdId(Long userId, String thirdId);
 
-    List<ThirdUserInfo> getThirdUserInfo(Long userId);
+    List<ThirdUserInfoVO> getThirdUserInfosByUserId(Long userId);
 }

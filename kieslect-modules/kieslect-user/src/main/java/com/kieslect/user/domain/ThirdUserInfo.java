@@ -106,4 +106,10 @@ public class ThirdUserInfo implements Serializable {
 
     @TableField("third_updated_time")
     private String thirdUpdatedTime;
+
+    @TableField("app_name")
+    private Byte appName;
+
+    @TableField("local_picture_url")
+    private String localPictureUrl;
 }

@@ -95,4 +95,11 @@ public class ThirdLoginInfo
     private String thirdUpdatedTime;
 
 
+    /**
+     * 本地图片的URL地址
+     * 该字段用于存储本地系统中图片资源的访问路径，以便在需要展示图片时使用。
+     * 它不直接包含图片数据，而是指向图片文件在系统中的位置。
+     */
+    private String localPictureUrl;
+
 }

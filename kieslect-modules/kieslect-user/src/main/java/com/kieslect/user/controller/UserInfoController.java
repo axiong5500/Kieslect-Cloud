@@ -1,7 +1,6 @@
 package com.kieslect.user.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -26,6 +25,7 @@ import com.kieslect.user.service.IThirdUserInfoService;
 import com.kieslect.user.service.IUserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +47,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/user")
 public class UserInfoController {
+
+    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(UserInfoController.class);
 
     @Autowired
     private IUserInfoService userInfoService;
@@ -80,9 +82,11 @@ public class UserInfoController {
     }
 
     @PostMapping("/third/binding")
-    public R<?> thirdBinding(HttpServletRequest request,@RequestBody BindThirdInfoVO bindThirdInfoVO) {
+    public R<?> thirdBinding(HttpServletRequest request, @RequestBody BindThirdInfoVO bindThirdInfoVO) {
+        Map<String, Object> map = new HashMap<>();
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
         Long userId = loginUser.getId();
+
 
         // 检查是否存在已绑定的第三方用户信息
         Optional<ThirdUserInfo> existingBinding = thirdUserInfoService.findByUserIdAndThirdId(userId, bindThirdInfoVO.getThirdId());
@@ -90,11 +94,10 @@ public class UserInfoController {
         if (existingBinding.isPresent()) {
             // 如果存在，更新现有记录
             ThirdUserInfo thirdUserInfo = existingBinding.get();
-            BeanUtil.copyProperties(bindThirdInfoVO, thirdUserInfo, "thirdId"); // 不覆盖第三方ID
+            BeanUtil.copyProperties(bindThirdInfoVO, thirdUserInfo, "thirdId", "localPictureUrl"); // 不覆盖第三方ID
             thirdUserInfo.setUpdateTime(Instant.now().getEpochSecond());
             boolean result = thirdUserInfoService.updateById(thirdUserInfo);
-
-            return R.ok(result);
+            logger.info("更新第三方用户信息成功: {},{}", result, thirdUserInfo);
         } else {
             // 如果不存在，创建新记录
             ThirdUserInfo thirdUserInfo = new ThirdUserInfo();
@@ -105,31 +108,30 @@ public class UserInfoController {
             thirdUserInfo.setUpdateTime(Instant.now().getEpochSecond());
 
             boolean result = thirdUserInfoService.save(thirdUserInfo);
-            return R.ok(result);
+            logger.info("保存第三方用户信息成功: {},{}", result, thirdUserInfo);
         }
+        List<ThirdUserInfoVO> thirdUserInfoList = thirdUserInfoService.getThirdUserInfosByUserId(userId);
+        map.put("thirdUserInfos", thirdUserInfoList);
+        return R.ok(map);
     }
 
     @PostMapping("/third/unBinding")
-    public R<?> thirdUnBinding(@RequestParam Long kid) {
-        return R.ok(thirdUserInfoService.removeById(kid));
+    public R<?> thirdUnBinding(HttpServletRequest request, @RequestParam Long kid) {
+        Map<String, Object> map = new HashMap<>();
+        LoginUserInfo loginUser = tokenService.getLoginUser(request);
+        Long userId = loginUser.getId();
+        boolean result = thirdUserInfoService.removeById(kid);
+        logger.info("删除第三方用户信息成功: {},{}", result, kid);
+        List<ThirdUserInfoVO> thirdUserInfoList = thirdUserInfoService.getThirdUserInfosByUserId(userId);
+        map.put("thirdUserInfos", thirdUserInfoList);
+        return R.ok(map);
     }
 
     @PostMapping("/third/getThirdUserInfo/{userId}")
     public R<List<ThirdUserInfoVO>> getThirdUserInfo(@PathVariable Long userId) {
-        List<ThirdUserInfo> thirdUserInfoList = thirdUserInfoService.getThirdUserInfo(userId);
-        if (thirdUserInfoList != null) {
-            List<ThirdUserInfoVO> thirdUserInfoVOList = thirdUserInfoList.stream().map(thirdUserInfo -> {
-                ThirdUserInfoVO thirdUserInfoVO = new ThirdUserInfoVO();
-                BeanUtil.copyProperties(thirdUserInfo, thirdUserInfoVO, CopyOptions.create().setFieldMapping(
-                        Map.of("id", "kid")
-                ));
-                return thirdUserInfoVO;
-            }).toList();
-            return R.ok(thirdUserInfoVOList);
-        }
-        return R.ok();
+        List<ThirdUserInfoVO> thirdUserInfoList = thirdUserInfoService.getThirdUserInfosByUserId(userId);
+        return R.ok(thirdUserInfoList);
     }
-
 
 
     @PostMapping("/saveUserInfo")
@@ -143,7 +145,7 @@ public class UserInfoController {
         // 如果userInfoVO里的password不为空，则说明更改了密码，需要重新登录
         if (saveUserInfoVO.getPassword() != null && !saveUserInfoVO.getPassword().equals(loginUser.getPassword())) {
             tokenService.delLoginUserByUserkey(loginUser.getUserKey());
-        }else{
+        } else {
             UserInfoVO entity = userInfoService.getUserInfo(loginUser.getId());
             LoginUserInfo refreshLoginUser = new LoginUserInfo();
             BeanUtils.copyProperties(entity, refreshLoginUser);

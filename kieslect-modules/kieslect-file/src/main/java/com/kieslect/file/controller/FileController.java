@@ -1,5 +1,7 @@
 package com.kieslect.file.controller;
 
+import cn.hutool.core.lang.UUID;
+import cn.hutool.http.HttpRequest;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.OSSObject;
@@ -28,6 +30,8 @@ import org.springframework.web.servlet.HandlerMapping;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,6 +55,13 @@ public class FileController {
     @Value("${spring.application.name}")
     private String appName;
 
+    @Value("${debugMode:false}")
+    private String debugMode;
+
+    public boolean isDebugMode() {
+        return "true".equalsIgnoreCase(debugMode);
+    }
+
     @PostMapping("/upload")
     public R<?> uploadFile(@RequestParam("file") @NotNull(message = "文件不能为空") MultipartFile file,
                            @RequestParam("pathType") @NotNull(message = "路径类型不能为空") Integer pathType,
@@ -64,6 +75,55 @@ public class FileController {
         PathTypeEnum pathTypeEnum = PathTypeEnum.getByCode(pathType);
         userId = userId == null ? 9999L : userId;
         return uploadFile(file, pathTypeEnum.getPath(), userId);
+    }
+
+    @PostMapping("/remoteUrlToOSS")
+    public R<?> remoteUrlToOSS(@RequestParam("remoteUrl") String remoteUrl,
+                               @RequestParam("pathType") Integer pathType) {
+
+        // 根据枚举获取路径类型
+        PathTypeEnum pathTypeEnum = PathTypeEnum.getByCode(pathType);
+        String ossPath = pathTypeEnum.getPath();
+
+
+        // 组装oss保存文件路径
+        String uniqueFileName = UUID.randomUUID() + ".jpg"; // 唯一文件名
+        String ossFilePath = ossPath + "/remote/" + uniqueFileName;
+
+        // 获取bucket名称
+        String bucketName = ossConfig.getBucketName();
+
+        try {
+            // 使用Hutool的HttpRequest下载远程文件到InputStream
+            //开启代理IP和端口
+            InputStream inputStream;
+            if (isDebugMode()) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 7890));
+                inputStream = HttpRequest.get(remoteUrl).setProxy(proxy).execute().bodyStream();
+            }else{
+                inputStream = HttpRequest.get(remoteUrl).execute().bodyStream();
+            }
+
+            // 将远程文件上传至OSS
+            fileService.remoteUrlToOSS(bucketName, ossFilePath, inputStream);
+
+            // 生成文件的URL
+            String fileUrl = generateFileUrl(ossFilePath);
+
+            // 关闭输入流
+            inputStream.close();
+
+            // 构造响应体
+            UploadResponse response = new UploadResponse()
+                    .setFilename(uniqueFileName)
+                    .setFileUrl(fileUrl)
+                    .setFileSize((long) -1); // 你可能需要一个方法来获取文件大小，这里暂时设为-1
+
+            return R.ok(response);
+        } catch (IOException e) {
+            // 处理异常
+            return R.fail("文件上传失败：" + e.getMessage());
+        }
     }
 
     public R<?> uploadFile(MultipartFile file, String path, long userId) throws IOException {
@@ -235,4 +295,5 @@ public class FileController {
         }
         return mimeType;
     }
+
 }

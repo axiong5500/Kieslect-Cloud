@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 @Service
 public class FileService {
@@ -93,4 +90,10 @@ public class FileService {
     public void removeOSSFile(String ossFilePath, String bucketName) {
         ossClient.deleteObject(bucketName, ossFilePath);
     }
+
+    public void remoteUrlToOSS(String bucketName, String ossFilePath, InputStream inputStream) {
+        ossClient.putObject(new PutObjectRequest(bucketName, ossFilePath, inputStream));
+    }
+
+
 }
