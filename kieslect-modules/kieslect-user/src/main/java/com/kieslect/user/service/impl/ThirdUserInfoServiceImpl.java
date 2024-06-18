@@ -32,10 +32,11 @@ public class ThirdUserInfoServiceImpl extends ServiceImpl<ThirdUserInfoMapper, T
     private ThirdUserInfoMapper thirdUserInfoMapper;
 
     @Override
-    public Optional<ThirdUserInfo> findByUserIdAndThirdId(Long userId, String thirdId) {
+    public Optional<ThirdUserInfo> findByUserIdAndThirdId(Long userId, String thirdId, int thirdTokenType) {
         LambdaQueryWrapper<ThirdUserInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ThirdUserInfo::getUserId, userId);
         queryWrapper.eq(ThirdUserInfo::getThirdId, thirdId);
+        queryWrapper.eq(ThirdUserInfo::getThirdTokenType, thirdTokenType);
         ThirdUserInfo thirdUserInfo = this.getOne(queryWrapper);
         return Optional.ofNullable(thirdUserInfo);
     }

@@ -89,7 +89,7 @@ public class UserInfoController {
 
 
         // 检查是否存在已绑定的第三方用户信息
-        Optional<ThirdUserInfo> existingBinding = thirdUserInfoService.findByUserIdAndThirdId(userId, bindThirdInfoVO.getThirdId());
+        Optional<ThirdUserInfo> existingBinding = thirdUserInfoService.findByUserIdAndThirdId(userId, bindThirdInfoVO.getThirdId(),bindThirdInfoVO.getThirdTokenType());
 
         if (existingBinding.isPresent()) {
             // 如果存在，更新现有记录

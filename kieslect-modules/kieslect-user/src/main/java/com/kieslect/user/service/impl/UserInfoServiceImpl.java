@@ -3,6 +3,7 @@ package com.kieslect.user.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -246,9 +247,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     private ThirdUserInfo getExistingBinding(ThirdLoginInfo thirdLoginInfo) {
-        QueryWrapper<ThirdUserInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("third_id", thirdLoginInfo.getThirdId())
-                .eq("app_name", thirdLoginInfo.getAppName());
+        LambdaQueryWrapper<ThirdUserInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ThirdUserInfo::getThirdId, thirdLoginInfo.getThirdId())
+                .eq(ThirdUserInfo::getAppName, thirdLoginInfo.getAppName())
+                .eq(ThirdUserInfo::getThirdTokenType, thirdLoginInfo.getThirdTokenType());
         return thirdUserInfoService.getOneOpt(queryWrapper).orElse(null);
     }
 
