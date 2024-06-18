@@ -35,4 +35,5 @@ spring:
       max-request-size: 200MB
 
 
-
+# 是否开启代理模式
+debugMode: true

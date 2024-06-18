@@ -21,6 +21,8 @@ public enum ResponseCodeEnum {
     EMAIL_CAPTCHA_ERROR(1009, "邮箱验证码错误"),
     // 上传文件不为空
     FILE_NOT_EMPTY(1010, "上传文件不为空"),
+    //该账号已被绑定
+    ACCOUNT_ALREADY_BIND(1011, "该第三方帐号已被绑定"),
 
     PARAM_ERROR (1000, "参数错误"),
     ;

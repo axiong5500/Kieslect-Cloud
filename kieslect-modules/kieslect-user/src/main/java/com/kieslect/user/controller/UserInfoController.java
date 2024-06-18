@@ -21,6 +21,7 @@ import com.kieslect.user.domain.vo.BindThirdInfoVO;
 import com.kieslect.user.domain.vo.ChangeEmailVO;
 import com.kieslect.user.domain.vo.SaveUserInfoVO;
 import com.kieslect.user.enums.KAppNotificationTypeEnum;
+import com.kieslect.user.exception.CustomException;
 import com.kieslect.user.service.IThirdUserInfoService;
 import com.kieslect.user.service.IUserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -89,15 +90,11 @@ public class UserInfoController {
 
 
         // 检查是否存在已绑定的第三方用户信息
-        Optional<ThirdUserInfo> existingBinding = thirdUserInfoService.findByUserIdAndThirdId(userId, bindThirdInfoVO.getThirdId(),bindThirdInfoVO.getThirdTokenType());
+        Optional<ThirdUserInfo> existingBinding = thirdUserInfoService.findByUserIdAndThirdId(bindThirdInfoVO.getThirdId(),bindThirdInfoVO.getThirdTokenType());
 
         if (existingBinding.isPresent()) {
-            // 如果存在，更新现有记录
-            ThirdUserInfo thirdUserInfo = existingBinding.get();
-            BeanUtil.copyProperties(bindThirdInfoVO, thirdUserInfo, "thirdId", "localPictureUrl"); // 不覆盖第三方ID
-            thirdUserInfo.setUpdateTime(Instant.now().getEpochSecond());
-            boolean result = thirdUserInfoService.updateById(thirdUserInfo);
-            logger.info("更新第三方用户信息成功: {},{}", result, thirdUserInfo);
+            // 如果存在
+            throw new CustomException(ResponseCodeEnum.ACCOUNT_ALREADY_BIND);
         } else {
             // 如果不存在，创建新记录
             ThirdUserInfo thirdUserInfo = new ThirdUserInfo();

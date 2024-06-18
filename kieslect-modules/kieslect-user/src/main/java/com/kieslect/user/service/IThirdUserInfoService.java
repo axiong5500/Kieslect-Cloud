@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 public interface IThirdUserInfoService extends IService<ThirdUserInfo> {
 
-    Optional<ThirdUserInfo> findByUserIdAndThirdId(Long userId, String thirdId, int thirdTokenType);
+    Optional<ThirdUserInfo> findByUserIdAndThirdId(String thirdId, int thirdTokenType);
 
     List<ThirdUserInfoVO> getThirdUserInfosByUserId(Long userId);
 }
