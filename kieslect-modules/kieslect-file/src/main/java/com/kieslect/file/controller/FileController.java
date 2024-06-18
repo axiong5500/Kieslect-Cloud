@@ -1,7 +1,8 @@
 package com.kieslect.file.controller;
 
 import cn.hutool.core.lang.UUID;
-import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.OSSObject;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,12 +98,20 @@ public class FileController {
         try {
             // 使用Hutool的HttpRequest下载远程文件到InputStream
             //开启代理IP和端口
+
+
+            // 上传图片到OSS
             InputStream inputStream;
             if (isDebugMode()) {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 7890));
-                inputStream = HttpRequest.get(remoteUrl).setProxy(proxy).execute().bodyStream();
+                // 使用Hutool下载远程图片
+                HttpResponse httpResponse = HttpUtil.createGet(remoteUrl).setProxy(proxy).setFollowRedirects(true).execute();
+                byte[] imageBytes = httpResponse.bodyBytes();
+                inputStream = new ByteArrayInputStream(imageBytes);
             }else{
-                inputStream = HttpRequest.get(remoteUrl).execute().bodyStream();
+                HttpResponse httpResponse = HttpUtil.createGet(remoteUrl).setFollowRedirects(true).execute();
+                byte[] imageBytes = httpResponse.bodyBytes();
+                inputStream = new ByteArrayInputStream(imageBytes);
             }
 
             // 将远程文件上传至OSS

@@ -115,7 +115,7 @@ public class UserInfoController {
         return R.ok(map);
     }
 
-    @PostMapping("/third/unBinding")
+    @GetMapping("/third/unBinding")
     public R<?> thirdUnBinding(HttpServletRequest request, @RequestParam Long kid) {
         Map<String, Object> map = new HashMap<>();
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
