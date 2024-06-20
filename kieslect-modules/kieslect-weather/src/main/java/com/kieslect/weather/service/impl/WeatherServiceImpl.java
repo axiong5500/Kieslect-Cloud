@@ -7,6 +7,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kieslect.common.redis.service.RedisService;
 import com.kieslect.weather.domain.Geoname;
@@ -20,9 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +48,7 @@ public class WeatherServiceImpl implements IWeatherService {
     private static final String WEATHER_PREFIX = "weather:";
 
     private static final String HEFENG_PREFIX = "hefeng:";
+    private static final String ZONEID_PREFIX = "zoneid:";
 
     private static final String VO_PREFIX = "vo:";
 
@@ -88,34 +88,19 @@ public class WeatherServiceImpl implements IWeatherService {
         String langFormatted = StrUtil.isEmpty(lang) ? "zh" : lang;
         // unit 为空和null时，默认为公制
         String unitFormatted = StrUtil.isEmpty(unit) ? "m" : unit;
+
+
         Object hourlyObj;
         Object sevenObj;
         Object nowObj;
 
 
         // 构建 Redis 键（key）
-        String redisKey = buildRedisKey(id, langFormatted, unitFormatted);
+        String redisKey = buildRedisKey(id);
         String redisKeyVO = getWeatherRedisKey(VO_PREFIX, redisKey);
-        if (ObjectUtil.isNotNull(redisService.getCacheObject(redisKeyVO))) {
-            logger.info("从缓存中获取天气信息VO");
-            WeatherInfoVO weatherInfoVO = redisService.getCacheObject(redisKeyVO);
-            // 获取hourlyForecast的第一个对象，判断是不是当前小时的00分钟，如果不属于当前小时的00分钟，则走下面的逻辑，不返回，time的格式是10：00
-            if (ObjectUtil.isNotNull(weatherInfoVO.getHourlyForecast()) && weatherInfoVO.getHourlyForecast().size() > 0) {
-                List<WeatherInfoVO.HourlyVO> hourlyForecast = weatherInfoVO.getHourlyForecast();
-                WeatherInfoVO.HourlyVO firstHourlyVO = hourlyForecast.get(0);
-                String time = firstHourlyVO.getTime();
-                if (StrUtil.isNotEmpty(time) && time.contains(":") && time.endsWith("00")) {
-                    String[] split = time.split(":");
-                    String hour = split[0];
-                    // 获取当前时间的小时和分钟
-                    String currentHour = DateUtil.format(new Date(), "HH");
-                    // 如果当前时间的小时和分钟和hour和minute相等，则返回
-                    if (currentHour.equals(hour)) {
-                        weatherInfo.put("weatherInfo", redisService.getCacheObject(redisKeyVO));
-                        return weatherInfo;
-                    }
-                }
-            }
+        Map<String, Object> cacheWeatherInfo = getCacheWeatherInfo(id, redisKeyVO, weatherInfo);
+        if (cacheWeatherInfo != null) {
+            return cacheWeatherInfo;
         }
 
 
@@ -128,7 +113,7 @@ public class WeatherServiceImpl implements IWeatherService {
 
         WeatherInfoVO weatherInfoVO = new WeatherInfoVO();
         weatherInfoVO.setLang(langFormatted);
-        setWeatherInfo(nowObj, weatherInfoVO, hourlyObj, sevenObj);
+        setWeatherInfo(id, nowObj, weatherInfoVO, hourlyObj, sevenObj);
 
         //放入缓存
         if (nowObj != null) {
@@ -140,7 +125,57 @@ public class WeatherServiceImpl implements IWeatherService {
         return weatherInfo;
     }
 
-    private void setWeatherInfo(Object nowObj, WeatherInfoVO weatherInfoVO, Object hourlyObj, Object sevenObj) {
+    private Map<String, Object> getCacheWeatherInfo(int id, String redisKeyVO, Map<String, Object> weatherInfo) {
+        if (ObjectUtil.isNotNull(redisService.getCacheObject(redisKeyVO))) {
+            logger.info("从缓存中获取天气信息VO");
+            WeatherInfoVO weatherInfoVO = redisService.getCacheObject(redisKeyVO);
+            // 获取hourlyForecast的第一个对象，判断是不是当前小时的00分钟，如果不属于当前小时的00分钟，则走下面的逻辑，不返回，time的格式是10：00
+            if (ObjectUtil.isNotNull(weatherInfoVO.getHourlyForecast()) && weatherInfoVO.getHourlyForecast().size() > 0) {
+                List<WeatherInfoVO.HourlyVO> hourlyForecast = weatherInfoVO.getHourlyForecast();
+                WeatherInfoVO.HourlyVO firstHourlyVO = hourlyForecast.get(0);
+                String time = firstHourlyVO.getTime();
+                if (StrUtil.isNotEmpty(time) && time.contains(":") && time.endsWith("00")) {
+                    String[] split = time.split(":");
+                    String hour = split[0];
+                    // 获取当前时间的小时
+                    ZonedDateTime zonedNow = getZonedDateTime(id);
+                    String currentHour = DateUtil.format(zonedNow.toLocalDateTime(), "HH");
+                    // 如果当前时间的小时和hour相等，则返回
+                    if (currentHour.equals(hour)) {
+                        weatherInfo.put("weatherInfo", redisService.getCacheObject(redisKeyVO));
+                        return weatherInfo;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private ZonedDateTime getZonedDateTime(int id) {
+        // 指定时区ID
+        String timeZoneId = getTimezone(id);
+        // 获取当前时间在指定时区中的时间
+        ZonedDateTime zonedNow = ZonedDateTime.now(ZoneId.of(timeZoneId));
+        logger.info("zonedNow:{}", zonedNow);
+        return zonedNow;
+    }
+
+    private String getTimezone(int id) {
+        //从缓存中获取timezoneId
+        String zoneIdRedisKey = getWeatherRedisKey(ZONEID_PREFIX, buildRedisKey(id));
+        if (ObjectUtil.isNotNull(redisService.getCacheObject(zoneIdRedisKey))) {
+            return redisService.getCacheObject(zoneIdRedisKey);
+        }
+        //根据ID查出timezoneId
+        LambdaQueryWrapper<Geoname> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Geoname::getGeonameid, id);
+        String timezone = geonameService.getOne(queryWrapper).getTimezone();
+        //放入缓存永久时间
+        redisService.setCacheObject(zoneIdRedisKey, timezone);
+        return timezone;
+    }
+
+    private void setWeatherInfo(int id, Object nowObj, WeatherInfoVO weatherInfoVO, Object hourlyObj, Object sevenObj) {
         if (ObjectUtil.isNotEmpty(nowObj)) {
             JSONObject nowObjJson = JSONUtil.parseObj(nowObj);
             weatherInfoVO.setTemperature(nowObjJson.getStr("temp"));
@@ -157,15 +192,16 @@ public class WeatherServiceImpl implements IWeatherService {
 
             // 以下6个字段无法从nowObj对象中获取到，需从sevenObj对象中获取
 
-            weatherInfoVO.setHourlyForecast(getHourlyForecast(weatherInfoVO, hourlyObj));
-            weatherInfoVO.setDailyForecast(getDailyForecast(weatherInfoVO, sevenObj));
+            weatherInfoVO.setHourlyForecast(getHourlyForecast(id, weatherInfoVO, hourlyObj));
+            weatherInfoVO.setDailyForecast(getDailyForecast(id, weatherInfoVO, sevenObj));
         }
     }
 
-    private List<WeatherInfoVO.DailyVO> getDailyForecast(WeatherInfoVO weatherInfoVO, Object sevenObj) {
+    private List<WeatherInfoVO.DailyVO> getDailyForecast(int id, WeatherInfoVO weatherInfoVO, Object sevenObj) {
         if (ObjectUtil.isNotEmpty(sevenObj)) {
             JSONArray sevenObjJson = JSONUtil.parseArray(sevenObj);
-            LocalDate today = LocalDate.now();
+            ZonedDateTime zonedNow = getZonedDateTime(id);
+            LocalDate today = zonedNow.toLocalDate();
             List<WeatherInfoVO.DailyVO> dailyForecast = new ArrayList<>();
             sevenObjJson.forEach(item -> {
                 JSONObject itemJson = JSONUtil.parseObj(item);
@@ -184,7 +220,7 @@ public class WeatherServiceImpl implements IWeatherService {
                     weatherInfoVO.setUv(itemJson.getStr("uvIndex"));
                 }
                 //itemJson.getStr("fxDate"))转为时间戳
-                itemJson.set("date", DateUtil.parse(fxDate).getTime() / 1000);
+                itemJson.set("date", LocalDate.parse(fxDate).atStartOfDay(ZoneOffset.UTC).toInstant().getEpochSecond());
                 itemJson.set("temperatureLow", itemJson.getStr("tempMin"));
                 itemJson.set("temperatureHigh", itemJson.getStr("tempMax"));
                 itemJson.set("weather", itemJson.getStr("textDay"));
@@ -201,26 +237,26 @@ public class WeatherServiceImpl implements IWeatherService {
         return null;
     }
 
-    private List<WeatherInfoVO.HourlyVO> getHourlyForecast(WeatherInfoVO weatherInfoVO, Object hourlyObj) {
+    private List<WeatherInfoVO.HourlyVO> getHourlyForecast(int id, WeatherInfoVO weatherInfoVO, Object hourlyObj) {
         if (ObjectUtil.isNotEmpty(hourlyObj)) {
             JSONArray hourlyObjJson = JSONUtil.parseArray(hourlyObj);
             List<WeatherInfoVO.HourlyVO> result = new ArrayList<>();
 
-            // 获取当前时间
-            OffsetDateTime now = OffsetDateTime.now();
-            // 获取当前整点时间
-            OffsetDateTime roundedHour = now.withMinute(0).withSecond(0).withNano(0);
+            // 指定时区ID
+            ZonedDateTime zonedNow = getZonedDateTime(id);
+            // 将分钟和秒数设置为0，获取当前整点时间
+            ZonedDateTime roundedHourTime = zonedNow.withMinute(0).withSecond(0).withNano(0);
             // 格式化当前时间为HH:mm格式
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            String formattedTime = roundedHour.format(formatter);
+            String formattedTime = roundedHourTime.format(formatter);
 
             // 寻找当前时间的小时对象，并获取其pop值
             String currentHourPop = hourlyObjJson.stream()
                     .map(item -> JSONUtil.parseObj(item))
                     .filter(itemJson -> {
                         String dateTimeString = itemJson.getStr("fxTime");
-                        OffsetDateTime dateTime = OffsetDateTime.parse(dateTimeString, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                        return !dateTime.isBefore(now); // 不早于当前时间，包括当前时间和之后的时间点
+                        ZonedDateTime dateTime = ZonedDateTime.parse(dateTimeString);
+                        return !dateTime.isBefore(zonedNow); // 不早于当前时间，包括当前时间和之后的时间点
                     })
                     .map(itemJson -> itemJson.getStr("pop"))
                     .findFirst()
@@ -245,11 +281,11 @@ public class WeatherServiceImpl implements IWeatherService {
                         itemJson.set("weatherIcon", itemJson.getStr("icon"));
                         itemJson.set("pop", itemJson.getStr("pop"));
                         String dateTimeString = itemJson.getStr("fxTime");
-                        OffsetDateTime dateTime = OffsetDateTime.parse(dateTimeString, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                        ZonedDateTime dateTime = ZonedDateTime.parse(dateTimeString);
 
 
                         // 判断时间是否是大于当前时间的下一个小时，如果不是则返回 null
-                        if (dateTime.isAfter(now)) {
+                        if (dateTime.isAfter(zonedNow)) {
                             String time = dateTime.toLocalTime().toString();
                             itemJson.set("time", time);
                             return itemJson.toBean(WeatherInfoVO.HourlyVO.class);
@@ -276,13 +312,13 @@ public class WeatherServiceImpl implements IWeatherService {
 
     private Object getObject(int id, double latitude, double longitude, String langFormatted, String unitFormatted, String redisKey, String weatherForecastUrl) {
         Object weatherObj;
-        if (isConditionMet(redisKey)) {
+        if (isConditionMet(id, redisKey)) {
             weatherObj = redisService.getCacheObject(redisKey);
             logger.info("redis缓存中获取数据" + redisKey + ",obj:" + weatherObj);
         } else {
             //纠正经纬度
             GeonameThirdGeo hirdGeo = getGeonameThirdGeo(id);
-            if (ObjectUtil.isNotEmpty(hirdGeo)){
+            if (ObjectUtil.isNotEmpty(hirdGeo)) {
                 longitude = Double.valueOf(hirdGeo.getLongitude());
                 latitude = Double.valueOf(hirdGeo.getLatitude());
             }
@@ -290,7 +326,7 @@ public class WeatherServiceImpl implements IWeatherService {
             String getWeatherForecast = HttpUtil.get(hourlyWeatherForecast);
             //检查getWeatherForecast返回的信息是不是{"code":"404"}
             if ("{\"code\":\"404\"}".equals(getWeatherForecast)) {
-                logger.warn("Weather forecast not found: {},result: {}", hourlyWeatherForecast,getWeatherForecast);
+                logger.warn("Weather forecast not found: {},result: {}", hourlyWeatherForecast, getWeatherForecast);
                 Geoname geoname = getGeoname(id);
                 String name = null;
                 if (geoname != null) {
@@ -321,10 +357,10 @@ public class WeatherServiceImpl implements IWeatherService {
                 }
 
             }
-            logger.info("hourlyWeatherForecast:{},getWeatherForecast:{}",hourlyWeatherForecast, getWeatherForecast);
+            logger.info("hourlyWeatherForecast:{},getWeatherForecast:{}", hourlyWeatherForecast, getWeatherForecast);
 
             weatherObj = parseJson(getWeatherForecast);
-            if ( weatherObj != null){
+            if (weatherObj != null) {
                 if (redisKey.contains(NOW_WEATHER_KEY_PREFIX)) {
                     redisService.setCacheObject(redisKey, weatherObj, 1L, TimeUnit.HOURS);
                 } else if (redisKey.contains(HOURLY_WEATHER_FORECAST_KEY_PREFIX)) {
@@ -340,7 +376,7 @@ public class WeatherServiceImpl implements IWeatherService {
     private GeonameThirdGeo getGeonameThirdGeo(int id) {
         QueryWrapper<GeonameThirdGeo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("geonameid", id);
-        GeonameThirdGeo geonameThirdGeo =  geonameThirdGeoService.getOne(queryWrapper);
+        GeonameThirdGeo geonameThirdGeo = geonameThirdGeoService.getOne(queryWrapper);
         return geonameThirdGeo;
     }
 
@@ -357,7 +393,7 @@ public class WeatherServiceImpl implements IWeatherService {
      * @param redisKey
      * @return
      */
-    public boolean isConditionMet(String redisKey) {
+    public boolean isConditionMet(int id, String redisKey) {
         if (redisService.hasKey(redisKey)) {
             Object weatherObj = redisService.getCacheObject(redisKey);
             if (weatherObj == null) {
@@ -367,45 +403,32 @@ public class WeatherServiceImpl implements IWeatherService {
                 return true;
             } else if (redisKey.contains(HOURLY_WEATHER_FORECAST_KEY_PREFIX)) {
                 JSONArray jsonArray = JSONUtil.parseArray(weatherObj);
-                OffsetDateTime now = OffsetDateTime.now();
+                // 指定时区ID
+                ZonedDateTime zonedNow = getZonedDateTime(id);
                 // 判断数值大于等于这个时间的个数是不是超过12个
                 return jsonArray.stream().filter(item -> {
                     JSONObject itemJson = JSONUtil.parseObj(item);
                     String dateTimeString = itemJson.getStr("fxTime");
-                    OffsetDateTime dateTime = OffsetDateTime.parse(dateTimeString, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                    return dateTime.isAfter(now);
+                    ZonedDateTime dateTime = ZonedDateTime.parse(dateTimeString);
+                    return dateTime.isAfter(zonedNow);
                 }).count() >= 12;
             } else {
                 JSONArray jsonArray = JSONUtil.parseArray(weatherObj);
+                // 指定时区ID
+                ZonedDateTime zonedNow = getZonedDateTime(id);
                 // 判断第一个元素是否为当天
-                return jsonArray.getJSONObject(0).getStr("fxDate").equals(LocalDate.now().toString());
+                String firstDate = jsonArray.getJSONObject(0).getStr("fxDate");
+                // 解析给定的日期字符串为 LocalDate 对象
+                LocalDate firstLocalDate = LocalDate.parse(firstDate);
+                return firstLocalDate.equals(zonedNow.toLocalDate());
             }
         }
         return false;
     }
 
-
-    private static Object removeTypeFieldByJsonObj(Object weatherObj) {
-        if (weatherObj != null) {
-            JSONObject jsonObject = JSONUtil.parseObj(weatherObj);
-            jsonObject.remove("@type"); // 移除@type字段
-            weatherObj = jsonObject;
-        }
-        return weatherObj;
-    }
-
-    private static Object removeTypeField(Object weatherObj) {
-        if (weatherObj != null) {
-            JSONArray jsonArr = JSONUtil.parseArray(weatherObj);
-            JSONArray updatedJsonArr = new JSONArray();
-            for (int i = 0; i < jsonArr.size(); i++) {
-                JSONObject jsonObject = jsonArr.getJSONObject(i);
-                jsonObject.remove("@type"); // 移除@type字段
-                updatedJsonArr.add(jsonObject);
-            }
-            weatherObj = updatedJsonArr;
-        }
-        return weatherObj;
+    private static String buildRedisKey(int id) {
+        // 将 id 作为 Redis 键
+        return String.format("%d", id);
     }
 
     private static String buildRedisKey(int id, String langFormatted, String unitFormatted) {
@@ -433,6 +456,30 @@ public class WeatherServiceImpl implements IWeatherService {
             }
         }
         return null;
+    }
+
+    public static void main(String[] args) {
+        // 指定时区ID
+        String timeZoneId = "America/New_York"; // 可以替换为任何有效的时区ID
+
+        // 获取当前时间在指定时区中的时间
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(timeZoneId));
+
+        // 格式化输出
+        String formattedDateTime = zonedDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z"));
+
+        // 输出指定时区的当前时间
+        System.out.println("当前时间在 " + timeZoneId + " 时区中的时间为: " + formattedDateTime);
+
+        // 获取当前整点时间
+        // 将分钟和秒数设置为0，获取当前整点时间
+        ZonedDateTime roundedHourTime = zonedDateTime.withMinute(0).withSecond(0).withNano(0);
+
+        // 格式化当前时间为HH:mm格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String formattedTime = roundedHourTime.format(formatter);
+
+        System.out.println("格式化当前时间为HH:mm格式: " + formattedTime);
     }
 
 
