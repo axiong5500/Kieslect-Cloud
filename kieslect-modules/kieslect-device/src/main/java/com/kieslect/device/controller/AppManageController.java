@@ -48,7 +48,7 @@ public class AppManageController {
     IParamConfigService paramConfigService;
 
     @GetMapping("/getApp")
-    public R<?> getAppManageObj(@RequestParam(value = "appName", required = false) Integer appName) {
+    public R<?> getAppManageObj(@RequestParam(value = "appName", required = false , defaultValue = "0") Integer appName) {
         Map<String, Object> result = new HashMap<>();
         AppManageVO appManageVO = new AppManageVO();
 
