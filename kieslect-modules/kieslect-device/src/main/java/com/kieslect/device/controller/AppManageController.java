@@ -10,6 +10,7 @@ import com.kieslect.device.domain.AppPackeageManage;
 import com.kieslect.device.domain.ParamConfig;
 import com.kieslect.device.domain.vo.AppManageVO;
 import com.kieslect.device.domain.vo.AppPackeageManageVO;
+import com.kieslect.device.enums.AppManageAppNameEnum;
 import com.kieslect.device.service.IAppManageService;
 import com.kieslect.device.service.IAppPackeageManageService;
 import com.kieslect.device.service.IArticleService;
@@ -47,13 +48,13 @@ public class AppManageController {
     IParamConfigService paramConfigService;
 
     @GetMapping("/getApp")
-    public R<?> getAppManageObj(@RequestParam(value = "appMark", required = false) String appMark) {
+    public R<?> getAppManageObj(@RequestParam(value = "appName", required = false) Integer appName) {
         Map<String, Object> result = new HashMap<>();
         AppManageVO appManageVO = new AppManageVO();
 
 
         QueryWrapper<AppManage> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("app_mark", appMark);
+        queryWrapper.eq("app_mark", AppManageAppNameEnum.getEnumByCode(appName).getAppMark());
         AppManage appManage = appManageService.getOne(queryWrapper);
 
         if (appManage == null) {
