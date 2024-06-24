@@ -40,7 +40,7 @@ public class DeviceBindingController {
     public R<Map<String, Object>> getDeviceBindingList(HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>();
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
-        Long userid = loginUser.getId();
+        Long userid = loginUser.getKid();
         QueryWrapper<DeviceBinding> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userid);
         queryWrapper.orderByDesc("update_time");
@@ -62,7 +62,7 @@ public class DeviceBindingController {
             return R.fail("设备列表不能为空");
         }
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
-        Long userid = loginUser.getId();
+        Long userid = loginUser.getKid();
         deviceBindingService.remove(new QueryWrapper<DeviceBinding>().eq("user_id", userid));
         List<DeviceBinding> deviceBindings = DeviceBindingVos.stream().map(vo -> {
             DeviceBinding deviceBinding = new DeviceBinding();

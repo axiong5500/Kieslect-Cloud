@@ -48,7 +48,7 @@ public class TokenService
     public Map<String, Object> createToken(LoginUserInfo loginUser)
     {
         String userKey = loginUser.getUserKey();
-        Long userId = loginUser.getId();
+        Long userId = loginUser.getKid();
         loginUser.setUserKey(userKey);
         refreshToken(loginUser);
 

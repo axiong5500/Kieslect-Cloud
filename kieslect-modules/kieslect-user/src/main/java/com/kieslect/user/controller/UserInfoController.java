@@ -1,6 +1,7 @@
 package com.kieslect.user.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -27,7 +28,6 @@ import com.kieslect.user.service.IUserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -86,7 +86,7 @@ public class UserInfoController {
     public R<?> thirdBinding(HttpServletRequest request, @RequestBody BindThirdInfoVO bindThirdInfoVO) {
         Map<String, Object> map = new HashMap<>();
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
-        Long userId = loginUser.getId();
+        Long userId = loginUser.getKid();
 
 
         // 检查是否存在已绑定的第三方用户信息
@@ -116,7 +116,7 @@ public class UserInfoController {
     public R<?> thirdUnBinding(HttpServletRequest request, @RequestParam Long kid) {
         Map<String, Object> map = new HashMap<>();
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
-        Long userId = loginUser.getId();
+        Long userId = loginUser.getKid();
         boolean result = thirdUserInfoService.removeById(kid);
         logger.info("删除第三方用户信息成功: {},{}", result, kid);
         List<ThirdUserInfoVO> thirdUserInfoList = thirdUserInfoService.getThirdUserInfosByUserId(userId);
@@ -134,7 +134,7 @@ public class UserInfoController {
     @PostMapping("/saveUserInfo")
     public R<Object> saveUserInfo(HttpServletRequest request, @RequestBody SaveUserInfoVO saveUserInfoVO) {
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
-        saveUserInfoVO.setId(loginUser.getId());
+        saveUserInfoVO.setId(loginUser.getKid());
         boolean result = userInfoService.saveUserInfo(saveUserInfoVO);
         if (!result) {
             return R.fail("保存失败");
@@ -143,9 +143,11 @@ public class UserInfoController {
         if (saveUserInfoVO.getPassword() != null && !saveUserInfoVO.getPassword().equals(loginUser.getPassword())) {
             tokenService.delLoginUserByUserkey(loginUser.getUserKey());
         } else {
-            UserInfoVO entity = userInfoService.getUserInfo(loginUser.getId());
+            UserInfoVO entity = userInfoService.getUserInfo(loginUser.getKid());
             LoginUserInfo refreshLoginUser = new LoginUserInfo();
-            BeanUtils.copyProperties(entity, refreshLoginUser);
+            BeanUtil.copyProperties(entity, refreshLoginUser, CopyOptions.create().setFieldMapping(
+                    Map.of("id", "kid")
+            ));
             tokenService.refreshToken(refreshLoginUser);
         }
 
@@ -174,7 +176,7 @@ public class UserInfoController {
         }
 
 
-        SaveUserInfoVO saveUserInfoVO = new SaveUserInfoVO().setId(loginUser.getId()).setEmail(email);
+        SaveUserInfoVO saveUserInfoVO = new SaveUserInfoVO().setId(loginUser.getKid()).setEmail(email);
         // 保存用户信息
         userInfoService.saveUserInfo(saveUserInfoVO);
         // 刷新缓存
@@ -218,7 +220,7 @@ public class UserInfoController {
 
         redisService.deleteObject(newEmailRediskey);
 
-        SaveUserInfoVO saveUserInfoVO = new SaveUserInfoVO().setId(loginUser.getId()).setEmail(newEmail);
+        SaveUserInfoVO saveUserInfoVO = new SaveUserInfoVO().setId(loginUser.getKid()).setEmail(newEmail);
         userInfoService.saveUserInfo(saveUserInfoVO);
 
         // 刷新缓存

@@ -67,6 +67,7 @@ public class R<T> implements Serializable
         return new R<>(responseCodeEnum.getCode(), responseCodeEnum.getMessage(), null);
     }
 
+
     public static <T> R<T> fail(T data)
     {
         return restResult(data, FAIL, null);

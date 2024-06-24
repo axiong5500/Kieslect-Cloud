@@ -46,7 +46,7 @@ public class GatewayConfig {
             "/kieslect-weather/weather/getWeatherInfo",
             "/kieslect-device/device/appManage/getApp",
             "/kieslect-**/**/task/**",
-
+            "/kieslect-outapi/**",
     };
 
     @Bean
@@ -68,6 +68,9 @@ public class GatewayConfig {
                 .route("weather_service", r -> r.path("/kieslect-weather/**")
                         .filters(f -> f.filter(tokenValidationFilter()).rewritePath("/kieslect-weather/(?<path>.*)", "/${path}"))
                         .uri("lb://kieslect-weather"))
+                .route("outapi_service", r -> r.path("/kieslect-outapi/**")
+                        .filters(f -> f.filter(tokenValidationFilter()).rewritePath("/kieslect-outapi/(?<path>.*)", "/${path}"))
+                        .uri("lb://kieslect-outapi"))
                 .build();
     }
 

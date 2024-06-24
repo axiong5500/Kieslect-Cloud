@@ -9,36 +9,3 @@ spring:
   profiles:
     # 环境配置
     active: dev
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 39.105.119.235:8848
-      config:
-#        import-check:
-#          enabled: false
-        # 配置中心地址
-        server-addr: 39.105.119.235:8848
-        # 配置文件格式
-        file-extension: yml
-        # 共享配置
-        shared-configs:
-          - data-id: kieslect-common.${spring.cloud.nacos.config.file-extension}
-            group: DEFAULT_GROUP
-    gateway:
-      discovery:
-        locator:
-          enabled: true #开启从注册中心动态创建路由的功能，利用微服务名进行路由
-          lower-case-service-id: true #开启小写验证，默认feign根据服务名查找都是用的全大写
-      # 经过gateWay网关时，需要在网关统一配置跨域请求，全部通过
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowed-Origin-Patterns: "*"
-            allowed-headers: "*"
-            allow-credentials: true
-            allowed-methods:
-              - GET
-              - POST
-              - DELETE
-              - PUT
-              - OPTION

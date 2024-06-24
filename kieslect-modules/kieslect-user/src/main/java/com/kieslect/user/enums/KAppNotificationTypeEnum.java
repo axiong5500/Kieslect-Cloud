@@ -1,29 +1,6 @@
 package com.kieslect.user.enums;
 
 public enum KAppNotificationTypeEnum {
-//    SMS(0, "kieslect_sms",0x03,"短信","UTE_SMS","/kieslect-file/file/download/other/9999/wechat_icon.png"),
-//    Email(1, "kieslect_email"),
-//    Calendar(2, "kieslect_calendar"),
-//    MissCall(3, "kieslect_miss_call"),
-//    QQ1(4, "com.tencent.mobileqq"),
-//    QQ2(4, "com.tencent.mobileqqi"),
-//    QQ3(4, "com.tencent.qqlite"),
-//    weChat(5, "com.tencent.mm"),
-//    whatsApp(6, "com.whatsapp"),
-//    facebook(7, "com.facebook.katana"),
-//    line(8, "jp.naver.line.android"),
-//    twitter(9, "com.twitter.android"),
-//    skype(10, "com.skype.raider"),
-//    instagram(11, "com.instagram.android"),
-//    gmail(12, "com.google.android.gm"),
-//    linkedin(13, "com.linkedin.android"),
-//    snapchat(14, "com.snapchat.android"),
-//    kakaotalk(15, "com.kakao.talk"),
-//    viber(16, "com.viber.voip"),
-//    kik(17, "kik.android"),
-//    DingTalk(18, "com.alibaba.android.rimet"),
-//    Other(999, "Other"),
-
     CALL(0, "com.android.server.telecom", 0x00, "Call", "UTE_CALL", "/kieslect-file/file/download/other/9999/call_icon.png"),
     QQ(1, "com.tencent.mobileqq,com.tencent.mobileqqi,com.tencent.qqlite", 0x01, "QQ", "UTE_QQ", "/kieslect-file/file/download/other/9999/qq_icon.png"),
     WECHAT(2, "com.tencent.mm", 0x02, "WeChat", "UTE_WECHAT", "/kieslect-file/file/download/other/9999/wechat_icon.png"),
@@ -89,11 +66,6 @@ public enum KAppNotificationTypeEnum {
     TITAN_SMART_WORLD(59, "com.titan.smartworld", 0x3B, "Titan Smart World", "UTE_TITAN_SMART_WORLD", "/kieslect-file/file/download/other/9999/titan_smartworld_icon.png"),
     SLACK(60, "com.Slack", 0x3C, "Slack", "UTE_SLACK", "/kieslect-file/file/download/other/9999/slack_icon.png"),
     SPOTIFY(61, "com.spotify.music", 0x3D, "Spotify", "UTE_SPOTIFY", "/kieslect-file/file/download/other/9999/spotify_icon.png"),
-
-//    Email(1, "email", -1, "Email", "UTE_EMAIL", "/kieslect-file/file/download/other/9999/email_icon.png"),
-//    MissCall(3, "miss_call", -1, "MissCall", "UTE_MISSCALL", "/kieslect-file/file/download/other/9999/misscall_icon.png"),
-//    Kik(17, "kik.android", -1, "Kik", "UTE_KIK", "/kieslect-file/file/download/other/9999/kik_icon.png"),
-//    DingTalk(18, "com.alibaba.android.rimet", -1, "DingTalk", "UTE_DINGTALK", "/kieslect-file/file/download/other/9999/dingtalk_icon.png"),
     ;
 
     private final int code;

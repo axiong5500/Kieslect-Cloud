@@ -1,6 +1,8 @@
 package com.kieslect.auth.controller;
 
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.kieslect.api.RemoteUserService;
@@ -29,6 +31,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * token 控制
@@ -78,7 +82,9 @@ public class TokenController {
         }
         UserInfoVO userInfo = result.getData();
         LoginUserInfo loginUserInfo = new LoginUserInfo();
-        BeanUtils.copyProperties(userInfo, loginUserInfo);
+        BeanUtil.copyProperties(userInfo, loginUserInfo, CopyOptions.create().setFieldMapping(
+                Map.of("id", "kid")
+        ));
         // 登录成功，处理用户信息...
         // 获取登录token
         return R.ok(tokenService.createToken(loginUserInfo));
@@ -190,7 +196,7 @@ public class TokenController {
 
             BeanUtils.copyProperties(loginUser, userInfoVO);
         }
-        userInfoVO.setThirdUserInfos(remoteUserService.getThirdUserInfo(loginUser.getId()).getData());
+        userInfoVO.setThirdUserInfos(remoteUserService.getThirdUserInfo(loginUser.getKid()).getData());
         return R.ok(userInfoVO);
     }
 

@@ -1,6 +1,7 @@
 package com.kieslect.user.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -34,6 +35,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -115,7 +117,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         // 封装返回值
         UserInfoVO userInfoVO = new UserInfoVO();
-        BeanUtil.copyProperties(userInfo, userInfoVO);
+        BeanUtil.copyProperties(userInfo, userInfoVO, CopyOptions.create().setFieldMapping(
+                Map.of("id", "kid")
+        ));
         return userInfoVO;
     }
 
@@ -229,14 +233,18 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                 loginAfterBinding(userInfo, currentTime);
 
                 /* 将登录后的用户信息更新到登录用户信息对象中 */
-                BeanUtil.copyProperties(userInfo, loginUserInfo);
+                BeanUtil.copyProperties(userInfo, loginUserInfo,CopyOptions.create().setFieldMapping(
+                        Map.of("id", "kid")
+                ));
 
             } else {
                 // 保存第三方用户信息并注册新账号
                 ThirdUserInfo thirdUserInfo = saveNewThirdUserInfo(thirdLoginInfo, currentTime);
                 UserInfo user = registerNewUser(thirdUserInfo);
                 loginAfterRegistration(user, currentTime);
-                BeanUtil.copyProperties(user, loginUserInfo);
+                BeanUtil.copyProperties(user, loginUserInfo,CopyOptions.create().setFieldMapping(
+                        Map.of("id", "kid")
+                ));
             }
         } catch (Exception e) {
             // 异常处理逻辑，如记录日志、抛出自定义异常等

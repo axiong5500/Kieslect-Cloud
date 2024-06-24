@@ -83,13 +83,13 @@ public class HealthSportController {
         if (loginUser.getUserKey() == null) {
             return R.fail("用户未登录");
         }
-        if (loginUser.getId() == null) {
+        if (loginUser.getKid() == null) {
             return R.fail("用户未登录");
         }
         //删除本地文件
-        removeLocalData(loginUser.getId(), pathTypeCode);
+        removeLocalData(loginUser.getKid(), pathTypeCode);
         //删除远程文件
-        removeRemoteData(loginUser.getId(), pathTypeCode);
+        removeRemoteData(loginUser.getKid(), pathTypeCode);
         return R.ok();
     }
 
@@ -118,7 +118,7 @@ public class HealthSportController {
         try {
             // 获取登录用户信息
             LoginUserInfo loginUser = tokenService.getLoginUser(request);
-            Long userId = loginUser.getId();
+            Long userId = loginUser.getKid();
 
             logger.info("开始上传文件，用户ID: {}, 文件类型: {}", userId, FileTypeEnum.getCodeByPathTypeCode(pathTypeCode).getDescription());
 
@@ -245,7 +245,7 @@ public class HealthSportController {
     @GetMapping("/getHealthData")
     public ResponseEntity<byte[]> getHealthData(HttpServletRequest request) {
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
-        Long userId = loginUser.getId();
+        Long userId = loginUser.getKid();
         int fileType = FileTypeEnum.HEALTH_DATA.getPathTypeCode();
         return getFile(userId, fileType);
 
@@ -255,7 +255,7 @@ public class HealthSportController {
     @GetMapping("/getSportData")
     public ResponseEntity<byte[]> getSportData(HttpServletRequest request) {
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
-        Long userId = loginUser.getId();
+        Long userId = loginUser.getKid();
         int fileType = FileTypeEnum.SPORT_DATA.getPathTypeCode();
         return getFile(userId, fileType);
     }

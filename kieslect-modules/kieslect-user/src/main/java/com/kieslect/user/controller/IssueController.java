@@ -23,7 +23,7 @@ public class IssueController {
     @PostMapping("/issues_suggestions")
     public R<?> createIssue(HttpServletRequest request, @RequestBody  IssueVO issueVO) {
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
-        issueVO.setUserId(loginUser.getId());
+        issueVO.setUserId(loginUser.getKid());
         issueService.createIssue(issueVO);
         return R.ok();
     }

@@ -13,7 +13,7 @@ import java.util.List;
 public class UserInfoVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Long kid;
     private String account;
     private String email;
     private String password;
@@ -50,4 +50,5 @@ public class UserInfoVO implements Serializable {
     private int sleepAim;
     private double weightAim;
     private List<ThirdUserInfoVO> thirdUserInfos;
+
 }
