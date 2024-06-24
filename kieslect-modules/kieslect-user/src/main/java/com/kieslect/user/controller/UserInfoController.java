@@ -1,7 +1,6 @@
 package com.kieslect.user.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -145,9 +144,7 @@ public class UserInfoController {
         } else {
             UserInfoVO entity = userInfoService.getUserInfo(loginUser.getKid());
             LoginUserInfo refreshLoginUser = new LoginUserInfo();
-            BeanUtil.copyProperties(entity, refreshLoginUser, CopyOptions.create().setFieldMapping(
-                    Map.of("id", "kid")
-            ));
+            BeanUtil.copyProperties(entity, refreshLoginUser);
             tokenService.refreshToken(refreshLoginUser);
         }
 

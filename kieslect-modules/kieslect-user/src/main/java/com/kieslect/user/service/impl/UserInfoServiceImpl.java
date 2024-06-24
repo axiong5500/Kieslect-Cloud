@@ -136,7 +136,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     public UserInfoVO getUserInfo(long id) {
         UserInfo userInfo = userInfoMapper.selectById(id);
         UserInfoVO userInfoVO = new UserInfoVO();
-        BeanUtils.copyProperties(userInfo, userInfoVO);
+        BeanUtil.copyProperties(userInfo, userInfoVO, CopyOptions.create().setFieldMapping(
+                Map.of("id", "kid")
+        ));
         return userInfoVO;
     }
 
