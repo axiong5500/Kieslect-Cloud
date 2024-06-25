@@ -28,7 +28,7 @@ public class RegisterUserInfoDTO {
     private String headImage;
     private Byte appName;
     private Byte appSystem;
-    private String appType;
+    private String phoneType;
     private Integer appChannel;
     private Byte appStatus;
     private String appVersion;

@@ -65,7 +65,9 @@ public class HealthSportController {
     public R<?> removeData(HttpServletRequest request,
                            @RequestParam(value = "fileType", required = false) Integer fileType) {
         if (fileType == null) {
-            fileType = FileTypeEnum.HEALTH_DATA.getCode(); // 设置默认值为1
+            removeLocalAndRemoteData(request, FileTypeEnum.HEALTH_DATA.getPathTypeCode());
+            removeLocalAndRemoteData(request, FileTypeEnum.SPORT_DATA.getPathTypeCode());
+            return R.ok();
         }
         if (fileType == FileTypeEnum.HEALTH_DATA.getCode()) {
             return removeLocalAndRemoteData(request, FileTypeEnum.HEALTH_DATA.getPathTypeCode());

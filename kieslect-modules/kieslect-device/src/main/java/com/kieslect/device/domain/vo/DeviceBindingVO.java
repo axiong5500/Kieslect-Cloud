@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author kieslect
@@ -19,7 +19,7 @@ public class DeviceBindingVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @JsonIgnore
-      private Integer bindingId;
+    private Integer bindingId;
 
     @JsonIgnore
     private Integer userId;
@@ -36,6 +36,8 @@ public class DeviceBindingVO implements Serializable {
     private Integer bindingStatus;
 
     private Long activeTime;
+
+    private String devicePassword;
 
     @JsonIgnore
     private String createTime;

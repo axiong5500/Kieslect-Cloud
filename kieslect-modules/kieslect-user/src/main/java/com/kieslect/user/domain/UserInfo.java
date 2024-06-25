@@ -138,7 +138,7 @@ public class UserInfo implements Serializable {
      * app型号
      */
       @TableField("app_type")
-    private String appType;
+    private String phoneType;
 
       /**
      * app渠道，0：google，1：ios，2：huawei
