@@ -1,5 +1,6 @@
 package com.kieslect.common.core.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -16,6 +17,7 @@ public class LoginUserInfo implements Serializable {
     private Long kid;
     private String account;
     private String email;
+    @JsonIgnore
     private String password;
     private String thirdToken;
     private Byte thirdTokenType;

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kieslect.outapi.mapper.ThirdDeviceActiveInfoMapper">
+    <!-- 批量插入或更新 -->
+<!--    <insert id="insertOrUpdateBatch" parameterType="java.util.List">-->
+<!--        <foreach collection="list" item="item" separator=";">-->
+<!--            INSERT INTO t_third_device_active_info (-->
+<!--            device_id, device_alias, country, province, city,-->
+<!--            operating_system, phone_model, gender, birthdate, activation_time, activation_timezone,-->
+<!--            mac_address, serial_number, ip_address, firmware_version, data_source, account_type,-->
+<!--            create_time, update_time-->
+<!--            )-->
+<!--            VALUES (-->
+<!--            #{item.deviceId}, #{item.deviceAlias}, #{item.country}, #{item.province}, #{item.city},-->
+<!--            #{item.operatingSystem}, #{item.phoneModel}, #{item.gender}, #{item.birthdate}, #{item.activationTime}, #{item.activationTimezone},-->
+<!--            #{item.macAddress}, #{item.serialNumber}, #{item.ipAddress}, #{item.firmwareVersion}, #{item.dataSource}, #{item.accountType},-->
+<!--            #{item.createTime}, #{item.updateTime}-->
+<!--            )-->
+<!--            ON DUPLICATE KEY UPDATE-->
+<!--            device_alias = VALUES(device_alias),-->
+<!--            country = VALUES(country),-->
+<!--            province = VALUES(province),-->
+<!--            city = VALUES(city),-->
+<!--            operating_system = VALUES(operating_system),-->
+<!--            phone_model = VALUES(phone_model),-->
+<!--            gender = VALUES(gender),-->
+<!--            birthdate = VALUES(birthdate),-->
+<!--            activation_time = VALUES(activation_time),-->
+<!--            activation_timezone = VALUES(activation_timezone),-->
+<!--            serial_number = VALUES(serial_number),-->
+<!--            ip_address = VALUES(ip_address),-->
+<!--            firmware_version = VALUES(firmware_version),-->
+<!--            data_source = VALUES(data_source),-->
+<!--            account_type = VALUES(account_type),-->
+<!--            update_time = VALUES(update_time)-->
+<!--        </foreach>-->
+<!--    </insert>-->
+</mapper>

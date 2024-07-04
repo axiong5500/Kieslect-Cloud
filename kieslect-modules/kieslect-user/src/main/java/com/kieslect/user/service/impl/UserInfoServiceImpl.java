@@ -63,26 +63,27 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public Boolean register(RegisterInfo registerInfo) {
         UserInfo user = new UserInfo();
-        RegisterUserInfoDTO userInfoDTO = new RegisterUserInfoDTO();
+        RegisterUserInfoDTO registerUserInfoDTO = new RegisterUserInfoDTO();
         // 根据注册方式生成账号,并判断该账号是否在数据库中，如果存在则不需要注册
         if (RegisterTypeEnum.getByCode(registerInfo.getRegisterType()).equals(RegisterTypeEnum.EMAIL)) {
             if (isEmailExists(registerInfo.getAccount(), registerInfo.getAppName())) {
                 throw new CustomException(ResponseCodeEnum.EMAIL_ALREADY_EXIST);
             }
-            userInfoDTO.setEmail(registerInfo.getAccount());
+            registerUserInfoDTO.setEmail(registerInfo.getAccount());
         } else if (RegisterTypeEnum.getByCode(registerInfo.getRegisterType()).equals(RegisterTypeEnum.ACCOUNT)) {
             if (isAccountExists(registerInfo.getAccount(), registerInfo.getAppName())) {
                 throw new CustomException(ResponseCodeEnum.ACCOUNT_ALREADY_EXIST);
             }
-            userInfoDTO.setAccount(registerInfo.getAccount());
+            registerUserInfoDTO.setAccount(registerInfo.getAccount());
         } else if (RegisterTypeEnum.getByCode(registerInfo.getRegisterType()).equals(RegisterTypeEnum.THIRD_PARTY_AUTH)) {
-            userInfoDTO.setThirdToken(registerInfo.getThirdPartyToken());
-            userInfoDTO.setThirdTokenType(Byte.valueOf((byte) registerInfo.getThirdTokenType()));
+            registerUserInfoDTO.setThirdToken(registerInfo.getThirdPartyToken());
+            registerUserInfoDTO.setThirdTokenType(Byte.valueOf((byte) registerInfo.getThirdTokenType()));
         }
-        userInfoDTO.setPassword(registerInfo.getPassword());
-        userInfoDTO.setAppName(registerInfo.getAppName());
+        registerUserInfoDTO.setIpAddress(registerInfo.getIpAddress());
+        registerUserInfoDTO.setPassword(registerInfo.getPassword());
+        registerUserInfoDTO.setAppName(registerInfo.getAppName());
 
-        BeanUtils.copyProperties(userInfoDTO, user);
+        BeanUtils.copyProperties(registerUserInfoDTO, user);
         return this.saveOrUpdate(user);
     }
 

@@ -1,6 +1,6 @@
 package com.kieslect.device.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.device.domain.AppPackeageManage;
 import com.kieslect.device.domain.vo.AppPackeageManageSysVO;
@@ -26,12 +26,14 @@ public class AppPackeageManageController {
     IAppPackeageManageService appPackeageManageService;
     @PostMapping("/sys/getList")
     public R<?> sysGetAppPackeageManageList(@RequestBody AppPackeageManageSysVO appPackeageManageVO) {
+        LambdaQueryWrapper<AppPackeageManage> query = new LambdaQueryWrapper<>();
         if (appPackeageManageVO.getAppId() != null){
-            QueryWrapper<AppPackeageManage> query = new QueryWrapper<>();
-            query.eq("app_id",appPackeageManageVO.getAppId());
-            return R.ok(appPackeageManageService.list(query));
+            query.eq(AppPackeageManage::getAppId,appPackeageManageVO.getAppId());
         }
-        return R.ok(appPackeageManageService.list());
+        if (appPackeageManageVO.getChannel() != null){
+            query.eq(AppPackeageManage::getChannel,appPackeageManageVO.getChannel());
+        }
+        return R.ok(appPackeageManageService.list(query));
     }
     // update
     @PostMapping("/sys/update")

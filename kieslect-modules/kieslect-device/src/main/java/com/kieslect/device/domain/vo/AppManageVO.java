@@ -20,7 +20,6 @@ public class AppManageVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
 
     /**
      * app名称

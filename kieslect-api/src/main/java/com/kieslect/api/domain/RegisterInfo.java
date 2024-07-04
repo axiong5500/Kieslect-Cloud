@@ -33,4 +33,9 @@ public class RegisterInfo {
      * 用户第三方鉴权token类型
      */
     private int thirdTokenType;
+
+    /**
+     * 用户注册ip
+     */
+    private String ipAddress;
 }

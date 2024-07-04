@@ -235,4 +235,8 @@ public class UserInfo implements Serializable {
      */
     @TableField("weight_aim")
     private Double weightAim;
+
+
+    @TableField("ip_address")
+    private String ipAddress;
 }

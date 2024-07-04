@@ -18,7 +18,6 @@ public class AppPackeageManageVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-      private Integer id;
 
       /**
      * t_app_manage表的ID

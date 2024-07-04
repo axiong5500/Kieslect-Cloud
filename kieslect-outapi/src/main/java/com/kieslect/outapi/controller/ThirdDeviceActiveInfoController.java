@@ -47,7 +47,7 @@ public class ThirdDeviceActiveInfoController {
         if (records.size() > MAX_RECORDS) {
             return R.fail(HttpStatus.BAD_REQUEST,"Batch size exceeds the maximum limit of " + MAX_RECORDS);
         }
-        boolean result = thirdDeviceActiveInfoService.saveBatch(records);
+        boolean result = thirdDeviceActiveInfoService.insertOrUpdateBatch(records);
         return R.ok(result, "Batch insert operation completed");
     }
 }

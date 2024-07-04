@@ -8,9 +8,9 @@ package com.kieslect.common.core.constant;
 public class CacheConstants
 {
     /**
-     * 缓存有效期，默认3（天）
+     * 缓存有效期，默认180（天）
      */
-    public final static long EXPIRATION = 3 * 24 * 60;
+    public final static long EXPIRATION = 180 * 24 * 60;
 
     /**
      * 缓存刷新时间，默认120（分钟）

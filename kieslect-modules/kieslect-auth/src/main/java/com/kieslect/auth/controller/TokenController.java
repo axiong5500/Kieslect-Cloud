@@ -9,6 +9,7 @@ import com.kieslect.api.RemoteUserService;
 import com.kieslect.api.domain.*;
 import com.kieslect.api.enums.RegisterTypeEnum;
 import com.kieslect.api.model.UserInfoVO;
+import com.kieslect.auth.controller.api.TokenApi;
 import com.kieslect.auth.form.RegisterBody;
 import com.kieslect.auth.form.SendCaptchaBody;
 import com.kieslect.auth.utils.ValidationUtils;
@@ -27,7 +28,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,7 +40,7 @@ import java.util.Map;
  * @author kieslect
  */
 @RestController
-public class TokenController {
+public class TokenController implements TokenApi {
     @Autowired
     private TokenService tokenService;
 
@@ -60,6 +60,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("third/login")
+    @Override
     public R<?> thirdLogin(@RequestBody ThirdLoginInfo thirdLoginInfo) {
         return remoteUserService.thirdLogin(thirdLoginInfo);
     }
@@ -71,6 +72,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("login")
+    @Override
     public R<?> login(@RequestBody @Valid LoginInfo loginInfo) {
         // 用户登录
         String userKey = IdUtil.fastUUID();
@@ -92,6 +94,7 @@ public class TokenController {
 
 
     @PostMapping("refresh")
+    @Override
     public R<?> refresh(HttpServletRequest request) {
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
         if (StringUtils.isNotNull(loginUser)) {
@@ -110,6 +113,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("register")
+    @Override
     public R<?> register(@RequestBody @Valid RegisterBody registerBody) {
         // 邮箱验证码校验
         if (registerBody.getRegisterType() == RegisterTypeEnum.EMAIL.getCode()) {
@@ -148,6 +152,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("sendCaptcha")
+    @Override
     public R<?> sendCaptcha(@RequestBody @Valid SendCaptchaBody vo) {
         //校验邮箱格式
         if (!ValidationUtils.isValidEmail(vo.getToEmail())) {
@@ -189,18 +194,21 @@ public class TokenController {
     }
 
     @PostMapping("getUserInfo")
+    @Override
     public R<?> getUserInfo(HttpServletRequest request) {
         LoginUserInfo loginUser = tokenService.getLoginUser(request);
         UserInfoVO userInfoVO = new UserInfoVO();
         if (StringUtils.isNotNull(loginUser)) {
-
             BeanUtils.copyProperties(loginUser, userInfoVO);
+        }else{
+
         }
         userInfoVO.setThirdUserInfos(remoteUserService.getThirdUserInfo(loginUser.getKid()).getData());
         return R.ok(userInfoVO);
     }
 
     @PostMapping("forgetPassword")
+    @Override
     public R<?> forgetPassword(@RequestBody @Valid ForgetPasswordBody body) {
         String email = EmailTypeEnum.FORGOT_PASSWORD.getRedisKey() + body.getAccount();
         boolean validCode = mailService.isCaptchaValid(email, body.getCode());
@@ -217,6 +225,7 @@ public class TokenController {
 
     // 账号注销分两种情况，一种是带有token格式，一种是只有账号密码没有token
     @PostMapping("logout")
+    @Override
     public R<?> logout(HttpServletRequest request, @RequestBody(required = false) LogoutBody logoutBody) {
         String token = SecurityUtils.getToken(request);
         if (StringUtils.isNotEmpty(token)) {
@@ -239,9 +248,10 @@ public class TokenController {
         }
     }
 
-
-    @GetMapping("test")
-    public R<?> getTest() {
+    @Override
+    @PostMapping("gettest")
+    public R<?> test() {
         return R.ok();
     }
+
 }

@@ -91,7 +91,11 @@ public class GatewayConfig {
 
             // 如果请求路径在白名单中，则直接放行
             if (isInWhiteList(requestPath)) {
-                return chain.filter(exchange);
+                // 将请求上下文信息添加到 HTTP 头部
+                ServerHttpRequest modifiedRequest = request.mutate()
+                        .header("X-Client-IP", clientIp)
+                        .build();
+                return chain.filter(exchange.mutate().request(modifiedRequest).build());
             }
 
             String token = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
@@ -115,8 +119,14 @@ public class GatewayConfig {
             }
             tokenService.verifyToken(loginUser);
 
+            // 将请求上下文信息添加到 HTTP 头部
+            ServerHttpRequest modifiedRequest = request.mutate()
+                    .header("X-Client-IP", clientIp)
+                    .header("X-User-ID", String.valueOf(loginUser.getKid())) // 根据需要设置其他头部
+                    .build();
+
             // 如果 Token 存在且有效，继续处理请求
-            return chain.filter(exchange);
+            return chain.filter(exchange.mutate().request(modifiedRequest).build());
         };
     }
 

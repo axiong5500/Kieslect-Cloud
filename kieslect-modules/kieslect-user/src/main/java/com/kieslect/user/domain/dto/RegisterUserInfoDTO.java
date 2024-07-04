@@ -39,6 +39,7 @@ public class RegisterUserInfoDTO {
     private Byte delStatus;
     private Long createTime;
     private Long updateTime;
+    private String ipAddress;
 
     public RegisterUserInfoDTO() {
         // 设置默认初始化值

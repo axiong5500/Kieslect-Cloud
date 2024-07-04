@@ -2,8 +2,6 @@ package com.kieslect.user.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
 import com.kieslect.api.domain.*;
 import com.kieslect.api.model.ThirdUserInfoVO;
 import com.kieslect.api.model.UserInfoVO;
@@ -14,14 +12,12 @@ import com.kieslect.common.core.enums.ResponseCodeEnum;
 import com.kieslect.common.mail.service.MailService;
 import com.kieslect.common.redis.service.RedisService;
 import com.kieslect.common.security.service.TokenService;
+import com.kieslect.user.domain.Icon;
 import com.kieslect.user.domain.ThirdUserInfo;
 import com.kieslect.user.domain.UserInfo;
-import com.kieslect.user.domain.vo.BindEmailVO;
-import com.kieslect.user.domain.vo.BindThirdInfoVO;
-import com.kieslect.user.domain.vo.ChangeEmailVO;
-import com.kieslect.user.domain.vo.SaveUserInfoVO;
-import com.kieslect.user.enums.KAppNotificationTypeEnum;
+import com.kieslect.user.domain.vo.*;
 import com.kieslect.user.exception.CustomException;
+import com.kieslect.user.service.IIconService;
 import com.kieslect.user.service.IThirdUserInfoService;
 import com.kieslect.user.service.IUserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,10 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -65,8 +59,14 @@ public class UserInfoController {
     @Autowired
     private IThirdUserInfoService thirdUserInfoService;
 
+    @Autowired
+    private IIconService iconService;
+
     @PostMapping("/register")
-    public R<Object> registerUserInfo(@RequestBody RegisterInfo registerInfo) {
+    public R<Object> registerUserInfo(HttpServletRequest request,@RequestBody RegisterInfo registerInfo) {
+        //获取ip
+        String ip = getClientIp(request);
+        registerInfo.setIpAddress(ip);
         return R.ok(userInfoService.register(registerInfo));
     }
 
@@ -258,23 +258,32 @@ public class UserInfoController {
     @GetMapping("/notify/getAppList")
     public R<Object> getAppList() {
         Map<String, Object> map = new HashMap<>();
-        map.put("appList", enumToJsonArray(KAppNotificationTypeEnum.class));
+        List<IconVO> appList;
+        List<Icon> icons =  iconService.list();
+        appList = icons.stream().map(icon -> {
+            IconVO iconVO = new IconVO();
+            BeanUtil.copyProperties(icon, iconVO);
+            return iconVO;
+        }).collect(Collectors.toList());
+        map.put("appList", appList);
         return R.ok(map);
     }
 
-    public static <T extends Enum<T>> JSONArray enumToJsonArray(Class<T> enumClass) {
-        JSONArray jsonArray = new JSONArray();
-        for (T enumValue : enumClass.getEnumConstants()) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("code", ((KAppNotificationTypeEnum) enumValue).getCode());
-            jsonObject.put("savePackName", ((KAppNotificationTypeEnum) enumValue).getSavePackName());
-            jsonObject.put("uteValue", ((KAppNotificationTypeEnum) enumValue).getValue());
-            jsonObject.put("desc", ((KAppNotificationTypeEnum) enumValue).getDesc());
-            jsonObject.put("icon", ((KAppNotificationTypeEnum) enumValue).getIcon());
 
-            jsonArray.add(jsonObject);
+
+    private String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("X-Client-IP");
         }
-        return jsonArray;
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        // 如果有多个代理，X-Forwarded-For的值可能是以逗号分隔的IP地址列表
+        if (ip != null && ip.contains(",")) {
+            ip = ip.split(",")[0].trim();
+        }
+        return ip;
     }
 
 

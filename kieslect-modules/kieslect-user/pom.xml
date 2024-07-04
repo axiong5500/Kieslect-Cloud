@@ -24,7 +24,12 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version> <!-- 或者适当的版本号 -->
+            <scope>provided</scope>
+        </dependency>
 
 
         <dependency>
@@ -39,12 +44,19 @@
 
         <dependency>
             <groupId>com.kieslect</groupId>
+            <artifactId>kieslect-common-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.kieslect</groupId>
             <artifactId>kieslect-common-redis</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.kieslect</groupId>
             <artifactId>kieslect-common-mail</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.kieslect</groupId>
             <artifactId>kieslect-api</artifactId>
@@ -52,26 +64,10 @@
 
 
         <dependency>
-            <groupId>com.kieslect</groupId>
-            <artifactId>kieslect-common-security</artifactId>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.9.9</version>
         </dependency>
-        <dependency>
-            <groupId>com.kieslect</groupId>
-            <artifactId>kieslect-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-            <version>4.26.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java-util</artifactId>
-            <version>4.26.1</version>
-            <scope>runtime</scope>
-        </dependency>
-
 
     </dependencies>
 

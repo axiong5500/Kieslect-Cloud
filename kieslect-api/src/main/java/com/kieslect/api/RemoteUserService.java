@@ -23,15 +23,6 @@ import java.util.List;
 public interface RemoteUserService
 {
     /**
-     * 通过用户名查询用户信息
-     *
-     * @param username 用户名
-     * @return 结果
-     */
-    @GetMapping("/user/info/{username}")
-    R<UserInfoVO> getUserInfo(@PathVariable("username") String username);
-
-    /**
      * 注册用户信息
      *
      * @return 结果
@@ -60,6 +51,10 @@ public interface RemoteUserService
     @PostMapping(value = "/user/forgetPassword")
     R<Object> forgetPassword(@RequestBody ForgetPasswordBody body);
 
+    /**
+     * 账号注销
+     * @param userId
+     */
     @PostMapping(value = "/user/logout/{userId}")
     void logout(@PathVariable("userId") Long userId);
 

@@ -188,6 +188,7 @@ public class WeatherServiceImpl implements IWeatherService {
             weatherInfoVO.setWindDir(nowObjJson.getStr("windDir"));
             weatherInfoVO.setWindScale(nowObjJson.getStr("windScale"));
             weatherInfoVO.setWindSpeed(nowObjJson.getStr("windSpeed"));
+            weatherInfoVO.setPressure(nowObjJson.getStr("pressure"));
 
 
             // 以下6个字段无法从nowObj对象中获取到，需从sevenObj对象中获取
@@ -228,6 +229,7 @@ public class WeatherServiceImpl implements IWeatherService {
                 itemJson.set("sunrise", itemJson.getStr("sunrise"));
                 itemJson.set("sunset", itemJson.getStr("sunset"));
                 itemJson.set("uv", itemJson.getStr("uvIndex"));
+                itemJson.set("pressure", itemJson.getStr("pressure"));
 
                 WeatherInfoVO.DailyVO dailyVO = JSONUtil.toBean(itemJson, WeatherInfoVO.DailyVO.class);
                 dailyForecast.add(dailyVO);
@@ -271,6 +273,7 @@ public class WeatherServiceImpl implements IWeatherService {
             currentHourlyVO.setWeatherIcon(weatherInfoVO.getWeatherIcon());
             currentHourlyVO.setPop(weatherInfoVO.getPop());
             currentHourlyVO.setTime(formattedTime);
+            currentHourlyVO.setPressure(weatherInfoVO.getPressure());
             result.add(currentHourlyVO);
 
             List<WeatherInfoVO.HourlyVO> hourlyForecast = hourlyObjJson.stream()
@@ -280,6 +283,7 @@ public class WeatherServiceImpl implements IWeatherService {
                         itemJson.set("weather", itemJson.getStr("text"));
                         itemJson.set("weatherIcon", itemJson.getStr("icon"));
                         itemJson.set("pop", itemJson.getStr("pop"));
+                        itemJson.set("pressure", itemJson.getStr("pressure"));
                         String dateTimeString = itemJson.getStr("fxTime");
                         ZonedDateTime dateTime = ZonedDateTime.parse(dateTimeString);
 

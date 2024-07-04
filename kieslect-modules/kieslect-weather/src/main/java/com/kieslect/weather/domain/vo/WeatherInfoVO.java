@@ -64,12 +64,10 @@ public class WeatherInfoVO {
      */
     private String windScale;
 
-
-
     /**
-     * 紫外线指数强度描述
+     * 大气压强
      */
-//    private String uvDescription;
+    private String pressure;
 
     /**
      * 能见度
@@ -136,6 +134,10 @@ public class WeatherInfoVO {
          * 降水概率
          */
         private String pop;
+        /**
+         * 大气压强
+         */
+        private String pressure;
     }
 
     /**
@@ -148,11 +150,6 @@ public class WeatherInfoVO {
          * 日期
          */
         private Long date;
-        /**
-         * 星期几
-         */
-//        private String week;
-
         /**
          * 日最低温度
          */
@@ -187,6 +184,10 @@ public class WeatherInfoVO {
          * 紫外线指数
          */
         private String uv;
+        /**
+         * 大气压强
+         */
+        private String pressure;
     }
 }
 
