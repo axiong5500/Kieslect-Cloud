@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +57,7 @@ public class ArticleController {
 
 
     @GetMapping("/sys/getArticleById")
-    public R<?> getPrivacyPolicy(@RequestParam(value = "id", required = false) Integer id,@RequestParam(value = "language", required = false) Integer language) throws UnsupportedEncodingException {
+    public R<?> getPrivacyPolicy(@RequestParam(value = "id", required = false) Integer id,@RequestParam(value = "language", required = false) Integer language)  {
         Article article =  articleService.getById(id);
         if (article == null) {
             return R.fail();
@@ -69,7 +68,11 @@ public class ArticleController {
         queryWrapper.eq("language", language);
         article = articleService.getOne(queryWrapper);
         if (article == null) {
-            return R.fail();
+            // 查询默认语言
+            queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("title", title);
+            queryWrapper.eq("language", 2);
+            article = articleService.getOne(queryWrapper);
         }
         Map<String, Object> result = BeanUtil.beanToMap(article);
         return R.ok(result);
