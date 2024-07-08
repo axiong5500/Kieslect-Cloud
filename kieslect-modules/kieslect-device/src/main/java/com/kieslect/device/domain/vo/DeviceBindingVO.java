@@ -39,6 +39,8 @@ public class DeviceBindingVO implements Serializable {
 
     private String devicePassword;
 
+    private String deviceName;
+
     @JsonIgnore
     private String createTime;
 

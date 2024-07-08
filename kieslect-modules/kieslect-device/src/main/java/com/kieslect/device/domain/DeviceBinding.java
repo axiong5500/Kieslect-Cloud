@@ -77,6 +77,9 @@ public class DeviceBinding implements Serializable {
     @TableField("device_id")
     private String deviceId;
 
+    @TableField("device_name")
+    private String deviceName;
+
     /**
      * 设备密码
      */
