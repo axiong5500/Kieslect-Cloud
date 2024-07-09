@@ -34,12 +34,12 @@ public class WeatherServiceImpl implements IWeatherService {
     private static final String apiKey = "ba0fb55d9b5c49ab8b352808ead4dac5";
 
     // 实况天气 经度（longitude）在前 纬度（latitude）在后
-    private static final String NOW_WEATHER_URL = "https://devapi.qweather.com/v7/weather/now?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
+    private static final String NOW_WEATHER_URL = "https://devapi.qweather.com/v7/weather/now?key=" + apiKey + "&location=%s,%s";
     // 逐小时预报（未来24小时） 经度（longitude）在前 纬度（latitude）在后
-    private static final String HOURLY_WEATHER_FORECAST_URL = "https://devapi.qweather.com/v7/weather/24h?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
+    private static final String HOURLY_WEATHER_FORECAST_URL = "https://devapi.qweather.com/v7/weather/24h?key=" + apiKey + "&location=%s,%s";
 
     // 7天预报 经度（longitude）在前 纬度（latitude）在后
-    private static final String SEVEN_WEATHER_FORECAST_URL = "https://devapi.qweather.com/v7/weather/7d?key=" + apiKey + "&location=%s,%s&lang=%s&unit=%s";
+    private static final String SEVEN_WEATHER_FORECAST_URL = "https://devapi.qweather.com/v7/weather/7d?key=" + apiKey + "&location=%s,%s";
 
     // 和风geo
     private static final String HEFENG_GEO_URL = "https://geoapi.qweather.com/v2/city/lookup?key=" + apiKey + "&location=%s&number=1";
@@ -326,7 +326,7 @@ public class WeatherServiceImpl implements IWeatherService {
                 longitude = Double.valueOf(hirdGeo.getLongitude());
                 latitude = Double.valueOf(hirdGeo.getLatitude());
             }
-            String hourlyWeatherForecast = String.format(weatherForecastUrl, longitude, latitude, langFormatted, unitFormatted);
+            String hourlyWeatherForecast = String.format(weatherForecastUrl, longitude, latitude);
             String getWeatherForecast = HttpUtil.get(hourlyWeatherForecast);
             //检查getWeatherForecast返回的信息是不是{"code":"404"}
             if ("{\"code\":\"404\"}".equals(getWeatherForecast)) {
