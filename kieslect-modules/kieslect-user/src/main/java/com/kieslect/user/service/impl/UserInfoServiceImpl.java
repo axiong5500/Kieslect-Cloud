@@ -307,6 +307,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     private UserInfo registerNewUser(ThirdUserInfo thirdUserInfo) {
         UserInfo user = new UserInfo();
         RegisterUserInfoDTO userInfoDTO = new RegisterUserInfoDTO();
+        userInfoDTO.setAppName(thirdUserInfo.getAppName());
         BeanUtil.copyProperties(userInfoDTO, user);
         this.save(user);
 
