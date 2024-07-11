@@ -22,7 +22,7 @@ public class IconVO implements Serializable {
 
     private String savePackName;
 
-    private Integer value;
+    private Integer uteValue;
 
     @JsonProperty("desc")
     private String description;

@@ -24,6 +24,7 @@ public class RegisterUserInfoDTO {
     private String province;
     private String city;
     private Integer cityId;
+    private Integer gpsCityId;
     private String nickName;
     private String headImage;
     private Byte appName;
@@ -47,6 +48,7 @@ public class RegisterUserInfoDTO {
         this.password = "123456";
         this.sex = 0;
         this.cityId = 0;
+        this.gpsCityId = 0;
         this.metricBritish = 0;
         this.hourly = 0;
         this.temperature = 0;

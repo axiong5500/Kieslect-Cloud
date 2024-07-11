@@ -243,7 +243,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             } else {
                 // 保存第三方用户信息并注册新账号
                 ThirdUserInfo thirdUserInfo = saveNewThirdUserInfo(thirdLoginInfo, currentTime);
-                UserInfo user = registerNewUser(thirdUserInfo);
+                UserInfo user = registerNewUser(thirdUserInfo,thirdLoginInfo.getIpAddress());
                 loginAfterRegistration(user, currentTime);
                 BeanUtil.copyProperties(user, loginUserInfo,CopyOptions.create().setFieldMapping(
                         Map.of("id", "kid")
@@ -304,10 +304,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         return thirdUserInfo;
     }
 
-    private UserInfo registerNewUser(ThirdUserInfo thirdUserInfo) {
+    private UserInfo registerNewUser(ThirdUserInfo thirdUserInfo,String ipAddress) {
         UserInfo user = new UserInfo();
         RegisterUserInfoDTO userInfoDTO = new RegisterUserInfoDTO();
         userInfoDTO.setAppName(thirdUserInfo.getAppName());
+        userInfoDTO.setIpAddress(ipAddress);
         BeanUtil.copyProperties(userInfoDTO, user);
         this.save(user);
 

@@ -26,6 +26,7 @@ public class SaveUserInfoVO implements Serializable {
     private String province;
     private String city;
     private Integer cityId;
+    private Integer gpsCityId;
     private String nickName;
     private String headImage;
     private Byte appName;

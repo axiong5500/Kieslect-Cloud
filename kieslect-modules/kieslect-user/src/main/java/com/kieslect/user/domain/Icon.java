@@ -36,8 +36,8 @@ public class Icon implements Serializable {
     @TableField("save_pack_name")
     private String savePackName;
 
-    @TableField("value")
-    private Integer value;
+    @TableField("ute_value")
+    private Integer uteValue;
 
     @TableField("description")
     private String description;

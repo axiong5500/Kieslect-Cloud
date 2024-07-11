@@ -102,4 +102,10 @@ public class ThirdLoginInfo
      */
     private String localPictureUrl;
 
+
+    /**
+     * 用户注册ip,用于t_user_info表
+     */
+    private String ipAddress;
+
 }

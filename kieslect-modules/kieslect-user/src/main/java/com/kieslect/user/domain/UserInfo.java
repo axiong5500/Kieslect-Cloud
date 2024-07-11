@@ -107,8 +107,16 @@ public class UserInfo implements Serializable {
       @TableField("city")
     private String city;
 
+    /**
+     * 城市id
+     */
     @TableField("city_id")
     private Integer cityId;
+    /**
+     * gps城市id
+     */
+    @TableField("gps_city_id")
+    private Integer gpsCityId;
 
       /**
      * 昵称，支持emoji表情符
