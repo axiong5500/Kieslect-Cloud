@@ -143,7 +143,7 @@ public class UserInfo implements Serializable {
     private Byte appSystem;
 
       /**
-     * app型号
+     * 手机型号
      */
       @TableField("app_type")
     private String phoneType;
@@ -165,6 +165,12 @@ public class UserInfo implements Serializable {
      */
       @TableField("app_version")
     private String appVersion;
+
+    /**
+     * 系统版本
+     */
+    @TableField("system_version")
+    private String systemVersion;
 
       /**
      * 公英制，0：公制，1：英制
@@ -245,6 +251,9 @@ public class UserInfo implements Serializable {
     private Double weightAim;
 
 
+    /**
+     * ip地址
+     */
     @TableField("ip_address")
     private String ipAddress;
 }
