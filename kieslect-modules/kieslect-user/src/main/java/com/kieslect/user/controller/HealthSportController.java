@@ -305,7 +305,7 @@ public class HealthSportController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", "sportdata.kieslect");
-        headers.set("kcode", String.valueOf(mergedFile != null ? 200 : 404));
+        headers.set("kcode", String.valueOf(mergedFile != null ? 200 : 400));
 
 
         return ResponseEntity.ok()
