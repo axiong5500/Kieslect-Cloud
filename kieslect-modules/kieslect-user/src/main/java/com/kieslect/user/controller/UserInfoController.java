@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ServerWebExchange;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -67,9 +66,7 @@ public class UserInfoController {
     private IIconService iconService;
 
     @PostMapping("/register")
-    public R<Object> registerUserInfo(ServerWebExchange exchange, @RequestBody RegisterInfo registerInfo) {
-        //获取ip
-        String clientIp = exchange.getRequest().getHeaders().getFirst("X-Client-IP");
+    public R<Object> registerUserInfo( @RequestBody RegisterInfo registerInfo, @RequestHeader("X-Client-IP") String clientIp) {
         logger.info("客户端IP：" +clientIp);
         registerInfo.setIpAddress(clientIp);
         return R.ok(userInfoService.register(registerInfo));
@@ -81,9 +78,7 @@ public class UserInfoController {
     }
 
     @PostMapping("/third/login")
-    public R<?> thirdLogin(ServerWebExchange exchange,@RequestBody ThirdLoginInfo thirdLoginInfo) {
-        //获取ip
-        String clientIp = exchange.getRequest().getHeaders().getFirst("X-Client-IP");
+    public R<?> thirdLogin(@RequestBody ThirdLoginInfo thirdLoginInfo, @RequestHeader("X-Client-IP") String clientIp) {
         logger.info("客户端IP：" +clientIp);
         thirdLoginInfo.setIpAddress(clientIp);
         LoginUserInfo userInfo = userInfoService.thirdLogin(thirdLoginInfo);

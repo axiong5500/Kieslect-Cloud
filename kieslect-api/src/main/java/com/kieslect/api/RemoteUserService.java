@@ -7,10 +7,7 @@ import com.kieslect.api.model.UserInfoVO;
 import com.kieslect.common.core.constant.ServiceNameConstants;
 import com.kieslect.common.core.domain.R;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,7 +25,7 @@ public interface RemoteUserService
      * @return 结果
      */
     @PostMapping(value = "/user/register")
-    R<Boolean> registerUserInfo(@RequestBody RegisterInfo registerInfo);
+    R<Boolean> registerUserInfo(@RequestBody RegisterInfo registerInfo, @RequestHeader("X-Client-IP") String clientIp);
 
     /**
      * 登录
@@ -63,7 +60,7 @@ public interface RemoteUserService
     R<UserInfoVO> logoutByAccountAndPassword(@RequestBody LogoutBody logoutBody);
 
     @PostMapping(value = "/user/third/login")
-    R<?> thirdLogin(@RequestBody ThirdLoginInfo thirdLoginInfo);
+    R<?> thirdLogin(@RequestBody ThirdLoginInfo thirdLoginInfo, @RequestHeader("X-Client-IP") String clientIp);
 
     @PostMapping(value = "/user/third/getThirdUserInfo/{userId}")
     R<List<ThirdUserInfoVO>> getThirdUserInfo(@PathVariable("userId") Long userId);
