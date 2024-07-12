@@ -25,9 +25,13 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ServerWebExchange;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -63,10 +67,11 @@ public class UserInfoController {
     private IIconService iconService;
 
     @PostMapping("/register")
-    public R<Object> registerUserInfo(HttpServletRequest request,@RequestBody RegisterInfo registerInfo) {
+    public R<Object> registerUserInfo(ServerWebExchange exchange, @RequestBody RegisterInfo registerInfo) {
         //获取ip
-        String ip = getClientIp(request);
-        registerInfo.setIpAddress(ip);
+        String clientIp = exchange.getRequest().getHeaders().getFirst("X-Client-IP");
+        logger.info("客户端IP：" +clientIp);
+        registerInfo.setIpAddress(clientIp);
         return R.ok(userInfoService.register(registerInfo));
     }
 
@@ -76,10 +81,11 @@ public class UserInfoController {
     }
 
     @PostMapping("/third/login")
-    public R<?> thirdLogin(HttpServletRequest request,@RequestBody ThirdLoginInfo thirdLoginInfo) {
+    public R<?> thirdLogin(ServerWebExchange exchange,@RequestBody ThirdLoginInfo thirdLoginInfo) {
         //获取ip
-        String ip = getClientIp(request);
-        thirdLoginInfo.setIpAddress(ip);
+        String clientIp = exchange.getRequest().getHeaders().getFirst("X-Client-IP");
+        logger.info("客户端IP：" +clientIp);
+        thirdLoginInfo.setIpAddress(clientIp);
         LoginUserInfo userInfo = userInfoService.thirdLogin(thirdLoginInfo);
         return R.ok(tokenService.createToken(userInfo));
     }
@@ -271,23 +277,4 @@ public class UserInfoController {
         map.put("appList", appList);
         return R.ok(map);
     }
-
-
-
-    private String getClientIp(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("X-Client-IP");
-        }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        // 如果有多个代理，X-Forwarded-For的值可能是以逗号分隔的IP地址列表
-        if (ip != null && ip.contains(",")) {
-            ip = ip.split(",")[0].trim();
-        }
-        return ip;
-    }
-
-
 }

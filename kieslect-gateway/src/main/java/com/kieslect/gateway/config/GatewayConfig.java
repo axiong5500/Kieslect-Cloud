@@ -4,6 +4,7 @@ import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.enums.ResponseCodeEnum;
 import com.kieslect.common.security.service.TokenService;
 import com.kieslect.common.security.utils.SecurityUtils;
+import com.kieslect.gateway.utils.IpUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -79,7 +80,7 @@ public class GatewayConfig {
         return (exchange, chain) -> {
             // 获取客户端请求对象
             ServerHttpRequest request = exchange.getRequest();
-            String clientIp = request.getRemoteAddress().getAddress().getHostAddress();
+            String clientIp = IpUtils.getIpAddr(request);
 
             // 获取请求路径
             String requestPath = request.getPath().value();
