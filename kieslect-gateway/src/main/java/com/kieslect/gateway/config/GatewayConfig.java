@@ -42,10 +42,12 @@ public class GatewayConfig {
             "/kieslect-user/user/notify/getAppList",
             "/kieslect-device/device/**/sys/**",
             "/kieslect-device/device/getList",
+            "/kieslect-device/device/ota/getList",
+            "/kieslect-device/device/appManage/getApp",
             "/kieslect-file/file/upload",
+            "/kieslect-file/file/v2/**",
             "/kieslect-file/file/download/**",
             "/kieslect-weather/weather/getWeatherInfo",
-            "/kieslect-device/device/appManage/getApp",
             "/kieslect-**/**/task/**",
             "/kieslect-outapi/**",
     };
@@ -86,16 +88,14 @@ public class GatewayConfig {
             String requestPath = request.getPath().value();
 
 
-            //输出日志
-            logger.info("客户端IP：" + clientIp + "，请求路径：" + requestPath);
-
-
             // 如果请求路径在白名单中，则直接放行
             if (isInWhiteList(requestPath)) {
                 // 将请求上下文信息添加到 HTTP 头部
                 ServerHttpRequest modifiedRequest = request.mutate()
                         .header("X-Client-IP", clientIp)
                         .build();
+                //输出日志
+                logger.info("客户端IP：{}，检测到白名单请求路径：{}", clientIp, requestPath);
                 return chain.filter(exchange.mutate().request(modifiedRequest).build());
             }
 
@@ -107,6 +107,7 @@ public class GatewayConfig {
             // 假设这里直接判断 Token 是否存在，并简单假设所有 Token 都是有效的
             if (token == null || token.isEmpty()) {
                 // 如果 Token 不存在或为空，返回 401 Unauthorized 错误
+                logger.info("客户端IP：{}，请求路径：{}，无效的token：{}", clientIp, requestPath, token);
                 return onError(exchange, ResponseCodeEnum.UNAUTHORIZED, null);
             }
 
@@ -116,6 +117,7 @@ public class GatewayConfig {
             // loginUser 不为空，说明 Token 有效
             if (loginUser == null) {
                 // 如果 Token 存在且有效，继续处理请求
+                logger.info("客户端IP：{}，请求路径：{}，缓存上不存在该token：{}", clientIp, requestPath, token);
                 return onError(exchange, ResponseCodeEnum.UNAUTHORIZED, null);
             }
             tokenService.verifyToken(loginUser);
@@ -125,8 +127,8 @@ public class GatewayConfig {
                     .header("X-Client-IP", clientIp)
                     .header("X-User-ID", String.valueOf(loginUser.getKid())) // 根据需要设置其他头部
                     .build();
-
             // 如果 Token 存在且有效，继续处理请求
+            logger.info("客户端IP：{}，请求路径：{}，有效token：{}", clientIp, requestPath, token);
             return chain.filter(exchange.mutate().request(modifiedRequest).build());
         };
     }
@@ -136,7 +138,6 @@ public class GatewayConfig {
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         for (String path : WHITELIST) {
             if (antPathMatcher.match(path, requestPath)) {
-                logger.info("匹配到白名单路径：" + path);
                 return true;
             }
         }
