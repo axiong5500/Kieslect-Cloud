@@ -3,7 +3,8 @@ package com.kieslect.device.enums;
 public enum AppManageAppNameEnum {
     //0：KSTYLEOS，其他：KSTYLEOS
     KSTYLEOS(0, "KSTYLEOS"),
-    KSTYLEOS_OTHER(1, "KSTYLEOS")
+    KSTYLEOS_OTHER(1, "KSTYLEOS"),
+    CKOS(2, "CKOS")
     ;
 
     private final int code;

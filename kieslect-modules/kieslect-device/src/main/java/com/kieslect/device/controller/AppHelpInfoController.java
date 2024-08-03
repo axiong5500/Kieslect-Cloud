@@ -7,7 +7,7 @@ import com.kieslect.device.service.IAppHelpInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 /**
  * <p>
@@ -24,19 +24,19 @@ public class AppHelpInfoController {
     @Autowired
     IAppHelpInfoService appHelpInfoService;
     @GetMapping("/sys/getList")
-    public R<?> sysGetDeviceManageList() {
+    public R<?> sysGetAppHelpInfoList() {
         return R.ok(appHelpInfoService.list());
     }
 
     @PostMapping("/sys/update")
-    public R<?> updateIcon(@RequestBody AppHelpInfo appHelpInfo) {
-        appHelpInfo.setUpdateTime(LocalDateTime.now());
+    public R<?> updateAppHelpInfo(@RequestBody AppHelpInfo appHelpInfo) {
+        appHelpInfo.setUpdateTime(Instant.now().getEpochSecond());
         return R.ok(appHelpInfoService.updateById(appHelpInfo));
     }
 
 
     @PostMapping("/sys/delete")
-    public R<?> deleteIcon(@RequestBody AppHelpInfo appHelpInfo) {
+    public R<?> deleteAppHelpInfo(@RequestBody AppHelpInfo appHelpInfo) {
         LambdaQueryWrapper<AppHelpInfo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(AppHelpInfo::getId, appHelpInfo.getId());
         return R.ok(appHelpInfoService.remove(lambdaQueryWrapper));
@@ -44,9 +44,9 @@ public class AppHelpInfoController {
 
 
     @PostMapping("/sys/save")
-    public R<?> saveIcon(@RequestBody AppHelpInfo appHelpInfo) {
-        appHelpInfo.setCreateTime(LocalDateTime.now());
-        appHelpInfo.setUpdateTime(LocalDateTime.now());
+    public R<?> saveAppHelpInfo(@RequestBody AppHelpInfo appHelpInfo) {
+        appHelpInfo.setCreateTime(Instant.now().getEpochSecond());
+        appHelpInfo.setUpdateTime(Instant.now().getEpochSecond());
         return R.ok(appHelpInfoService.save(appHelpInfo));
     }
 }
