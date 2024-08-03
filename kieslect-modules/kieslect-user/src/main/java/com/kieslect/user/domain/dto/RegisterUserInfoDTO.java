@@ -1,5 +1,6 @@
 package com.kieslect.user.domain.dto;
 
+import cn.hutool.core.util.RandomUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -44,8 +45,8 @@ public class RegisterUserInfoDTO {
 
     public RegisterUserInfoDTO() {
         // 设置默认初始化值
-        this.account = "kieslect_" + Instant.now().toEpochMilli();
-        this.password = "123456";
+        this.account = Long.toString(Instant.now().toEpochMilli());
+        this.password = RandomUtil.randomString(RandomUtil.BASE_CHAR_NUMBER,8);// 随机生成包含大写字母、小写字母和数字的8位数的随机密码
         this.sex = 0;
         this.cityId = 0;
         this.gpsCityId = 0;
