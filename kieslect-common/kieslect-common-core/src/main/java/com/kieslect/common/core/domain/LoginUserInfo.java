@@ -37,6 +37,7 @@ public class LoginUserInfo implements Serializable {
     private Integer appChannel;
     private Byte appStatus;
     private String appVersion;
+    private String systemVersion;
     private Byte metricBritish;
     private Byte hourly;
     private Byte temperature;

@@ -21,12 +21,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * token验证处理
- * 
+ *
  * @author kieslect
  */
 @Component
-public class TokenService
-{
+public class TokenService {
     private static final Logger log = LoggerFactory.getLogger(TokenService.class);
 
     @Autowired
@@ -45,8 +44,7 @@ public class TokenService
     /**
      * 创建令牌
      */
-    public Map<String, Object> createToken(LoginUserInfo loginUser)
-    {
+    public Map<String, Object> createToken(LoginUserInfo loginUser) {
         String userKey = loginUser.getUserKey();
         Long userId = loginUser.getKid();
         loginUser.setUserKey(userKey);
@@ -69,8 +67,7 @@ public class TokenService
      *
      * @return 用户信息
      */
-    public LoginUserInfo getLoginUser()
-    {
+    public LoginUserInfo getLoginUser() {
         return getLoginUser(ServletUtils.getRequest());
     }
 
@@ -79,8 +76,7 @@ public class TokenService
      *
      * @return 用户信息
      */
-    public LoginUserInfo getLoginUser(HttpServletRequest request)
-    {
+    public LoginUserInfo getLoginUser(HttpServletRequest request) {
         // 获取请求携带的令牌
         String token = SecurityUtils.getToken(request);
         return getLoginUser(token);
@@ -91,44 +87,33 @@ public class TokenService
      *
      * @return 用户信息
      */
-    public LoginUserInfo getLoginUser(String token)
-    {
+    public LoginUserInfo getLoginUser(String token) {
         LoginUserInfo user = null;
-        try
-        {
-            if (StringUtils.isNotEmpty(token))
-            {
+        try {
+            if (StringUtils.isNotEmpty(token)) {
                 String userkey = JwtUtils.getUserKey(token);
-                log.info("获取用户身份信息userkey:{}", userkey);
                 user = redisService.getCacheObject(getTokenKey(userkey));
                 return user;
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("获取用户信息异常'{}'", e.getMessage());
         }
         return user;
     }
 
 
-
     /**
      * 删除用户缓存信息
      */
-    public void delLoginUser(String token)
-    {
-        if (StringUtils.isNotEmpty(token))
-        {
+    public void delLoginUser(String token) {
+        if (StringUtils.isNotEmpty(token)) {
             String userkey = JwtUtils.getUserKey(token);
             redisService.deleteObject(getTokenKey(userkey));
         }
     }
 
-    public void delLoginUserByUserkey(String userkey)
-    {
-        if (StringUtils.isNotEmpty(userkey) && redisService.hasKey(getTokenKey(userkey)))
-        {
+    public void delLoginUserByUserkey(String userkey) {
+        if (StringUtils.isNotEmpty(userkey) && redisService.hasKey(getTokenKey(userkey))) {
             redisService.deleteObject(getTokenKey(userkey));
         }
     }
@@ -138,12 +123,10 @@ public class TokenService
      *
      * @param loginUserInfo
      */
-    public void verifyToken(LoginUserInfo loginUserInfo)
-    {
+    public void verifyToken(LoginUserInfo loginUserInfo) {
         long expireTime = loginUserInfo.getExpireTime();
         long currentTime = System.currentTimeMillis();
-        if (expireTime - currentTime <= MILLIS_MINUTE_TEN)
-        {
+        if (expireTime - currentTime <= MILLIS_MINUTE_TEN) {
             refreshToken(loginUserInfo);
         }
     }
@@ -153,8 +136,7 @@ public class TokenService
      *
      * @param loginUserInfo 登录信息
      */
-    public void refreshToken(LoginUserInfo loginUserInfo)
-    {
+    public void refreshToken(LoginUserInfo loginUserInfo) {
         loginUserInfo.setLoginTime(System.currentTimeMillis());
         loginUserInfo.setExpireTime(loginUserInfo.getLoginTime() + expireTime * MILLIS_MINUTE);
         // 根据uuid将loginUser缓存
@@ -162,8 +144,7 @@ public class TokenService
         redisService.setCacheObject(userKey, loginUserInfo, expireTime, TimeUnit.MINUTES);
     }
 
-    private String getTokenKey(String userKey)
-    {
+    private String getTokenKey(String userKey) {
         return ACCESS_TOKEN + userKey;
     }
 }
