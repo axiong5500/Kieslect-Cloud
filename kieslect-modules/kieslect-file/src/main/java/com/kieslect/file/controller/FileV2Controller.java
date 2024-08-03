@@ -1,8 +1,7 @@
 package com.kieslect.file.controller;
 
-import cn.hutool.core.lang.UUID;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.OSSObject;
@@ -17,7 +16,6 @@ import com.kieslect.file.service.FileService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -29,22 +27,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("")
-public class FileController {
+@RequestMapping("/v2")
+public class FileV2Controller {
 
     // 日志
-    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(FileV2Controller.class);
 
     @Autowired
     private FileService fileService;
@@ -68,150 +61,70 @@ public class FileController {
     @PostMapping("/upload")
     public R<?> uploadFile(@RequestParam("file") @NotNull(message = "文件不能为空") MultipartFile file,
                            @RequestParam("pathType") @NotNull(message = "路径类型不能为空") Integer pathType,
-                           @RequestParam(value = "userId", required = false) Long userId) throws IOException {
-        logger.info("Received file upload request. Filename: {}, PathType: {}, UserId: {}",
-                file.getOriginalFilename(), pathType, userId);
+                           @RequestParam(value = "userId", required = false) Long userId)  {
+        // 检查上传的文件是否为空
         if (file.isEmpty()) {
-            logger.error("File is empty. Upload failed.");
+            // 文件为空，返回错误信息
             return R.fail(ResponseCodeEnum.FILE_NOT_EMPTY);
         }
         // 根据枚举获取路径类型
         PathTypeEnum pathTypeEnum = PathTypeEnum.getByCode(pathType);
         userId = userId == null ? 9999L : userId;
 
-        try {
-            // 调用实际的上传逻辑
-            R<?> result = uploadFile(file, pathTypeEnum.getPath(), userId);
-            logger.info("File uploaded successfully. Filename: {}", file.getOriginalFilename());
-            return result;
-        } catch (Exception e) {
-            logger.error("File upload failed. Filename: {}", file.getOriginalFilename(), e);
-            return R.fail("文件上传失败：" + e.getMessage());
-        }
+        return uploadFile(file, pathTypeEnum.getPath(), userId);
     }
 
-    @PostMapping("/remoteUrlToOSS")
-    public R<?> remoteUrlToOSS(@RequestParam("remoteUrl") String remoteUrl,
-                               @RequestParam("pathType") Integer pathType) {
 
-        // 根据枚举获取路径类型
-        PathTypeEnum pathTypeEnum = PathTypeEnum.getByCode(pathType);
-        String ossPath = pathTypeEnum.getPath();
+    public R<?> uploadFile(MultipartFile file, String path, long userId) {
+        logger.info("Starting file upload. Path: {}, UserId: {}，FileSize: {} bytes", path, userId, file.getSize());
 
-
-        // 组装oss保存文件路径
-        String uniqueFileName = UUID.randomUUID() + ".jpg"; // 唯一文件名
-        String ossFilePath = ossPath + "/remote/" + uniqueFileName;
-
-        // 获取bucket名称
-        String bucketName = ossConfig.getBucketName();
-
-        try {
-            // 使用Hutool的HttpRequest下载远程文件到InputStream
-            //开启代理IP和端口
+        // 文件大小和 MIME 类型
+        long fileSize = file.getSize();
+        String contentType = file.getContentType();
+        String originalFileName = file.getOriginalFilename();
 
 
-            // 上传图片到OSS
-            InputStream inputStream;
-            if (isDebugMode()) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 7890));
-                // 使用Hutool下载远程图片
-                HttpResponse httpResponse = HttpUtil.createGet(remoteUrl).setProxy(proxy).setFollowRedirects(true).execute();
-                byte[] imageBytes = httpResponse.bodyBytes();
-                inputStream = new ByteArrayInputStream(imageBytes);
-            }else{
-                HttpResponse httpResponse = HttpUtil.createGet(remoteUrl).setFollowRedirects(true).execute();
-                byte[] imageBytes = httpResponse.bodyBytes();
-                inputStream = new ByteArrayInputStream(imageBytes);
-            }
+        // 获取文件后缀
+        String fileExtension = FileUtil.extName(originalFileName);
+        String uniqueFileName = IdUtil.simpleUUID();
+        String fileNameWithExtension = uniqueFileName + (fileExtension.isEmpty() ? "" : "." + fileExtension);
+        String ossFilePath = String.format("%s/%d/%s", path, userId, fileNameWithExtension);
 
-            // 将远程文件上传至OSS
-            fileService.remoteUrlToOSS(bucketName, ossFilePath, inputStream);
+        // 日志记录上传路径
+        logger.info("Uploading file to OSS. OSS FilePath: {}, FileSize: {} bytes", ossFilePath, fileSize);
 
-            // 生成文件的URL
+        try (InputStream fileInputStream = file.getInputStream()) {
+            // 创建 OSS 文件夹路径
+            String bucketName = ossConfig.getBucketName();
+            fileService.createFolder(bucketName, path);
+
+            // 上传文件到 OSS，并设置 MIME 类型
+            fileService.uploadFile(fileInputStream, bucketName, ossFilePath, contentType);
+
+
+            // 生成文件的 URL
             String fileUrl = generateFileUrl(ossFilePath);
-
-            // 关闭输入流
-            inputStream.close();
 
             // 构造响应体
             UploadResponse response = new UploadResponse()
-                    .setFilename(uniqueFileName)
+                    .setFilename(uniqueFileName) // 可以设置唯一标识作为文件名
                     .setFileUrl(fileUrl)
-                    .setFileSize((long) -1); // 你可能需要一个方法来获取文件大小，这里暂时设为-1
-
+                    .setFileSize(fileSize);
+            logger.info("File uploaded successfully. OSS FilePath: {}, FileSize: {} bytes", ossFilePath, fileSize);
             return R.ok(response);
         } catch (IOException e) {
-            // 处理异常
+            logger.error("File upload failed. OSS FilePath: {}, FileSize: {} bytes", ossFilePath, fileSize, e);
             return R.fail("文件上传失败：" + e.getMessage());
-        }
-    }
-
-    public R<?> uploadFile(MultipartFile file, String path, long userId) throws IOException {
-        logger.info("Starting file upload. Filename: {}, Path: {}, UserId: {}",
-                file.getOriginalFilename(), path, userId);
-        // 创建 OSS 文件夹路径
-        String bucketName = ossConfig.getBucketName();
-        try {
-            fileService.createFolder(bucketName, path);
-            logger.info("OSS folder created successfully. Bucket: {}, Path: {}", bucketName, path);
         } catch (Exception e) {
-            logger.error("Failed to create OSS folder. Bucket: {}, Path: {}", bucketName, path, e);
-            return R.fail("创建 OSS 文件夹失败：" + e.getMessage());
+            logger.error("Unexpected error occurred during file upload.", e);
+            return R.fail("文件上传过程中出现意外错误：" + e.getMessage());
         }
 
-        // 在路径后添加文件名
-        // 获取文件名和后缀名
-        String originalFilename = file.getOriginalFilename();
-        String baseName = getBaseName(originalFilename);
-        String extension = getFileExtension(originalFilename);
-        // 生成唯一性标识
-        String uniqueFileName = baseName + "." + extension;
-        String ossFilePath = path + "/" + userId + "/" + uniqueFileName;
-
-        // 日志记录上传路径
-        logger.info("Uploading file to OSS. Filename: {}, OSS FilePath: {}", uniqueFileName, ossFilePath);
-
-        try {
-            // 上传文件到 OSS
-            fileService.uploadFile(file, bucketName, ossFilePath);
-            logger.info("File uploaded successfully. Filename: {}, OSS FilePath: {}", uniqueFileName, ossFilePath);
-        } catch (Exception e) {
-            logger.error("Failed to upload file. Filename: {}, OSS FilePath: {}", uniqueFileName, ossFilePath, e);
-            return R.fail("文件上传失败：" + e.getMessage());
-        }
-
-
-        // 生成文件的URL
-        String fileUrl = generateFileUrl(ossFilePath);
-        logger.info("File URL generated. Filename: {}, URL: {}", uniqueFileName, fileUrl);
-
-        // 构造响应体
-        UploadResponse response = new UploadResponse()
-                .setFilename(uniqueFileName)
-                .setFileUrl(fileUrl)
-                .setFileSize(file.getSize());
-
-        return R.ok(response);
-    }
-
-    private String getFileExtension(String filename) {
-        return filename.substring(filename.lastIndexOf('.') + 1);
-    }
-
-    private String getBaseName(String filename) {
-        // 获取文件名的基本部分作为 baseName
-        int lastDotIndex = filename.lastIndexOf('.');
-        if (lastDotIndex == -1) {
-            return filename; // 没有找到扩展名，返回整个文件名
-        } else {
-            return filename.substring(0, lastDotIndex);
-        }
     }
 
     private String generateFileUrl(String filePath) {
         // 在这里根据实际情况生成文件的URL，可以根据域名、路径等信息拼接成完整的URL
-        return "/" + appName + contextPath + "/download/" + filePath;
+        return "/" + appName + contextPath + "/v2/download/" + filePath;
     }
 
     @GetMapping("/listFilesInFolder")
@@ -299,40 +212,47 @@ public class FileController {
     }
 
     @GetMapping("/download/**")
-    public ResponseEntity<InputStreamResource> downloadFile(HttpServletRequest request) throws IOException {
+    public ResponseEntity<InputStreamResource> downloadFile(HttpServletRequest request) {
         // 获取请求中的路径参数
         String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+        logger.info("Received download request for path: {}", fullPath);
+
         // 获取文件名
         String filename = Paths.get(fullPath).getFileName().toString();
         String ossFilePath = fullPath.substring(fullPath.indexOf("/download/") + 10);
+        logger.info("Extracted filename: {}", filename);
+        logger.info("Constructed OSS file path: {}", ossFilePath);
+
         try {
             OSSObject object = fileService.getObject(ossFilePath, ossConfig.getBucketName());
+            logger.info("Successfully retrieved file from OSS: {}", ossFilePath);
             InputStream inputStream = object.getObjectContent();
-
-            // 根据文件名后缀设置 MIME 类型
-            MediaType mediaType = MediaType.parseMediaType(getContentType(filename));
+            long fileSize = object.getObjectMetadata().getContentLength();
+            String contentType = object.getObjectMetadata().getContentType();
+            if (contentType == null) {
+                // 如果 OSS 中没有 MIME 类型，使用默认值
+                contentType = "application/octet-stream";
+            }
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(mediaType); // 设置内容类型为二进制流
-            headers.setContentLength(object.getObjectMetadata().getContentLength());
-            // 设置文件名
+            headers.setContentType(MediaType.parseMediaType(contentType)); // 设置内容类型为二进制流
+            headers.setContentLength(fileSize);
+
             headers.setContentDispositionFormData("attachment", filename);
+
+            logger.info("Returning file response with filename: {}", filename);
+            logger.info("File size: {} bytes", fileSize);
+            logger.info("Content type: {}", contentType);
 
             return new ResponseEntity<>(new InputStreamResource(inputStream), headers, HttpStatus.OK);
         } catch (OSSException e) {
-            // 文件不存在，返回 404 Not Found
+            logger.error("Error retrieving file from OSS: {}", ossFilePath, e);
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Unexpected error occurred while processing file download", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    private String getContentType(String filename) throws IOException {
-        Path path = Paths.get(filename);
-        String mimeType = Files.probeContentType(path);
-        if (mimeType == null) {
-            // 如果无法检测到MIME类型，则返回默认的二进制流类型
-            return "application/octet-stream";
-        }
-        return mimeType;
-    }
 
 }

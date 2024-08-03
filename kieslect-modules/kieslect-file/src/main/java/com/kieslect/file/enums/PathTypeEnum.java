@@ -8,12 +8,11 @@ public enum PathTypeEnum {
     FEEDBACK(3,"feedback", "问题反馈"),
     APP_LOG(4,"applog", "app日志"),
     BACKGROUND_MANAGE(5,"backgroundmanage", "后台管理"),
-    // 健康数据
     HEALTH_SPORT_DATA(6,"healthsportdata", "健康运动数据"),
-    // 通知ico
     NOTICE_ICO(7,"noticeico", "通知ico"),
-    // 运动数据
     SPORT_DATA_NEW(8,"sportdata", "运动数据"),
+    OTA(9,"ota", "ota"),
+    WATCH_FACE(10,"watchface", "表盘"),
     OTHER(9999,"other", "其他");
 
     private final int code;

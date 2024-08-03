@@ -95,5 +95,17 @@ public class FileService {
         ossClient.putObject(new PutObjectRequest(bucketName, ossFilePath, inputStream));
     }
 
+    public void uploadFile(InputStream fileInputStream, String bucketName, String filePath,String contentType) {
+        try  {
+            // 创建 ObjectMetadata 对象并设置 MIME 类型
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(contentType);
+            // 上传文件
+            ossClient.putObject(new PutObjectRequest(bucketName, filePath, fileInputStream,metadata));
+        } catch (Exception e) {
+            throw new RuntimeException("文件上传到 OSS 失败", e);
+        }
+    }
+
 
 }
