@@ -203,9 +203,8 @@ public class TokenController  {
         UserInfoVO userInfoVO = new UserInfoVO();
         if (StringUtils.isNotNull(loginUser)) {
             BeanUtils.copyProperties(loginUser, userInfoVO);
-        }else{
-
         }
+        // 获取第三方用户信息
         userInfoVO.setThirdUserInfos(remoteUserService.getThirdUserInfo(loginUser.getKid()).getData());
         return R.ok(userInfoVO);
     }
