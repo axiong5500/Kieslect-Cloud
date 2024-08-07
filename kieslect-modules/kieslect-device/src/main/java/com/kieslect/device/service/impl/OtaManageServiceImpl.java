@@ -22,6 +22,29 @@ public class OtaManageServiceImpl extends ServiceImpl<OtaManageMapper, OtaManage
 
     @Override
     public List<OtaManage> getOtaByDeviceInnerIdAndVersion(Long deviceInnerId, String otaVersion) {
+        // 规范化版本号
+        otaVersion = normalizeVersion(otaVersion);
+
+        // 创建查询条件
+        LambdaQueryWrapper<OtaManage> queryWrapper = createQueryWrapper(deviceInnerId, otaVersion);
+
+        // 执行查询并获取结果
+        List<OtaManage> list = this.list(queryWrapper);
+
+        // 处理结果，将 otaVersion 前加上 "V"
+        addVersionPrefix(list);
+
+        return list;
+    }
+
+    /**
+     * 创建查询条件的封装方法
+     *
+     * @param deviceInnerId 设备内码
+     * @param otaVersion 版本号
+     * @return LambdaQueryWrapper 查询条件
+     */
+    private LambdaQueryWrapper<OtaManage> createQueryWrapper(Long deviceInnerId, String otaVersion) {
         LambdaQueryWrapper<OtaManage> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(OtaManage::getDeviceInnerId, deviceInnerId);
 
@@ -30,6 +53,30 @@ public class OtaManageServiceImpl extends ServiceImpl<OtaManageMapper, OtaManage
         }
         queryWrapper.orderByDesc(OtaManage::getReleaseDate);
 
-        return this.list(queryWrapper);
+        return queryWrapper;
+    }
+
+    /**
+     * 为列表中的每个 OtaManage 对象的 otaVersion 字段加上 "V"
+     *
+     * @param list OtaManage 对象列表
+     */
+    private void addVersionPrefix(List<OtaManage> list) {
+        for (OtaManage otaManage : list) {
+            otaManage.setOtaVersion("V" + otaManage.getOtaVersion());
+        }
+    }
+
+    /**
+     * 规范化版本号
+     *
+     * @param version 版本号
+     * @return 规范化后的版本号
+     */
+    private String normalizeVersion(String version) {
+        if (version != null) {
+            version = version.toUpperCase().replace("V", "");
+        }
+        return version;
     }
 }

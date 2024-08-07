@@ -20,5 +20,5 @@ public interface IDeviceManageService extends IService<DeviceManage> {
 
     List<DeviceManageVO> getDeviceManageList();
 
-    List<DeviceManageVO> getDeviceManageList(String deviceId, Integer producers);
+    List<DeviceManageVO> getDeviceManageList(String deviceId, Integer integer, Integer producers);
 }

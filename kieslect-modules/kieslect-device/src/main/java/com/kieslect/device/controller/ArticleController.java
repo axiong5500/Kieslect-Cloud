@@ -1,6 +1,7 @@
 package com.kieslect.device.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.device.domain.Article;
@@ -58,22 +59,20 @@ public class ArticleController {
 
     @GetMapping("/sys/getArticleById")
     public R<?> getPrivacyPolicy(@RequestParam(value = "id", required = false) Integer id,@RequestParam(value = "language", required = false) Integer language)  {
+
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getFatherId, id);
+        queryWrapper.eq(Article::getLanguage,language);
+        List<Article> articles = articleService.list(queryWrapper);
+        if (articles.size() > 0){
+            return R.ok(BeanUtil.beanToMap(articles.get(0)));
+        }
+
         Article article =  articleService.getById(id);
         if (article == null) {
             return R.fail();
         }
-        String title = article.getTitle();
-        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("title", title);
-        queryWrapper.eq("language", language);
-        article = articleService.getOne(queryWrapper);
-        if (article == null) {
-            // 查询默认语言
-            queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("title", title);
-            queryWrapper.eq("language", 2);
-            article = articleService.getOne(queryWrapper);
-        }
+
         Map<String, Object> result = BeanUtil.beanToMap(article);
         return R.ok(result);
     }

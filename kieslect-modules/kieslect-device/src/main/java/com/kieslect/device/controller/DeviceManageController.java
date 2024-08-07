@@ -28,8 +28,10 @@ public class DeviceManageController {
 
 
     @GetMapping("/getList")
-    public R<?> getDeviceManageList(@RequestParam(value = "deviceId", required = false) String deviceId,@RequestParam(value ="producers", required = false) Integer producers ) {
-        List<DeviceManageVO> list = deviceManageService.getDeviceManageList(deviceId,producers);
+    public R<?> getDeviceManageList(@RequestParam(value = "deviceId", required = false) String deviceId,
+                                    @RequestParam(value ="producers", required = false) Integer producers,
+                                    @RequestParam(value ="appName", required = false) Integer appName) {
+        List<DeviceManageVO> list = deviceManageService.getDeviceManageList(deviceId,producers,appName);
         Map<String, Object> result = new HashMap<>();
         result.put("list", list);
         return R.ok(result);

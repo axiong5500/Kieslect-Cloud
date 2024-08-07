@@ -3,7 +3,7 @@ package com.kieslect.device.service.impl;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kieslect.device.domain.DeviceManage;
 import com.kieslect.device.domain.ParamConfig;
@@ -74,7 +74,7 @@ public class DeviceManageServiceImpl extends ServiceImpl<DeviceManageMapper, Dev
     }
 
     @Override
-    public List<DeviceManageVO> getDeviceManageList(String deviceId, Integer producers) {
+    public List<DeviceManageVO> getDeviceManageList(String deviceId, Integer producers, Integer appName) {
         // 获取所有paramConfig
         List<ParamConfig> paramConfigList = paramConfigService.list();
         Map<String, String> paramConfigMap = new HashMap<>();
@@ -82,12 +82,15 @@ public class DeviceManageServiceImpl extends ServiceImpl<DeviceManageMapper, Dev
             paramConfigMap.put(String.valueOf(paramConfig.getId()), paramConfig.getParamName());
         }
 
-        QueryWrapper<DeviceManage> queryWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<DeviceManage> queryWrapper = new LambdaQueryWrapper<>();
         if (deviceId != null) {
-            queryWrapper.eq("firmware_id", deviceId);
+            queryWrapper.eq(DeviceManage::getFirmwareId, deviceId);
         }
         if (producers != null) {
-            queryWrapper.eq("form", producers);
+            queryWrapper.eq(DeviceManage::getForm, producers);
+        }
+        if (appName != null) {
+            queryWrapper.like(DeviceManage::getAppIds, appName);
         }
 
         List<DeviceManage> list = this.list(queryWrapper);
