@@ -1,8 +1,10 @@
 package com.kieslect.device.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.device.domain.OtaManage;
+import com.kieslect.device.domain.vo.OtaManageVO;
 import com.kieslect.device.service.IOtaManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +32,7 @@ public class OtaManageController {
                                  @RequestParam(value ="otaVersion", required = false) String otaVersion ) {
         List<OtaManage> list = otaManageService.getOtaByDeviceInnerIdAndVersion(deviceInnerId,otaVersion);
         Map<String, Object> result = new HashMap<>();
-        result.put("list", list);
+        result.put("list", BeanUtil.copyToList(list, OtaManageVO.class));
         return R.ok(result);
     }
 
@@ -43,6 +45,8 @@ public class OtaManageController {
 
     @PostMapping("/sys/update")
     public R<?> updateOtaManage(@RequestBody OtaManage otaManage) {
+        //规范化版本号
+        otaManage.setOtaVersion(normalizeVersion(otaManage.getOtaVersion()));
         otaManage.setUpdateTime(Instant.now().getEpochSecond());
         LambdaQueryWrapper<OtaManage> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(OtaManage::getOtaId, otaManage.getOtaId());
@@ -58,10 +62,23 @@ public class OtaManageController {
 
     @PostMapping("/sys/save")
     public R<?> saveOtaManage(@RequestBody OtaManage otaManage) {
+        //规范化版本号
+        otaManage.setOtaVersion(normalizeVersion(otaManage.getOtaVersion()));
         otaManage.setCreateTime(Instant.now().getEpochSecond());
         otaManage.setUpdateTime(Instant.now().getEpochSecond());
         return R.ok(otaManageService.save(otaManage));
     }
 
-
+    /**
+     * 规范化版本号
+     *
+     * @param version 版本号
+     * @return 规范化后的版本号
+     */
+    private String normalizeVersion(String version) {
+        if (version != null) {
+            version = version.toUpperCase().replace("V", "");
+        }
+        return version;
+    }
 }

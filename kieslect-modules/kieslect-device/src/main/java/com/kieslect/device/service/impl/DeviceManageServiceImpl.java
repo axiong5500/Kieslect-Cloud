@@ -83,6 +83,7 @@ public class DeviceManageServiceImpl extends ServiceImpl<DeviceManageMapper, Dev
         }
 
         LambdaQueryWrapper<DeviceManage> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DeviceManage::getDeviceStatus, 1);
         if (deviceId != null) {
             queryWrapper.eq(DeviceManage::getFirmwareId, deviceId);
         }

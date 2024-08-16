@@ -35,6 +35,12 @@ public class AppManage implements Serializable {
       @TableField("app_name")
     private String appName;
 
+    /**
+     * 关联 t_user_info 表的 appName 标识，0：KstyleOS，1：KSOS，2：CKOS
+     */
+    @TableField("user_app_name")
+    private Integer userAppName;
+
       /**
      * app标识
      */

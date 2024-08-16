@@ -43,6 +43,7 @@ public class GatewayConfig {
             "/kieslect-device/device/**/sys/**",
             "/kieslect-device/device/getList",
             "/kieslect-device/device/ota/getList",
+            "/kieslect-device/device/dial/getList",
             "/kieslect-device/device/appManage/getApp",
             "/kieslect-file/file/upload",
             "/kieslect-file/file/v2/**",

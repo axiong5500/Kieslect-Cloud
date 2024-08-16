@@ -91,4 +91,10 @@ public class OtaManage implements Serializable {
      */
     @TableField("mode")
     private Integer mode;
+
+    /**
+     * 排序ID
+     */
+    @TableField("sort_id")
+    private Integer sortId;
 }

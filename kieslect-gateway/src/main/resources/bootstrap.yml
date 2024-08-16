@@ -8,4 +8,4 @@ spring:
     name: kieslect-gateway
   profiles:
     # 环境配置
-    active: dev
+    active: prod

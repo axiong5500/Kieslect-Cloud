@@ -11,28 +11,6 @@ spring:
     name: kieslect-file
   profiles:
     # 环境配置
-    active: dev
-  cloud:
-    nacos:
-      discovery:
-        # 服务注册地址
-        server-addr: 39.105.119.235:8848
-      config:
-        # SpringCloud 2020.* 版本把bootstrap禁用了
-#        import-check:
-#          enabled: true
-        # 配置中心地址
-        server-addr: 39.105.119.235:8848
-        # 配置文件格式
-        file-extension: yml
-        # 共享配置
-        shared-configs:
-          - data-id: kieslect-common.${spring.cloud.nacos.config.file-extension}
-            group: DEFAULT_GROUP
-  servlet:
-    multipart:
-      max-file-size: 200MB
-      max-request-size: 200MB
-
+    active: prod
 
 

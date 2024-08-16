@@ -3,14 +3,13 @@ package com.kieslect.device.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.device.domain.AppManage;
 import com.kieslect.device.domain.AppPackeageManage;
 import com.kieslect.device.domain.ParamConfig;
 import com.kieslect.device.domain.vo.AppManageVO;
 import com.kieslect.device.domain.vo.AppPackeageManageVO;
-import com.kieslect.device.enums.AppManageAppNameEnum;
 import com.kieslect.device.service.IAppManageService;
 import com.kieslect.device.service.IAppPackeageManageService;
 import com.kieslect.device.service.IArticleService;
@@ -53,8 +52,8 @@ public class AppManageController {
         AppManageVO appManageVO = new AppManageVO();
 
 
-        QueryWrapper<AppManage> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("app_mark", AppManageAppNameEnum.getEnumByCode(appName).getAppMark());
+        LambdaQueryWrapper<AppManage> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(AppManage::getUserAppName, appName);
         AppManage appManage = appManageService.getOne(queryWrapper);
 
         if (appManage == null) {

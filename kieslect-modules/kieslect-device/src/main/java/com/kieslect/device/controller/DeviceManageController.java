@@ -8,6 +8,7 @@ import com.kieslect.device.service.IDeviceManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ public class DeviceManageController {
     }
     @PostMapping("/sys/update")
     public R<?> updateDeviceManage(@RequestBody DeviceManage deviceManage) {
+        deviceManage.setUpdateTime(Instant.now().getEpochSecond());
         deviceManageService.updateEntity(deviceManage);
         return R.ok();
     }
@@ -58,6 +60,8 @@ public class DeviceManageController {
     }
     @PostMapping("/sys/save")
     public R<?> saveDeviceManage(@RequestBody DeviceManage deviceManage) {
+        deviceManage.setCreateTime(Instant.now().getEpochSecond());
+        deviceManage.setUpdateTime(Instant.now().getEpochSecond());
         return R.ok(deviceManageService.save(deviceManage));
     }
 }

@@ -57,18 +57,26 @@
         </filter>
     </appender>
 
+    <!-- 异步文件输出 -->
+    <appender name="async_file_info" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="file_info" />
+    </appender>
+
+    <appender name="async_file_error" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="file_error" />
+    </appender>
+
     <!-- 系统模块日志级别控制  -->
 	<logger name="com.kieslect.weather" level="info" />
 	<!-- Spring日志级别控制  -->
 	<logger name="org.springframework" level="warn" />
 
-	<root level="info">
-		<appender-ref ref="console" />
-	</root>
+
 	
 	<!--系统操作日志-->
     <root level="info">
-        <appender-ref ref="file_info" />
-        <appender-ref ref="file_error" />
+        <appender-ref ref="console" />
+        <appender-ref ref="async_file_info" />
+        <appender-ref ref="async_file_error" />
     </root>
 </configuration>

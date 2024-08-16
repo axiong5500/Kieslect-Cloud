@@ -51,7 +51,7 @@ public class OtaManageServiceImpl extends ServiceImpl<OtaManageMapper, OtaManage
         if (otaVersion != null && !otaVersion.isEmpty()) {
             queryWrapper.gt(OtaManage::getOtaVersion, otaVersion);
         }
-        queryWrapper.orderByDesc(OtaManage::getReleaseDate);
+        queryWrapper.orderByDesc(OtaManage::getSortId);
 
         return queryWrapper;
     }

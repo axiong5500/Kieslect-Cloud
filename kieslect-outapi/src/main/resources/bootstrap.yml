@@ -1,8 +1,6 @@
 # Tomcat
 server:
   port: 9700
-  servlet:
-    context-path: /outapi
 # Spring
 spring:
   application:
@@ -10,4 +8,4 @@ spring:
     name: kieslect-outapi
   profiles:
     # 环境配置
-    active: dev
+    active: prod

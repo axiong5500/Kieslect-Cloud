@@ -35,7 +35,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -59,6 +61,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Autowired
     private RemoteFileService remoteFileService;
+
 
     @Override
     public Boolean register(RegisterInfo registerInfo) {
@@ -204,12 +207,32 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     public int updateAccountStatusExpire() {
         long sevenDaysAgoTimestamp = LocalDateTime.now().minusDays(7).toEpochSecond(ZoneOffset.UTC);
 
-        UpdateWrapper<UserInfo> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.set("del_status", 2)
+        // 找出符合条件的userid列表
+        QueryWrapper<UserInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id")
                 .eq("del_status", 1)
                 .lt("update_time", sevenDaysAgoTimestamp);
 
-        return userInfoMapper.update(null, updateWrapper);
+        List<UserInfo> userList = userInfoMapper.selectList(queryWrapper);
+        List<Long> userIds = userList.stream().map(UserInfo::getId).collect(Collectors.toList());
+
+        if (userIds.isEmpty()) {
+            return 0;
+        }
+
+        // 更新del_status
+        UpdateWrapper<UserInfo> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("del_status", 2)
+                .in("id", userIds);
+
+        int updatedCount = userInfoMapper.update(null, updateWrapper);
+
+        // 删除ThirdUserInfo表中对应的userid记录
+        LambdaQueryWrapper<ThirdUserInfo> thirdUserInfoWrapper = new LambdaQueryWrapper<>();
+        thirdUserInfoWrapper.in(ThirdUserInfo::getUserId, userIds);
+        thirdUserInfoService.remove(thirdUserInfoWrapper);
+
+        return updatedCount;
     }
 
     @Override

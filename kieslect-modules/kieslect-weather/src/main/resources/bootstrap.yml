@@ -11,4 +11,4 @@ spring:
     name: kieslect-weather
   profiles:
     # 环境配置
-    active: dev
+    active: prod

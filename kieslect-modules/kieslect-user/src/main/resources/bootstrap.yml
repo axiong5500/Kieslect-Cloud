@@ -9,4 +9,4 @@ spring:
     name: kieslect-user
   profiles:
     # 环境配置
-    active: dev
+    active: prod

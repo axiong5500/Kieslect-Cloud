@@ -5,14 +5,14 @@ spring:
       discovery:
         # 服务注册地址
         server-addr: 127.0.0.1:8848
-        namespace: dba530a8-b69b-4255-b52d-33a222696f26
+        namespace: e3556328-b372-4651-a0e4-bbbeb12f822b
       config:
         # SpringCloud 2020.* 版本把bootstrap禁用了
 #        import-check:
 #          enabled: false
         # 配置中心地址
         server-addr: 127.0.0.1:8848
-        namespace: dba530a8-b69b-4255-b52d-33a222696f26
+        namespace: e3556328-b372-4651-a0e4-bbbeb12f822b
         # 配置文件格式
         file-extension: yml
         # 共享配置
