@@ -18,6 +18,7 @@
         <module>kieslect-api</module>
         <module>kieslect-job</module>
         <module>kieslect-outapi</module>
+        <module>kieslect-oms</module>
     </modules>
     <packaging>pom</packaging>
 

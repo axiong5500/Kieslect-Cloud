@@ -33,6 +33,12 @@ public class Issue implements Serializable {
     private Long userId;
 
     /**
+     * appName
+     */
+    @TableField("app_name")
+    private Integer appName;
+
+    /**
      * 问题编号
      */
     @TableField("issue_no")

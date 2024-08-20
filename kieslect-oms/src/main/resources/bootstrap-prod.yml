@@ -1,0 +1,21 @@
+# Spring
+spring:
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 127.0.0.1:8848
+        namespace: e3556328-b372-4651-a0e4-bbbeb12f822b
+      config:
+        # SpringCloud 2020.* 版本把bootstrap禁用了
+#        import-check:
+#          enabled: false
+        # 配置中心地址
+        server-addr: 127.0.0.1:8848
+        namespace: e3556328-b372-4651-a0e4-bbbeb12f822b
+        # 配置文件格式
+        file-extension: yml
+        # 共享配置
+        shared-configs:
+          - data-id: kieslect-common.${spring.cloud.nacos.config.file-extension}
+            group: DEFAULT_GROUP

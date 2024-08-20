@@ -32,6 +32,7 @@ public class GatewayConfig {
 
     // 定义白名单，即不需要 Token 验证的路径
     private static final String[] WHITELIST = {
+            "/kieslect-oms/**",
             "/public/**",
             "/kieslect-auth/auth/sendCaptcha",
             "/kieslect-auth/auth/register",
@@ -75,6 +76,9 @@ public class GatewayConfig {
                 .route("outapi_service", r -> r.path("/kieslect-outapi/**")
                         .filters(f -> f.filter(tokenValidationFilter()).rewritePath("/kieslect-outapi/(?<path>.*)", "/${path}"))
                         .uri("lb://kieslect-outapi"))
+                .route("oms_service", r -> r.path("/kieslect-oms/**")
+                        .filters(f -> f.filter(tokenValidationFilter()).rewritePath("/kieslect-oms/(?<path>.*)", "/${path}"))
+                        .uri("lb://kieslect-oms"))
                 .build();
     }
 
