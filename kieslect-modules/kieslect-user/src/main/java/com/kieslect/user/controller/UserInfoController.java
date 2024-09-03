@@ -79,7 +79,6 @@ public class UserInfoController {
 
     @PostMapping("/third/login")
     public R<?> thirdLogin(@RequestBody ThirdLoginInfo thirdLoginInfo, @RequestHeader("X-Client-IP") String clientIp) {
-        logger.info("客户端IP：" +clientIp);
         thirdLoginInfo.setIpAddress(clientIp);
         LoginUserInfo userInfo = userInfoService.thirdLogin(thirdLoginInfo);
         return R.ok(tokenService.createToken(userInfo));

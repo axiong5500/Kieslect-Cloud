@@ -3,12 +3,15 @@ package com.kieslect.device.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.domain.R;
+import com.kieslect.common.core.ip.IpUtils;
 import com.kieslect.common.security.service.TokenService;
 import com.kieslect.device.domain.DeviceBinding;
 import com.kieslect.device.domain.vo.DeviceBindingUpdateVO;
 import com.kieslect.device.domain.vo.DeviceBindingVO;
 import com.kieslect.device.service.IDeviceBindingService;
+import com.kieslect.device.service.async.DeviceActivationService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,10 +34,16 @@ import java.util.Map;
 @RequestMapping("/deviceBinding")
 public class DeviceBindingController {
 
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(DeviceBindingController.class);
+
     @Autowired
     private IDeviceBindingService deviceBindingService;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private DeviceActivationService deviceActivationService;
+
+
 
     @GetMapping("/getList")
     public R<Map<String, Object>> getDeviceBindingList(HttpServletRequest request) {
@@ -74,6 +83,10 @@ public class DeviceBindingController {
             return deviceBinding;
         }).toList();
         deviceBindingService.saveOrUpdateBatch(deviceBindings);
+
+        String clientIp = IpUtils.getIpAddr(request);
+        deviceActivationService.AsyncSaveDeviceActivationInfo(deviceBindings, loginUser, clientIp);
         return R.ok();
     }
+
 }

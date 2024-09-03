@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kieslect.oms.mapper.AnalysisMapper">
+    <select id="selectActivationCountByGroup" resultType="map">
+        SELECT
+        activationDate,
+        SUM(KS2) AS KS2,
+        SUM(KS3) AS KS3,
+        SUM(Actor) AS Actor,
+        SUM(`Kieslect Pura`) AS `Kieslect Pura`,
+        SUM(Balancs) AS Balancs,
+        SUM(`Scykei Feel`) AS `Scykei Feel`,
+        SUM(totalSum) AS totalSum
+        FROM (
+        SELECT
+        DATE(FROM_UNIXTIME(tai.activation_time)) AS activationDate,
+        SUM(CASE WHEN dm.category = 'KS2' THEN 1 ELSE 0 END) AS KS2,
+        SUM(CASE WHEN dm.category = 'KS3' THEN 1 ELSE 0 END) AS KS3,
+        SUM(CASE WHEN dm.category = 'Actor' THEN 1 ELSE 0 END) AS Actor,
+        0 AS `Kieslect Pura`,
+        0 AS Balancs,
+        0 AS `Scykei Feel`,
+        SUM(
+        CASE
+        WHEN dm.category IN ('KS2', 'KS3', 'Actor') THEN 1
+        ELSE 0
+        END
+        ) AS totalSum
+        FROM
+        t_third_device_active_info tai
+        JOIN device_mapping dm ON tai.device_id = dm.device_id
+        <where>
+            <if test="startDate != null and endDate != null">
+                tai.activation_time BETWEEN UNIX_TIMESTAMP(#{startDate}) AND UNIX_TIMESTAMP(#{endDate})
+            </if>
+            <if test="country != null">
+                AND tai.country = #{country}
+            </if>
+        </where>
+        GROUP BY
+        activationDate
+
+        UNION ALL
+
+        SELECT
+        DATE(FROM_UNIXTIME(tdai.activation_time)) AS activationDate,
+        0 AS KS2,
+        0 AS KS3,
+        0 AS Actor,
+        SUM(CASE WHEN dm.category = 'Kieslect Pura' THEN 1 ELSE 0 END) AS `Kieslect Pura`,
+        SUM(CASE WHEN dm.category = 'Balancs' THEN 1 ELSE 0 END) AS Balancs,
+        SUM(CASE WHEN dm.category = 'Scykei Feel' THEN 1 ELSE 0 END) AS `Scykei Feel`,
+        SUM(
+        CASE
+        WHEN dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel') THEN 1
+        ELSE 0
+        END
+        ) AS totalSum
+        FROM
+        t_device_active_info tdai
+        JOIN device_mapping dm ON tdai.device_id = dm.device_id
+        <where>
+            <if test="startDate != null and endDate != null">
+                tdai.activation_time BETWEEN UNIX_TIMESTAMP(#{startDate}) AND UNIX_TIMESTAMP(#{endDate})
+            </if>
+            <if test="country != null">
+                AND tdai.country = #{country}
+            </if>
+            AND dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel')
+        </where>
+        GROUP BY
+        activationDate
+        ) AS combinedResults
+        GROUP BY
+        activationDate
+        ORDER BY
+        activationDate DESC;
+
+
+
+    </select>
+
+    <select id="selectActivationCountByGroupCount" resultType="java.lang.String">
+        SELECT
+        COALESCE(
+            (
+                SELECT
+                    SUM(
+                            CASE
+                                WHEN dm.category IN ('KS2', 'KS3', 'Actor') THEN 1
+                                ELSE 0
+                                END
+                    )
+                FROM
+                    t_third_device_active_info tai
+                    JOIN
+                    device_mapping dm ON tai.device_id = dm.device_id
+        <where>
+            <if test="startDate != null and endDate != null">
+                tai.activation_time BETWEEN UNIX_TIMESTAMP(#{startDate}) AND UNIX_TIMESTAMP(#{endDate})
+            </if>
+            <if test="country != null">
+                AND tai.country = #{country}
+            </if>
+        </where>
+
+            ),0)
+            +
+        COALESCE(
+            (
+                SELECT
+                    SUM(
+                            CASE
+                                WHEN dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel') THEN 1
+                                ELSE 0
+                                END
+                    )
+                FROM
+                    t_device_active_info tdai
+                    JOIN
+                    device_mapping dm ON tdai.device_id = dm.device_id
+        <where>
+            <if test="startDate != null and endDate != null">
+                tdai.activation_time BETWEEN UNIX_TIMESTAMP(#{startDate}) AND UNIX_TIMESTAMP(#{endDate})
+            </if>
+            <if test="country != null">
+                AND tdai.country = #{country}
+            </if>
+        </where>
+            ),0)
+            AS totalSum;
+    </select>
+
+    <select id="selectCountryMonthCountByGroup" resultType="map">
+        WITH MonthlyData AS (
+        SELECT
+        cm.chinese_name AS countryCn,
+        DATE_FORMAT(FROM_UNIXTIME(t.activation_time), '%Y-%m') AS month,
+        COUNT(*) AS activation_count
+        FROM
+        t_third_device_active_info t
+        JOIN
+        country_mapping cm ON t.country = cm.country_code
+        JOIN
+        device_mapping dm ON t.device_id = dm.device_id
+        <where>
+            <if test="year != null">
+                AND DATE_FORMAT(FROM_UNIXTIME(t.activation_time), '%Y') = #{year}
+            </if>
+            <if test="country != null">
+                AND cm.country_code = #{country}
+            </if>
+            <if test="category != null">
+                AND dm.category = #{category}
+            </if>
+        </where>
+        GROUP BY
+        cm.chinese_name,
+        month
+
+        UNION ALL
+
+        SELECT
+        cm.chinese_name AS countryCn,
+        DATE_FORMAT(FROM_UNIXTIME(d.activation_time), '%Y-%m') AS month,
+        COUNT(*) AS activation_count
+        FROM
+        t_device_active_info d
+        JOIN
+        country_mapping cm ON d.country = cm.country_code
+        JOIN
+        device_mapping dm ON d.device_id = dm.device_id
+        <where>
+            <if test="year != null">
+                AND DATE_FORMAT(FROM_UNIXTIME(d.activation_time), '%Y') = #{year}
+            </if>
+            <if test="country != null">
+                AND cm.country_code = #{country}
+            </if>
+            <if test="category != null">
+                AND dm.category = #{category}
+            </if>
+        </where>
+        GROUP BY
+        cm.chinese_name,
+        month
+
+        ),
+        PivotedData AS (
+        SELECT
+        countryCn,
+        SUM(CASE WHEN month = '2024-01' THEN activation_count ELSE 0 END) AS `01`,
+        SUM(CASE WHEN month = '2024-02' THEN activation_count ELSE 0 END) AS `02`,
+        SUM(CASE WHEN month = '2024-03' THEN activation_count ELSE 0 END) AS `03`,
+        SUM(CASE WHEN month = '2024-04' THEN activation_count ELSE 0 END) AS `04`,
+        SUM(CASE WHEN month = '2024-05' THEN activation_count ELSE 0 END) AS `05`,
+        SUM(CASE WHEN month = '2024-06' THEN activation_count ELSE 0 END) AS `06`,
+        SUM(CASE WHEN month = '2024-07' THEN activation_count ELSE 0 END) AS `07`,
+        SUM(CASE WHEN month = '2024-08' THEN activation_count ELSE 0 END) AS `08`,
+        SUM(CASE WHEN month = '2024-09' THEN activation_count ELSE 0 END) AS `09`,
+        SUM(
+        CASE
+        WHEN month = '2024-01' THEN activation_count
+        WHEN month = '2024-02' THEN activation_count
+        WHEN month = '2024-03' THEN activation_count
+        WHEN month = '2024-04' THEN activation_count
+        WHEN month = '2024-05' THEN activation_count
+        WHEN month = '2024-06' THEN activation_count
+        WHEN month = '2024-07' THEN activation_count
+        WHEN month = '2024-08' THEN activation_count
+        WHEN month = '2024-09' THEN activation_count
+        ELSE 0
+        END
+        ) AS totalCount
+        FROM
+        MonthlyData
+        GROUP BY
+        countryCn
+        ),
+        GlobalData AS (
+        SELECT
+        'Global' AS countryCn,
+        SUM(CASE WHEN month = '2024-01' THEN activation_count ELSE 0 END) AS `01`,
+        SUM(CASE WHEN month = '2024-02' THEN activation_count ELSE 0 END) AS `02`,
+        SUM(CASE WHEN month = '2024-03' THEN activation_count ELSE 0 END) AS `03`,
+        SUM(CASE WHEN month = '2024-04' THEN activation_count ELSE 0 END) AS `04`,
+        SUM(CASE WHEN month = '2024-05' THEN activation_count ELSE 0 END) AS `05`,
+        SUM(CASE WHEN month = '2024-06' THEN activation_count ELSE 0 END) AS `06`,
+        SUM(CASE WHEN month = '2024-07' THEN activation_count ELSE 0 END) AS `07`,
+        SUM(CASE WHEN month = '2024-08' THEN activation_count ELSE 0 END) AS `08`,
+        SUM(CASE WHEN month = '2024-09' THEN activation_count ELSE 0 END) AS `09`,
+        SUM(
+        CASE
+        WHEN month = '2024-01' THEN activation_count
+        WHEN month = '2024-02' THEN activation_count
+        WHEN month = '2024-03' THEN activation_count
+        WHEN month = '2024-04' THEN activation_count
+        WHEN month = '2024-05' THEN activation_count
+        WHEN month = '2024-06' THEN activation_count
+        WHEN month = '2024-07' THEN activation_count
+        WHEN month = '2024-08' THEN activation_count
+        WHEN month = '2024-09' THEN activation_count
+        ELSE 0
+        END
+        ) AS totalCount
+        FROM
+        MonthlyData
+        ),
+        GrowthComparison AS (
+        SELECT
+        countryCn,
+        `01`,
+        `02`,
+        `03`,
+        `04`,
+        `05`,
+        `06`,
+        `07`,
+        `08`,
+        `09`,
+        totalCount,
+        ROUND(
+        CASE
+        WHEN `02` IS NULL OR `01` IS NULL THEN NULL
+        ELSE (`02` - `01`) / `01` * 100
+        END, 2
+        ) AS growth_rate_02_vs_01,
+        ROUND(
+        CASE
+        WHEN `03` IS NULL OR `02` IS NULL THEN NULL
+        ELSE (`03` - `02`) / `02` * 100
+        END, 2
+        ) AS growth_rate_03_vs_02,
+        ROUND(
+        CASE
+        WHEN `04` IS NULL OR `03` IS NULL THEN NULL
+        ELSE (`04` - `03`) / `03` * 100
+        END, 2
+        ) AS growth_rate_04_vs_03,
+        ROUND(
+        CASE
+        WHEN `05` IS NULL OR `04` IS NULL THEN NULL
+        ELSE (`05` - `04`) / `04` * 100
+        END, 2
+        ) AS growth_rate_05_vs_04,
+        ROUND(
+        CASE
+        WHEN `06` IS NULL OR `05` IS NULL THEN NULL
+        ELSE (`06` - `05`) / `05` * 100
+        END, 2
+        ) AS growth_rate_06_vs_05,
+        ROUND(
+        CASE
+        WHEN `07` IS NULL OR `06` IS NULL THEN NULL
+        ELSE (`07` - `06`) / `06` * 100
+        END, 2
+        ) AS growth_rate_07_vs_06,
+        ROUND(
+        CASE
+        WHEN `08` IS NULL OR `07` IS NULL THEN NULL
+        ELSE (`08` - `07`) / `07` * 100
+        END, 2
+        ) AS growth_rate_08_vs_07,
+        ROUND(
+        CASE
+        WHEN `09` IS NULL OR `08` IS NULL THEN NULL
+        ELSE (`09` - `08`) / `08` * 100
+        END, 2
+        ) AS growth_rate_09_vs_08
+        FROM
+        PivotedData
+        WHERE
+        totalCount > 0
+        ),
+        GlobalGrowthComparison AS (
+        SELECT
+        countryCn,
+        `01`,
+        `02`,
+        `03`,
+        `04`,
+        `05`,
+        `06`,
+        `07`,
+        `08`,
+        `09`,
+        totalCount,
+        ROUND(
+        CASE
+        WHEN `02` IS NULL OR `01` IS NULL THEN NULL
+        ELSE (`02` - `01`) / `01` * 100
+        END, 2
+        ) AS growth_rate_02_vs_01,
+        ROUND(
+        CASE
+        WHEN `03` IS NULL OR `02` IS NULL THEN NULL
+        ELSE (`03` - `02`) / `02` * 100
+        END, 2
+        ) AS growth_rate_03_vs_02,
+        ROUND(
+        CASE
+        WHEN `04` IS NULL OR `03` IS NULL THEN NULL
+        ELSE (`04` - `03`) / `03` * 100
+        END, 2
+        ) AS growth_rate_04_vs_03,
+        ROUND(
+        CASE
+        WHEN `05` IS NULL OR `04` IS NULL THEN NULL
+        ELSE (`05` - `04`) / `04` * 100
+        END, 2
+        ) AS growth_rate_05_vs_04,
+        ROUND(
+        CASE
+        WHEN `06` IS NULL OR `05` IS NULL THEN NULL
+        ELSE (`06` - `05`) / `05` * 100
+        END, 2
+        ) AS growth_rate_06_vs_05,
+        ROUND(
+        CASE
+        WHEN `07` IS NULL OR `06` IS NULL THEN NULL
+        ELSE (`07` - `06`) / `06` * 100
+        END, 2
+        ) AS growth_rate_07_vs_06,
+        ROUND(
+        CASE
+        WHEN `08` IS NULL OR `07` IS NULL THEN NULL
+        ELSE (`08` - `07`) / `07` * 100
+        END, 2
+        ) AS growth_rate_08_vs_07,
+        ROUND(
+        CASE
+        WHEN `09` IS NULL OR `08` IS NULL THEN NULL
+        ELSE (`09` - `08`) / `08` * 100
+        END, 2
+        ) AS growth_rate_09_vs_08
+        FROM
+        GlobalData
+        )
+        SELECT
+        countryCn,
+        `01`,
+        `02`,
+        `03`,
+        `04`,
+        `05`,
+        `06`,
+        `07`,
+        `08`,
+        `09`,
+        totalCount,
+        growth_rate_02_vs_01,
+        growth_rate_03_vs_02,
+        growth_rate_04_vs_03,
+        growth_rate_05_vs_04,
+        growth_rate_06_vs_05,
+        growth_rate_07_vs_06,
+        growth_rate_08_vs_07,
+        growth_rate_09_vs_08
+        FROM
+        GrowthComparison
+        UNION ALL
+        SELECT
+        countryCn,
+        `01`,
+        `02`,
+        `03`,
+        `04`,
+        `05`,
+        `06`,
+        `07`,
+        `08`,
+        `09`,
+        totalCount,
+        growth_rate_02_vs_01,
+        growth_rate_03_vs_02,
+        growth_rate_04_vs_03,
+        growth_rate_05_vs_04,
+        growth_rate_06_vs_05,
+        growth_rate_07_vs_06,
+        growth_rate_08_vs_07,
+        growth_rate_09_vs_08
+        FROM
+        GlobalGrowthComparison
+        ORDER BY
+        totalCount DESC;
+    </select>
+
+
+
+</mapper>

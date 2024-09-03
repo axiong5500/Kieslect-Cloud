@@ -1,5 +1,7 @@
 package com.kieslect.oms.service.impl;
 
+import com.kieslect.oms.domain.vo.ActivationQueryVO;
+import com.kieslect.oms.domain.vo.CountryMonthRequestVO;
 import com.kieslect.oms.mapper.AnalysisMapper;
 import com.kieslect.oms.service.IAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AnalysisServiceImpl implements IAnalysisService {
@@ -14,12 +17,47 @@ public class AnalysisServiceImpl implements IAnalysisService {
     @Autowired
     private AnalysisMapper analysisMapper;
 
-    public List<Map<String, Object>> selectActivationCountByGroup() {
-        return analysisMapper.selectActivationCountByGroup();
+    @Override
+    public String selectActivationCountByGroupCount(ActivationQueryVO activationQueryVO) {
+        String startDate = Optional.ofNullable(activationQueryVO)
+                .map(ActivationQueryVO::getStartDate)
+                .orElse(null);
+        String endDate = Optional.ofNullable(activationQueryVO)
+                .map(ActivationQueryVO::getEndDate)
+                .orElse(null);
+        String countryCode = Optional.ofNullable(activationQueryVO)
+                .map(ActivationQueryVO::getCountryCode)
+                .orElse(null);
+        return analysisMapper.selectActivationCountByGroupCount(startDate,endDate,countryCode);
     }
 
     @Override
-    public List<Map<String, Object>> selectCountryMonthCountByGroup() {
-        return analysisMapper.selectCountryMonthCountByGroup();
+    public List<Map<String, Object>> selectActivationCountByGroup(ActivationQueryVO activationQueryVO) {
+        String startDate = Optional.ofNullable(activationQueryVO)
+                .map(ActivationQueryVO::getStartDate)
+                .orElse(null);
+        String endDate = Optional.ofNullable(activationQueryVO)
+                .map(ActivationQueryVO::getEndDate)
+                .orElse(null);
+        String countryCode = Optional.ofNullable(activationQueryVO)
+                .map(ActivationQueryVO::getCountryCode)
+                .orElse(null);
+        return analysisMapper.selectActivationCountByGroup(startDate,endDate,countryCode);
     }
+
+    @Override
+    public List<Map<String, Object>> selectCountryMonthCountByGroup(CountryMonthRequestVO countryMonthRequestVO) {
+        String currentYear = Optional.ofNullable(countryMonthRequestVO)
+                .map(CountryMonthRequestVO::getCurrentYear)
+                .orElse(null);
+        String countryCode = Optional.ofNullable(countryMonthRequestVO)
+                .map(CountryMonthRequestVO::getCountryCode)
+                .orElse(null);
+        String category = Optional.ofNullable(countryMonthRequestVO)
+                .map(CountryMonthRequestVO::getCategory)
+                .orElse(null);
+        return analysisMapper.selectCountryMonthCountByGroup(currentYear, countryCode, category);
+    }
+
+
 }

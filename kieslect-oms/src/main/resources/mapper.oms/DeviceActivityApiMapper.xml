@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kieslect.oms.mapper.DeviceActivityApiMapper">
+
+
+    <select id="getList" resultType="map" parameterType="map">
+        SELECT
+            a.device_id,
+            a.device_alias AS device_info_alias,
+            a.country AS device_info_country,
+            a.province AS device_info_province,
+            a.city AS device_info_city,
+            a.operating_system AS device_info_os,
+            a.phone_model AS device_info_model,
+            a.gender AS device_info_gender,
+            a.birthdate AS device_info_birthdate,
+            a.activation_time AS device_info_activation_time,
+            a.activation_timezone AS device_info_timezone,
+            a.mac_address AS device_info_mac,
+            a.serial_number AS device_info_serial,
+            a.ip_address AS device_info_ip,
+            a.firmware_version AS device_info_firmware,
+            a.data_source AS device_info_source,
+            a.account_type AS device_info_account_type
+        FROM t_device_active_info a
+        <where>
+            <if test="startDate != null and endDate != null">
+                AND a.activation_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+
+            AND (
+            a.device_alias LIKE '%Balancs%'
+            OR a.device_alias LIKE '%Pura%'
+            OR a.device_alias LIKE '%Feel%'
+            OR a.device_alias LIKE '%civis%'
+            )
+        </where>
+
+    </select>
+
+</mapper>

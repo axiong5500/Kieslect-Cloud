@@ -65,9 +65,7 @@ public class TokenController  {
      */
     @PostMapping("third/login")
     public R<?> thirdLogin(@RequestBody ThirdLoginInfo thirdLoginInfo,HttpServletRequest request) {
-        // 获取客户端IP
         String clientIp = IpUtils.getIpAddr(request);
-        logger.info("客户端IP:{}",clientIp);
         return remoteUserService.thirdLogin(thirdLoginInfo,clientIp);
     }
 

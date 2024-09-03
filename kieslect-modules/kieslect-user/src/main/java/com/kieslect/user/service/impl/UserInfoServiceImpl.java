@@ -132,7 +132,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         // firstLogin 修改为1
         UserInfo userInfo = new UserInfo();
         BeanUtils.copyProperties(userInfoVO, userInfo);
-        if (userInfoVO.getBirthday() != null){
+        if ((userInfoVO.getBirthday() != null && userInfoVO.getBirthday() != 0)){
             userInfo.setFirstLogin((byte) 0);
         }
         userInfo.setUpdateTime(Instant.now().getEpochSecond());
