@@ -5,23 +5,23 @@
 
     <select id="getList" resultType="map" parameterType="map">
         SELECT
-            a.device_id,
-            a.device_alias AS device_info_alias,
-            a.country AS device_info_country,
-            a.province AS device_info_province,
-            a.city AS device_info_city,
-            a.operating_system AS device_info_os,
-            a.phone_model AS device_info_model,
-            a.gender AS device_info_gender,
-            a.birthdate AS device_info_birthdate,
-            a.activation_time AS device_info_activation_time,
-            a.activation_timezone AS device_info_timezone,
-            a.mac_address AS device_info_mac,
-            a.serial_number AS device_info_serial,
-            a.ip_address AS device_info_ip,
-            a.firmware_version AS device_info_firmware,
-            a.data_source AS device_info_source,
-            a.account_type AS device_info_account_type
+        COALESCE(a.device_id, '') AS device_id,
+        COALESCE(a.device_alias, '') AS device_info_alias,
+        COALESCE(a.country, '') AS device_info_country,
+        COALESCE(a.province, '') AS device_info_province,
+        COALESCE(a.city, '') AS device_info_city,
+        COALESCE(a.operating_system, '') AS device_info_os,
+        COALESCE(a.phone_model, '') AS device_info_model,
+        COALESCE(a.gender, '') AS device_info_gender,
+        COALESCE(a.birthdate, '') AS device_info_birthdate,
+                a.activation_time AS device_info_activation_time,
+        COALESCE(a.activation_timezone, '') AS device_info_timezone,
+        COALESCE(a.mac_address, '') AS device_info_mac,
+        COALESCE(a.serial_number, '') AS device_info_serial,
+        COALESCE(a.ip_address, '') AS device_info_ip,
+        COALESCE(a.firmware_version, '') AS device_info_firmware,
+        COALESCE(a.data_source, '') AS device_info_source,
+        COALESCE(a.account_type, '') AS device_info_account_type
         FROM t_device_active_info a
         <where>
             <if test="startDate != null and endDate != null">
