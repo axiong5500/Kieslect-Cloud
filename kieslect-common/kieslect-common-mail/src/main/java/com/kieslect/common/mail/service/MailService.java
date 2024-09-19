@@ -20,12 +20,22 @@ public class MailService {
     @Autowired
     private RedisService redisService;
 
-    public void sendVerificationCode(String to, String emailType, String code) {
+    public void sendVerificationCode(String to, String emailType, String code,Byte appName) {
         String emailSubject = EmailTypeEnum.getEmailType(emailType).getEmailSubject();
         String emailContent = EmailTypeEnum.getEmailType(emailType).getEmailContent();
         String redisKey = EmailTypeEnum.getEmailType(emailType).getRedisKey();
         String content = emailContent + code;
-        EmailUtils.sendEmail(mailConfig,to, emailSubject, content);
+
+        // 根据 appName 选择相应的邮件账号配置
+        MailConfig.MailAccountConfig accountConfig = mailConfig.getAccounts().get(String.valueOf(appName));
+        if (accountConfig == null) {
+            throw new IllegalArgumentException("未找到对应的邮件配置");
+        }
+
+        // 使用选定的邮件账号发送邮件
+        EmailUtils.sendEmail(accountConfig,to, emailSubject, content);
+
+        // 将验证码存储到 Redis 缓存中
         redisService.setCacheObject(redisKey + to, code, MAIL_TIMEOUT_KEY, TimeUnit.SECONDS);
     }
 

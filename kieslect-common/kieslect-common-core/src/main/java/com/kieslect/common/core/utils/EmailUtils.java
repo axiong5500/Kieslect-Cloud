@@ -13,12 +13,12 @@ import java.util.Properties;
 public class EmailUtils {
 
     // 发送邮件的方法
-    public static void sendEmail(MailConfig mailConfig, String toEmail, String subject, String body) {
-        final String fromEmail = mailConfig.getUsername();
-        final String password = mailConfig.getPassword();
-        final String personal = mailConfig.getPersonal();
-        String host = mailConfig.getHost();
-        int port = mailConfig.getPort();
+    public static void sendEmail(MailConfig.MailAccountConfig mailAccountConfig, String toEmail, String subject, String body) {
+        final String fromEmail = mailAccountConfig.getUsername();
+        final String password = mailAccountConfig.getPassword();
+        final String personal = mailAccountConfig.getPersonal();
+        String host = mailAccountConfig.getHost();
+        int port = mailAccountConfig.getPort();
 
         // 设置邮件属性
         Properties props = new Properties();

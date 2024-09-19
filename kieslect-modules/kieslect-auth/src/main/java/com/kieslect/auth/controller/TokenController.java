@@ -191,7 +191,7 @@ public class TokenController  {
 
         // 生成一个6位数字的验证码
         String verificationCode = RandomUtil.randomNumbers(6);
-        mailService.sendVerificationCode(vo.getToEmail(), vo.getEmailType(), verificationCode);
+        mailService.sendVerificationCode(vo.getToEmail(), vo.getEmailType(), verificationCode,vo.getAppName());
         return R.ok();
     }
 

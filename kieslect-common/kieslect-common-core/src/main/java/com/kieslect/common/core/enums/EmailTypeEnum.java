@@ -1,7 +1,7 @@
 package com.kieslect.common.core.enums;
 
 public enum EmailTypeEnum {
-    REGISTER("Kieslect Verification Code", "Your verification code is: ", "register:"),
+    REGISTER("Verification Code", "Your verification code is: ", "register:"),
     FORGOT_PASSWORD("Password Reset Verification", "Your password reset verification code is: ", "forgot_password:"),
     CHANGE_PASSWORD("Password Change Verification", "Your password change verification code is: ", "change_password:"),
     CHANGE_EMAIL("Email Change Verification", "Your email change verification code is: ", "change_email:"),
