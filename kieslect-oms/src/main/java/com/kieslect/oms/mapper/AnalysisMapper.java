@@ -14,26 +14,30 @@ public interface AnalysisMapper extends BaseMapper<Analysis> {
 
     /**
      * 查询每日激活量
+     *
      * @param startDate
      * @param endDate
      * @param country
+     * @param noIncludeCountryCode
      * @return
      */
     @MapKey("activationDate")
     List<Map<String, Object>> selectActivationCountByGroup(@Param("startDate") String startDate,
                                                            @Param("endDate") String endDate,
-                                                           @Param("country") String country);
+                                                           @Param("country") String country,@Param("noIncludeCountryCode") String noIncludeCountryCode);
 
     /**
      * 查询每日激活量总数量
+     *
      * @param startDate
      * @param endDate
      * @param country
+     * @param noIncludeCountryCode
      * @return
      */
     String selectActivationCountByGroupCount(@Param("startDate") String startDate,
-                                                           @Param("endDate") String endDate,
-                                                           @Param("country") String country);
+                                             @Param("endDate") String endDate,
+                                             @Param("country") String country,@Param("noIncludeCountryCode") String noIncludeCountryCode);
 
 
     /**

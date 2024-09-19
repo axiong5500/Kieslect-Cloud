@@ -10,6 +10,7 @@
         SUM(`Kieslect Pura`) AS `Kieslect Pura`,
         SUM(Balancs) AS Balancs,
         SUM(`Scykei Feel`) AS `Scykei Feel`,
+        SUM(`Scykei Civis`) AS `Scykei Civis`,
         SUM(totalSum) AS totalSum
         FROM (
         SELECT
@@ -20,6 +21,7 @@
         0 AS `Kieslect Pura`,
         0 AS Balancs,
         0 AS `Scykei Feel`,
+        0 AS `Scykei Civis`,
         SUM(
         CASE
         WHEN dm.category IN ('KS2', 'KS3', 'Actor') THEN 1
@@ -36,6 +38,9 @@
             <if test="country != null">
                 AND tai.country = #{country}
             </if>
+            <if test="noIncludeCountryCode != null">
+                AND tai.country != #{noIncludeCountryCode}
+            </if>
         </where>
         GROUP BY
         activationDate
@@ -50,9 +55,10 @@
         SUM(CASE WHEN dm.category = 'Kieslect Pura' THEN 1 ELSE 0 END) AS `Kieslect Pura`,
         SUM(CASE WHEN dm.category = 'Balancs' THEN 1 ELSE 0 END) AS Balancs,
         SUM(CASE WHEN dm.category = 'Scykei Feel' THEN 1 ELSE 0 END) AS `Scykei Feel`,
+        SUM(CASE WHEN dm.category = 'Scykei Civis' THEN 1 ELSE 0 END) AS `Scykei Civis`,
         SUM(
         CASE
-        WHEN dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel') THEN 1
+        WHEN dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel','Scykei Civis') THEN 1
         ELSE 0
         END
         ) AS totalSum
@@ -66,7 +72,10 @@
             <if test="country != null">
                 AND tdai.country = #{country}
             </if>
-            AND dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel')
+            <if test="noIncludeCountryCode != null">
+                AND tdai.country != #{noIncludeCountryCode}
+            </if>
+            AND dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel','Scykei Civis')
         </where>
         GROUP BY
         activationDate
@@ -102,6 +111,9 @@
             <if test="country != null">
                 AND tai.country = #{country}
             </if>
+            <if test="noIncludeCountryCode != null">
+                AND tai.country != #{noIncludeCountryCode}
+            </if>
         </where>
 
             ),0)
@@ -111,7 +123,7 @@
                 SELECT
                     SUM(
                             CASE
-                                WHEN dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel') THEN 1
+                                WHEN dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel','Scykei Civis') THEN 1
                                 ELSE 0
                                 END
                     )
@@ -126,6 +138,9 @@
             <if test="country != null">
                 AND tdai.country = #{country}
             </if>
+            <if test="noIncludeCountryCode != null">
+                AND tdai.country != #{noIncludeCountryCode}
+            </if>
         </where>
             ),0)
             AS totalSum;
@@ -134,12 +149,12 @@
     <select id="selectCountryMonthCountByGroup" resultType="map">
         WITH MonthlyData AS (
         SELECT
-        cm.chinese_name AS countryCn,
+        IFNULL(cm.chinese_name, 'Unknown') AS countryCn,
         DATE_FORMAT(FROM_UNIXTIME(t.activation_time), '%Y-%m') AS month,
         COUNT(*) AS activation_count
         FROM
         t_third_device_active_info t
-        JOIN
+        LEFT JOIN
         country_mapping cm ON t.country = cm.country_code
         JOIN
         device_mapping dm ON t.device_id = dm.device_id
@@ -161,12 +176,12 @@
         UNION ALL
 
         SELECT
-        cm.chinese_name AS countryCn,
+        IFNULL(cm.chinese_name, 'Unknown') AS countryCn,
         DATE_FORMAT(FROM_UNIXTIME(d.activation_time), '%Y-%m') AS month,
         COUNT(*) AS activation_count
         FROM
         t_device_active_info d
-        JOIN
+        LEFT JOIN
         country_mapping cm ON d.country = cm.country_code
         JOIN
         device_mapping dm ON d.device_id = dm.device_id
@@ -180,6 +195,7 @@
             <if test="category != null">
                 AND dm.category = #{category}
             </if>
+            AND dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel','Scykei Civis')
         </where>
         GROUP BY
         cm.chinese_name,
@@ -422,6 +438,7 @@
         FROM
         GlobalGrowthComparison
         ORDER BY
+        CASE WHEN countryCn = 'Unknown' THEN 1 ELSE 0 END,
         totalCount DESC;
     </select>
 

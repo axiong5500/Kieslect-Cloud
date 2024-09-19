@@ -28,7 +28,10 @@ public class AnalysisServiceImpl implements IAnalysisService {
         String countryCode = Optional.ofNullable(activationQueryVO)
                 .map(ActivationQueryVO::getCountryCode)
                 .orElse(null);
-        return analysisMapper.selectActivationCountByGroupCount(startDate,endDate,countryCode);
+        String noIncludeCountryCode = Optional.ofNullable(activationQueryVO)
+                .map(ActivationQueryVO::getNoIncludeCountryCode)
+                .orElse(null);
+        return analysisMapper.selectActivationCountByGroupCount(startDate,endDate,countryCode,noIncludeCountryCode);
     }
 
     @Override
@@ -42,7 +45,10 @@ public class AnalysisServiceImpl implements IAnalysisService {
         String countryCode = Optional.ofNullable(activationQueryVO)
                 .map(ActivationQueryVO::getCountryCode)
                 .orElse(null);
-        return analysisMapper.selectActivationCountByGroup(startDate,endDate,countryCode);
+        String noIncludeCountryCode = Optional.ofNullable(activationQueryVO)
+                .map(ActivationQueryVO::getNoIncludeCountryCode)
+                .orElse(null);
+        return analysisMapper.selectActivationCountByGroup(startDate,endDate,countryCode,noIncludeCountryCode);
     }
 
     @Override

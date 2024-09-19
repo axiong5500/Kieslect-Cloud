@@ -18,18 +18,33 @@ public class AnalysisController {
     @Autowired
     private IAnalysisService analysisService;
 
+    /**
+     * 日度统计
+     * @param activationQueryVO
+     * @return
+     */
     @PostMapping("/device/daily/getList")
     public R<?> deviceDailyGetList(@RequestBody(required = false) ActivationQueryVO activationQueryVO) {
         List<Map<String, Object>> list = analysisService.selectActivationCountByGroup(activationQueryVO);
         return R.ok(list);
     }
 
+    /**
+     * 日度统计总数
+     * @param activationQueryVO
+     * @return
+     */
     @PostMapping("/device/daily/getList/count")
     public R<?> deviceDailyGetListCount(@RequestBody(required = false) ActivationQueryVO activationQueryVO) {
         String count = analysisService.selectActivationCountByGroupCount(activationQueryVO);
         return R.ok(count);
     }
 
+    /**
+     * 月度国家统计
+     * @param requestVO
+     * @return
+     */
     @PostMapping("/country/month/getList")
     public R<?> countryMonthGetList(@RequestBody(required = false) CountryMonthRequestVO requestVO) {
         List<Map<String, Object>> list = analysisService.selectCountryMonthCountByGroup(requestVO);
