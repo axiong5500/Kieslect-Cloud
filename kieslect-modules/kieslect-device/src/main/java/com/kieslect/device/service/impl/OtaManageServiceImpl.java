@@ -7,6 +7,7 @@ import com.kieslect.device.mapper.OtaManageMapper;
 import com.kieslect.device.service.IOtaManageService;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class OtaManageServiceImpl extends ServiceImpl<OtaManageMapper, OtaManage
         List<OtaManage> list = this.list(queryWrapper);
 
         // 处理结果，将 otaVersion 前加上 "V"
-        addVersionPrefix(list);
+        filterOtaManageList(list);
 
         return list;
     }
@@ -51,19 +52,37 @@ public class OtaManageServiceImpl extends ServiceImpl<OtaManageMapper, OtaManage
         if (otaVersion != null && !otaVersion.isEmpty()) {
             queryWrapper.gt(OtaManage::getOtaVersion, otaVersion);
         }
-        queryWrapper.orderByDesc(OtaManage::getSortId);
+        queryWrapper.orderByAsc(OtaManage::getSortId);
 
         return queryWrapper;
     }
 
     /**
-     * 为列表中的每个 OtaManage 对象的 otaVersion 字段加上 "V"
-     *
-     * @param list OtaManage 对象列表
+     * 处理结果，将 otaVersion 前加上 "V"，并过滤掉 otaUpgrade == 0 的元素
+     * @param list
      */
-    private void addVersionPrefix(List<OtaManage> list) {
-        for (OtaManage otaManage : list) {
-            otaManage.setOtaVersion("V" + otaManage.getOtaVersion());
+    private void filterOtaManageList(List<OtaManage> list) {
+        // 判断列表是否为空，避免空指针异常
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+
+        // 获取列表最后一个元素
+        OtaManage lastElement = list.get(list.size() - 1);
+
+        // 使用迭代器遍历列表，安全地移除元素
+        Iterator<OtaManage> iterator = list.iterator();
+
+        while (iterator.hasNext()) {
+            OtaManage otaManage = iterator.next();
+
+            // 如果当前元素的 otaUpgrade == 0 且不是最后一个元素，则移除
+            if (otaManage.getOtaUpgrade() == 0 && otaManage != lastElement) {
+                iterator.remove(); // 安全地移除元素
+            } else {
+                // 更新剩余元素的版本号
+                otaManage.setOtaVersion("V" + otaManage.getOtaVersion());
+            }
         }
     }
 

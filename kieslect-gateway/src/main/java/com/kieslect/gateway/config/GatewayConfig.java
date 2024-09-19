@@ -52,6 +52,7 @@ public class GatewayConfig {
             "/kieslect-weather/weather/getWeatherInfo",
             "/kieslect-**/**/task/**",
             "/kieslect-outapi/**",
+            "/kieslect-device/device/getMacIsRegionLock",
     };
 
     @Bean

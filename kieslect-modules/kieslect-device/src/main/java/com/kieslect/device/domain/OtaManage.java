@@ -96,5 +96,5 @@ public class OtaManage implements Serializable {
      * 排序ID
      */
     @TableField("sort_id")
-    private Integer sortId;
+    private String sortId;
 }

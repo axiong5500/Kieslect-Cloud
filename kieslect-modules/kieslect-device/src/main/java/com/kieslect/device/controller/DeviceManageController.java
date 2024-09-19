@@ -1,9 +1,12 @@
 package com.kieslect.device.controller;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.device.domain.DeviceManage;
 import com.kieslect.device.domain.vo.DeviceManageVO;
+import com.kieslect.device.service.IDeviceMacRegionLockService;
 import com.kieslect.device.service.IDeviceManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +30,33 @@ public class DeviceManageController {
     @Autowired
     private IDeviceManageService deviceManageService;
 
+    @Autowired
+    private IDeviceMacRegionLockService deviceMacRegionLockService;
+
+    /**
+     * 获取设备是否在可用区域
+     *
+     * @param mac
+     * @return 1，可用地区，0，不可用地区，默认值：1代表全球
+     */
+    @GetMapping("/getMacIsRegionLock")
+    public R<?> getMacIsRegionLock(@RequestParam(value ="kId") Integer kId,
+                                    @RequestParam(value ="mac") String mac,
+                                    @RequestParam(value ="geoNameId") Integer geoNameId) {
+        // 查询设备是否开启地区锁，默认返回1
+        DeviceManage deviceManage = deviceManageService.getById(kId);
+        String paramCollection = deviceManage.getParamCollection();
+        JSONObject jsonObject = JSONUtil.parseObj(paramCollection);
+        // 检查是否包含键 "54" 且值为 "1"
+        if (jsonObject.containsKey("54") && "1".equals(jsonObject.getStr("54"))) {
+            // ("包含键值对 54:1");
+            int result = deviceMacRegionLockService.getLock(kId,mac,geoNameId);
+            return R.ok(result);
+        } else {
+            // ("不包含键值对 54:1");
+            return R.ok(1);
+        }
+    }
 
     @GetMapping("/getList")
     public R<?> getDeviceManageList(@RequestParam(value = "deviceId", required = false) String deviceId,
