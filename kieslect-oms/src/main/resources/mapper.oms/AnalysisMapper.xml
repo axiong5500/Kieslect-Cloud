@@ -41,6 +41,7 @@
             <if test="noIncludeCountryCode != null">
                 AND tai.country != #{noIncludeCountryCode}
             </if>
+            AND DATE(FROM_UNIXTIME(tai.activation_time)) &lt; CURDATE()  -- 排除今天的数据
         </where>
         GROUP BY
         activationDate
@@ -76,6 +77,7 @@
                 AND tdai.country != #{noIncludeCountryCode}
             </if>
             AND dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel','Scykei Civis')
+            AND DATE(FROM_UNIXTIME(tdai.activation_time)) &lt; CURDATE()  -- 排除今天的数据
         </where>
         GROUP BY
         activationDate
@@ -440,6 +442,68 @@
         ORDER BY
         CASE WHEN countryCn = 'Unknown' THEN 1 ELSE 0 END,
         totalCount DESC;
+    </select>
+
+    <select id="selectMonthlyActivationCount" resultType="map">
+        SELECT
+            DATE_FORMAT(activationDate, '%Y-%m') AS month,
+    SUM(KS2) AS KS2,
+    SUM(KS3) AS KS3,
+    SUM(Actor) AS Actor,
+    SUM(`Kieslect Pura`) AS `Kieslect Pura`,
+    SUM(Balancs) AS Balancs,
+    SUM(`Scykei Feel`) AS `Scykei Feel`,
+    SUM(`Scykei Civis`) AS `Scykei Civis`,
+    SUM(totalSum) AS totalSum
+        FROM (
+            SELECT
+            DATE(FROM_UNIXTIME(tai.activation_time)) AS activationDate,
+            SUM(CASE WHEN dm.category = 'KS2' THEN 1 ELSE 0 END) AS KS2,
+            SUM(CASE WHEN dm.category = 'KS3' THEN 1 ELSE 0 END) AS KS3,
+            SUM(CASE WHEN dm.category = 'Actor' THEN 1 ELSE 0 END) AS Actor,
+            0 AS `Kieslect Pura`,
+            0 AS Balancs,
+            0 AS `Scykei Feel`,
+            0 AS `Scykei Civis`,
+            SUM(
+            CASE
+            WHEN dm.category IN ('KS2', 'KS3', 'Actor') THEN 1
+            ELSE 0
+            END
+            ) AS totalSum
+            FROM
+            t_third_device_active_info tai
+            JOIN device_mapping dm ON tai.device_id = dm.device_id
+            GROUP BY
+            activationDate  -- Group by the raw activation date
+
+            UNION ALL
+
+            SELECT
+            DATE(FROM_UNIXTIME(tdai.activation_time)) AS activationDate,
+            0 AS KS2,
+            0 AS KS3,
+            0 AS Actor,
+            SUM(CASE WHEN dm.category = 'Kieslect Pura' THEN 1 ELSE 0 END) AS `Kieslect Pura`,
+            SUM(CASE WHEN dm.category = 'Balancs' THEN 1 ELSE 0 END) AS Balancs,
+            SUM(CASE WHEN dm.category = 'Scykei Feel' THEN 1 ELSE 0 END) AS `Scykei Feel`,
+            SUM(CASE WHEN dm.category = 'Scykei Civis' THEN 1 ELSE 0 END) AS `Scykei Civis`,
+            SUM(
+            CASE
+            WHEN dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel', 'Scykei Civis') THEN 1
+            ELSE 0
+            END
+            ) AS totalSum
+            FROM
+            t_device_active_info tdai
+            JOIN device_mapping dm ON tdai.device_id = dm.device_id
+            GROUP BY
+            activationDate  -- Group by the raw activation date
+            ) AS combinedResults
+        GROUP BY
+            month  -- Group by the formatted month
+        ORDER BY
+            month DESC
     </select>
 
 

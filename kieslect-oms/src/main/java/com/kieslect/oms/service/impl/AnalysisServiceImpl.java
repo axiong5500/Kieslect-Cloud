@@ -66,4 +66,10 @@ public class AnalysisServiceImpl implements IAnalysisService {
     }
 
 
+    @Override
+    public List<Map<String, Object>> getMonthlyActivationCount() {
+        return analysisMapper.selectMonthlyActivationCount();
+    }
+
+
 }

@@ -11,4 +11,7 @@ public interface IAnalysisService {
     String selectActivationCountByGroupCount(ActivationQueryVO activationQueryVO);
 
     List<Map<String, Object>> selectCountryMonthCountByGroup(CountryMonthRequestVO requestVO);
+
+
+    List<Map<String, Object>> getMonthlyActivationCount();
 }

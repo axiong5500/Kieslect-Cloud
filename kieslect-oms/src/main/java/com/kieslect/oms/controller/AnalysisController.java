@@ -50,4 +50,15 @@ public class AnalysisController {
         List<Map<String, Object>> list = analysisService.selectCountryMonthCountByGroup(requestVO);
         return R.ok(list);
     }
+
+
+    /**
+     * 月度激活统计
+     * @return
+     */
+    @GetMapping("/device/month/getList")
+    public R<?> getMonthlyActivationData() {
+        List<Map<String, Object>> list = analysisService.getMonthlyActivationCount();
+        return R.ok(list);
+    }
 }
