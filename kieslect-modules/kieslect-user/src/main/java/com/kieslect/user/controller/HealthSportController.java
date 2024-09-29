@@ -37,13 +37,50 @@ public class HealthSportController {
         }
     }
 
-    private static final long MAX_LOCAL_STORAGE_SIZE = 50 * 1024 * 1024; // 50MB
+    private static final long MAX_LOCAL_STORAGE_SIZE = 20 * 1024 * 1024; // 20MB
 
     @Autowired
     private TokenService tokenService;
 
     @Autowired
     private RemoteFileService remoteFileService;
+
+    /**
+     * 替换文件
+     * @param request
+     * @param fileType
+     * @param file
+     * @return
+     */
+    @PostMapping("/replaceData")
+    public R<?> replaceData(HttpServletRequest request,
+                            @RequestParam(value = "fileType", required = false) Integer fileType,
+                            @RequestParam("file") @NotNull(message = "文件不能为空") MultipartFile file) {
+
+        // 设置默认 fileType 为 HEALTH_DATA
+//        fileType = (fileType == null) ? FileTypeEnum.HEALTH_DATA.getCode() : fileType;
+
+        // 获取 PathTypeCode 根据 fileType
+        int pathTypeCode = getPathTypeCodeByFileType(fileType);
+        if (pathTypeCode == FileTypeEnum.OTHER.getPathTypeCode()) {
+            return R.fail("无效的文件类型");
+        }
+
+        // 先删除旧数据
+        removeLocalAndRemoteData(request, pathTypeCode);
+
+        // 上传新文件
+        return uploadData(request, file, pathTypeCode);
+    }
+
+    /**
+     * 根据文件类型获取对应的 PathTypeCode
+     */
+    private int getPathTypeCodeByFileType(Integer fileType) {
+        FileTypeEnum fileTypeEnum = FileTypeEnum.getPathTypeCodeByCode(fileType);
+        return fileTypeEnum.getPathTypeCode();
+    }
+
 
 
     @PostMapping("/upload")
