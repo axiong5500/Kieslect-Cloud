@@ -1,5 +1,6 @@
 package com.kieslect.device.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kieslect.common.core.domain.LoginUserInfo;
 import com.kieslect.common.core.domain.R;
@@ -8,6 +9,7 @@ import com.kieslect.common.security.service.TokenService;
 import com.kieslect.device.domain.DeviceBinding;
 import com.kieslect.device.domain.vo.DeviceBindingUpdateVO;
 import com.kieslect.device.domain.vo.DeviceBindingVO;
+import com.kieslect.device.domain.vo.SysDeviceBindingVO;
 import com.kieslect.device.service.IDeviceBindingService;
 import com.kieslect.device.service.async.DeviceActivationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,7 +46,24 @@ public class DeviceBindingController {
     private DeviceActivationService deviceActivationService;
 
 
+    /**
+     * 问题与反馈的详情功能
+     * 获取设备绑定列表
+     * @param sysDeviceBindingVO
+     * @return
+     */
+    @PostMapping("/sys/getList")
+    public R<?> sysGetDeviceBindingList(@RequestBody SysDeviceBindingVO sysDeviceBindingVO) {
+        LambdaQueryWrapper<DeviceBinding> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DeviceBinding::getUserId, sysDeviceBindingVO.getUserId());
+        return R.ok(deviceBindingService.list(queryWrapper));
+    }
 
+    /**
+     * 获取设备绑定列表
+     * @param request
+     * @return
+     */
     @GetMapping("/getList")
     public R<Map<String, Object>> getDeviceBindingList(HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>();
