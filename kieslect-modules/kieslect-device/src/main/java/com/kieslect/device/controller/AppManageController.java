@@ -5,22 +5,17 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kieslect.common.core.domain.R;
+import com.kieslect.device.domain.AppDownload;
 import com.kieslect.device.domain.AppManage;
 import com.kieslect.device.domain.AppPackeageManage;
 import com.kieslect.device.domain.ParamConfig;
 import com.kieslect.device.domain.vo.AppManageVO;
 import com.kieslect.device.domain.vo.AppPackeageManageVO;
-import com.kieslect.device.service.IAppManageService;
-import com.kieslect.device.service.IAppPackeageManageService;
-import com.kieslect.device.service.IArticleService;
-import com.kieslect.device.service.IParamConfigService;
+import com.kieslect.device.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +40,54 @@ public class AppManageController {
 
     @Autowired
     IParamConfigService paramConfigService;
+
+    @Autowired
+    IAppDownloadService appDownloadService;
+
+    @GetMapping("/getQRList")
+    public R<?> getQRList(@RequestParam(value = "appName", required = false) Integer appName) {
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        LambdaQueryWrapper<AppManage> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByAsc(AppManage::getUserAppName);
+        if (appName != null){
+            queryWrapper.eq(AppManage::getUserAppName, appName);
+        }
+        List<AppManage> appManageList = appManageService.list(queryWrapper);
+
+        if (appManageList == null || appManageList.size() == 0) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("appNameSign", appName);
+            map.put("appQRLink", "");
+            result.add(map);
+            return R.ok(result);
+        }
+
+        String[] appMarkList = {"KSTYLEOS", "CKOS", "CKWEAROS"};
+        for (int i = 0; i < appManageList.size(); i++) {
+            Map<String, Object> map = new HashMap<>();
+
+            String appMark = appManageList.get(i).getAppMark(); // 获取当前的 appMark
+            map.put("appNameSign", appManageList.get(i).getUserAppName());
+
+            // 检查 appMark 是否不在 appMarkList 中
+            boolean isNotInList = Arrays.stream(appMarkList).noneMatch(mark -> mark.equals(appMark));
+
+            if (isNotInList) {
+                // 不属于内部开发的APP，直接返回第三方跳转地址
+                Integer appId = appManageList.get(i).getId();
+                LambdaQueryWrapper<AppDownload> downloadWrapper =  new LambdaQueryWrapper<>();
+                downloadWrapper.eq(AppDownload::getAppId, appId);
+                downloadWrapper.eq(AppDownload::getAppChannel, 3);
+                AppDownload appDownload = appDownloadService.getOne(downloadWrapper);
+                map.put("appQRLink", appDownload == null ? "" : appDownload.getAppDownloadLink());
+            }else {
+                map.put("appQRLink", "https://admin.stylish-wearable.com/public/produce/app/qrcode/"+appMark);
+            }
+            result.add(map);
+        }
+        return R.ok(result);
+    }
 
     @GetMapping("/getApp")
     public R<?> getAppManageObj(@RequestParam(value = "appName", required = false , defaultValue = "0") Integer appName) {

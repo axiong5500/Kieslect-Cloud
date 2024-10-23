@@ -53,6 +53,7 @@ public class GatewayConfig {
             "/kieslect-**/**/task/**",
             "/kieslect-outapi/**",
             "/kieslect-device/device/getMacIsRegionLock",
+            "/kieslect-device/device/appManage/getQRList",
     };
 
     @Bean

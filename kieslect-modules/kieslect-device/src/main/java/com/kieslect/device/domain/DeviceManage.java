@@ -48,13 +48,13 @@ public class DeviceManage implements Serializable {
     private String projectName;
 
     /**
-     * 固件id
+     * 固件id，对应手表上的设备ID
      */
     @TableField("firmware_id")
     private String firmwareId;
 
     /**
-     * 类别，
+     * 方案商，1：爱都，2：优创亿，3：云天，4：魔样
      */
     @TableField("form")
     private Integer form;
@@ -166,4 +166,10 @@ public class DeviceManage implements Serializable {
      */
     @TableField("integrator")
     private Integer integrator;
+
+    /**
+     * 品牌，1：kieslect，2：ck
+     */
+    @TableField("brand")
+    private Integer brand;
 }

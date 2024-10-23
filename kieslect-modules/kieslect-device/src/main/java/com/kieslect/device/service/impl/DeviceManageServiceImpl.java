@@ -90,9 +90,7 @@ public class DeviceManageServiceImpl extends ServiceImpl<DeviceManageMapper, Dev
         if (producers != null) {
             queryWrapper.eq(DeviceManage::getForm, producers);
         }
-        if (appName != null) {
-            queryWrapper.like(DeviceManage::getAppIds, appName);
-        }
+
 
         List<DeviceManage> list = this.list(queryWrapper);
         List<DeviceManageVO> result = new ArrayList<>();

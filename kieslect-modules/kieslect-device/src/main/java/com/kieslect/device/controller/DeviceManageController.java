@@ -27,13 +27,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("")
 public class DeviceManageController {
+
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DeviceManageController.class);
+
     @Autowired
     private IDeviceManageService deviceManageService;
 
     @Autowired
     private IDeviceMacRegionLockService deviceMacRegionLockService;
-
-
 
 
     /**

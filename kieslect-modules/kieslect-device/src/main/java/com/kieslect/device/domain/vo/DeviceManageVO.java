@@ -116,6 +116,16 @@ public class DeviceManageVO {
      */
     private Short templateFlag;
 
+    /**
+     * appIds
+     */
+    private String appIds;
+
+    /**
+     * 品牌，0：不做判断，1：kieslect，2：ck
+     */
+    private Integer brand;
+
 
     /**
      * 参数设置值json集合
