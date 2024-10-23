@@ -34,6 +34,8 @@
             OR a.device_alias LIKE '%Feel%'
             OR a.device_alias LIKE '%civis%'
             )
+
+            AND a.country != 'CN'
         </where>
 
     </select>
