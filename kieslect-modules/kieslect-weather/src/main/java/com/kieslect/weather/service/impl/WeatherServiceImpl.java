@@ -19,6 +19,7 @@ import com.kieslect.weather.service.IWeatherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -31,18 +32,73 @@ import java.util.stream.Collectors;
 public class WeatherServiceImpl implements IWeatherService {
 
     private static final Logger logger = LoggerFactory.getLogger(WeatherServiceImpl.class);
-    private static final String apiKey = "ba0fb55d9b5c49ab8b352808ead4dac5";
+
+    // 免费API Key（每日限额16,700次请求）
+    private static final String FREE_API_KEY = "ba0fb55d9b5c49ab8b352808ead4dac5";
+    private static final String FREE_API_HOST = "devapi.qweather.com";
+
+    // 收费API Key（无每日请求限制）
+    private static final String PAID_API_KEY = "36a411df3f974b53a42ec9c84e2c1139";
+    private static final String PAID_API_HOST = "api.qweather.com";
+
+    // 最大重试次数
+    private static final int MAX_RETRIES = 2;
+
+    // 当前的 API Key（默认使用免费 API Key）
+    private String currentApiKey = FREE_API_KEY;
+    // 当前的 Host（默认使用免费 API Host）
+    private String currentHost = FREE_API_HOST;
+
+    // 是否为收费模式
+    private boolean isPremiumMode = false;
+
+    // 切换到收费模式的方法
+    private void switchToPremiumMode() {
+        currentApiKey = PAID_API_KEY;
+        currentHost = PAID_API_HOST;
+        isPremiumMode = true;
+    }
+    // 切换到免费模式的方法
+    private void switchToFreeMode() {
+        currentApiKey = FREE_API_KEY;
+        currentHost = FREE_API_HOST;
+        isPremiumMode = false;
+    }
+
+
+    // 每小时尝试切换回免费模式
+    @Scheduled(cron = "0 0 0/1 * * ?")
+    public void trySwitchBackToFreeMode() {
+        if (isPremiumMode) {
+            logger.info("尝试切换回免费模式...");
+            // 测试免费模式是否可以使用,使用深圳龙岗
+            try {
+                String testUrl = String.format(NOW_WEATHER_URL, FREE_API_HOST,FREE_API_KEY, "113.0", "23.0");
+                String result = HttpUtil.get(testUrl);
+                logger.info("免费模式测试结果：" + result);
+                if (result.contains("200")) {
+                    // 如果成功，切换回免费模式
+                    switchToFreeMode();
+                    logger.info("已切换回免费模式");
+                }else{
+                    logger.info("免费模式仍限流，保持收费模式");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
     // 实况天气 经度（longitude）在前 纬度（latitude）在后
-    private static final String NOW_WEATHER_URL = "https://devapi.qweather.com/v7/weather/now?key=" + apiKey + "&location=%s,%s";
+    private static final String NOW_WEATHER_URL = "https://%s/v7/weather/now?key=%s&location=%s,%s";
     // 逐小时预报（未来24小时） 经度（longitude）在前 纬度（latitude）在后
-    private static final String HOURLY_WEATHER_FORECAST_URL = "https://devapi.qweather.com/v7/weather/24h?key=" + apiKey + "&location=%s,%s";
+    private static final String HOURLY_WEATHER_FORECAST_URL = "https://%s/v7/weather/24h?key=%s&location=%s,%s";
 
     // 7天预报 经度（longitude）在前 纬度（latitude）在后
-    private static final String SEVEN_WEATHER_FORECAST_URL = "https://devapi.qweather.com/v7/weather/7d?key=" + apiKey + "&location=%s,%s";
+    private static final String SEVEN_WEATHER_FORECAST_URL = "https://%s/v7/weather/7d?key=%s&location=%s,%s";
 
     // 和风geo
-    private static final String HEFENG_GEO_URL = "https://geoapi.qweather.com/v2/city/lookup?key=" + apiKey + "&location=%s&number=1";
+    private static final String HEFENG_GEO_URL = "https://geoapi.qweather.com/v2/city/lookup?key=%s&location=%s&number=1";
 
 
     private static final String WEATHER_PREFIX = "weather:";
@@ -107,9 +163,9 @@ public class WeatherServiceImpl implements IWeatherService {
         String nowRedisKey = getWeatherRedisKey(NOW_WEATHER_KEY_PREFIX, redisKey);
         String hourlyRedisKey = getWeatherRedisKey(HOURLY_WEATHER_FORECAST_KEY_PREFIX, redisKey);
         String sevenRedisKey = getWeatherRedisKey(SEVEN_WEATHER_FORECAST_KEY_PREFIX, redisKey);
-        nowObj = getObject(id, latitude, longitude, langFormatted, unitFormatted, nowRedisKey, NOW_WEATHER_URL);
-        hourlyObj = getObject(id, latitude, longitude, langFormatted, unitFormatted, hourlyRedisKey, HOURLY_WEATHER_FORECAST_URL);
-        sevenObj = getObject(id, latitude, longitude, langFormatted, unitFormatted, sevenRedisKey, SEVEN_WEATHER_FORECAST_URL);
+        nowObj = getObject(id, latitude, longitude, langFormatted, unitFormatted, nowRedisKey, NOW_WEATHER_URL,MAX_RETRIES);
+        hourlyObj = getObject(id, latitude, longitude, langFormatted, unitFormatted, hourlyRedisKey, HOURLY_WEATHER_FORECAST_URL,MAX_RETRIES);
+        sevenObj = getObject(id, latitude, longitude, langFormatted, unitFormatted, sevenRedisKey, SEVEN_WEATHER_FORECAST_URL,MAX_RETRIES);
 
         WeatherInfoVO weatherInfoVO = new WeatherInfoVO();
         weatherInfoVO.setLang(langFormatted);
@@ -314,8 +370,13 @@ public class WeatherServiceImpl implements IWeatherService {
         return HEFENG_PREFIX + prefix + redisKey;
     }
 
-    private Object getObject(int id, double latitude, double longitude, String langFormatted, String unitFormatted, String redisKey, String weatherForecastUrl) {
+    private Object getObject(int id, double latitude, double longitude, String langFormatted, String unitFormatted, String redisKey, String weatherForecastUrl,int retries) {
         Object weatherObj;
+        // 如果已达到最大重试次数，直接返回空或报错
+        if (retries <= 0) {
+            logger.error("已达到最大重试次数，无法获取有效天气数据.");
+            return null;
+        }
         if (isConditionMet(id, redisKey)) {
             weatherObj = redisService.getCacheObject(redisKey);
             logger.info("redis缓存中获取数据" + redisKey + ",obj:" + weatherObj);
@@ -326,41 +387,54 @@ public class WeatherServiceImpl implements IWeatherService {
                 longitude = Double.valueOf(hirdGeo.getLongitude());
                 latitude = Double.valueOf(hirdGeo.getLatitude());
             }
-            String hourlyWeatherForecast = String.format(weatherForecastUrl, longitude, latitude);
+            String hourlyWeatherForecast = String.format(weatherForecastUrl, currentHost, currentApiKey, longitude, latitude);
             String getWeatherForecast = HttpUtil.get(hourlyWeatherForecast);
-            //检查getWeatherForecast返回的信息是不是{"code":"404"}
-            if ("{\"code\":\"404\"}".equals(getWeatherForecast)) {
-                logger.warn("Weather forecast not found: {},result: {}", hourlyWeatherForecast, getWeatherForecast);
-                Geoname geoname = getGeoname(id);
-                String name = null;
-                if (geoname != null) {
-                    name = geoname.getName();
+            //检查getWeatherForecast返回的信息是不是{"code":"404"},说明是经纬度不是和风的经纬度，需要通过请求和风经纬度接口，获取正确经纬保存入库，再次用正确经纬度请求获取天气数据
+            if (StrUtil.isNotEmpty(getWeatherForecast)){
+                if (getWeatherForecast.contains("429")){
+                    // 429错误，说明请求次数过多，需要请求收费接口再请求
+                    switchToPremiumMode();
+                    return getObject(id, latitude, longitude, langFormatted, unitFormatted, redisKey, weatherForecastUrl,retries-1);
                 }
-                // 请求和风geo接口，获得城市经纬度
-                String geoUrl = String.format(HEFENG_GEO_URL, name);
-                String geoResult = HttpUtil.get(geoUrl);
-                //保存入库
-                if (ObjectUtil.isNotEmpty(geoResult)) {
-                    JSONObject jsonObject = JSONUtil.parseObj(geoResult);
-                    JSONObject jsonObj = (JSONObject) jsonObject.getJSONArray("location").get(0);
-                    String latitudeStr = jsonObj.getStr("lat");
-                    String longitudeStr = jsonObj.getStr("lon");
+                if (getWeatherForecast.contains("404")) {
+                    logger.warn("Weather forecast not found: {},result: {}", hourlyWeatherForecast, getWeatherForecast);
+                    Geoname geoname = getGeoname(id);
+                    String name = null;
+                    if (geoname != null) {
+                        name = geoname.getName();
+                    }
+                    // 请求和风geo接口，获得城市经纬度
+                    String geoUrl = String.format(HEFENG_GEO_URL, currentApiKey, name);
+                    String geoResult = HttpUtil.get(geoUrl);
+                    if (geoResult.contains("429")){
+                        // 429错误，说明请求次数过多，需要请求收费接口再请求
+                        switchToPremiumMode();
+                        return getObject(id, latitude, longitude, langFormatted, unitFormatted, redisKey, weatherForecastUrl,retries-1);
+                    }
+                    //保存入库
+                    if (ObjectUtil.isNotEmpty(geoResult)) {
+                        JSONObject jsonObject = JSONUtil.parseObj(geoResult);
+                        JSONObject jsonObj = (JSONObject) jsonObject.getJSONArray("location").get(0);
+                        String latitudeStr = jsonObj.getStr("lat");
+                        String longitudeStr = jsonObj.getStr("lon");
 
-                    GeonameThirdGeo geonameThirdGeo = new GeonameThirdGeo();
-                    geonameThirdGeo.setGeonameid(id);
-                    geonameThirdGeo.setLatitude(latitudeStr);
-                    geonameThirdGeo.setLongitude(longitudeStr);
-                    geonameThirdGeo.setRequestUrl(geoUrl);
-                    geonameThirdGeo.setSourceResponse(geoResult);
-                    geonameThirdGeo.setSourceType(0);
-                    geonameThirdGeo.setCreateTime(Instant.now().getEpochSecond());
-                    geonameThirdGeo.setUpdateTime(Instant.now().getEpochSecond());
-                    geonameThirdGeoService.saveOrUpdate(geonameThirdGeo);
+                        GeonameThirdGeo geonameThirdGeo = new GeonameThirdGeo();
+                        geonameThirdGeo.setGeonameid(id);
+                        geonameThirdGeo.setLatitude(latitudeStr);
+                        geonameThirdGeo.setLongitude(longitudeStr);
+                        geonameThirdGeo.setRequestUrl(geoUrl);
+                        geonameThirdGeo.setSourceResponse(geoResult);
+                        geonameThirdGeo.setSourceType(0);
+                        geonameThirdGeo.setCreateTime(Instant.now().getEpochSecond());
+                        geonameThirdGeo.setUpdateTime(Instant.now().getEpochSecond());
+                        geonameThirdGeoService.saveOrUpdate(geonameThirdGeo);
 
-                    return getObject(id, Double.parseDouble(latitudeStr), Double.parseDouble(longitudeStr), langFormatted, unitFormatted, redisKey, weatherForecastUrl);
+                        return getObject(id, Double.parseDouble(latitudeStr), Double.parseDouble(longitudeStr), langFormatted, unitFormatted, redisKey, weatherForecastUrl,retries -1);
+                    }
+
                 }
-
             }
+
             logger.info("hourlyWeatherForecast:{},getWeatherForecast:{}", hourlyWeatherForecast, getWeatherForecast);
 
             weatherObj = parseJson(getWeatherForecast);
@@ -461,6 +535,8 @@ public class WeatherServiceImpl implements IWeatherService {
         }
         return null;
     }
+
+
 
     public static void main(String[] args) {
         // 指定时区ID
