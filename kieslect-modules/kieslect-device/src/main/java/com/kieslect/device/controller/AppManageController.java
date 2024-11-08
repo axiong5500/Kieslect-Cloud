@@ -15,6 +15,7 @@ import com.kieslect.device.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -174,6 +175,7 @@ public class AppManageController {
     // update
     @PostMapping("/sys/update")
     public R<?> updateAppManage(@RequestBody AppManage appManage) {
+        appManage.setUpdateTime(Instant.now().getEpochSecond());
         return R.ok(appManageService.updateById(appManage));
     }
 
@@ -186,6 +188,7 @@ public class AppManageController {
 
     @PostMapping("/sys/save")
     public R<?> saveAppManage(@RequestBody AppManage appManage) {
+        appManage.setCreateTime(Instant.now().getEpochSecond());
         appManageService.save(appManage);
         int savedId = appManage.getId();
         return R.ok(savedId);
