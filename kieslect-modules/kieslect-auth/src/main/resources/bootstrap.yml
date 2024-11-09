@@ -5,7 +5,6 @@ server:
     context-path: /auth
 # Spring
 spring:
-  redis:
   application:
     # 应用名称
     name: kieslect-auth
