@@ -1,5 +1,5 @@
 syntax = "proto3";
-option java_package = "com.kieslect.kdata.proto.dto";
+option java_package = "com.kieslect.user.proto";
 option java_outer_classname = "GeoCityBeanProto";
 
 message GeoCityBean {
