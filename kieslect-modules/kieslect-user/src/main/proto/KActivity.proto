@@ -25,10 +25,11 @@ message KActivityListData {
 message DetailSteps {
     int64 date = 1;
     int32 steps = 2;
-    int32 calories = 3;//卡路里
-    int32 distance = 4;//距离 米
+    double calories = 3;//卡路里
+    double distance = 4;//距离 米
     string mac = 5;
     int64 only = 6;
+    int32 type = 7;//运动类型
 }
 
 message DetailSilentHr {

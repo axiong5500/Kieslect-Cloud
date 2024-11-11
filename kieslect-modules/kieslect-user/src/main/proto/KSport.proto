@@ -11,37 +11,61 @@ message KSport {
 
 message DetailSport {
     int64 only = 1;
-    int32 type = 2;//运动类型
-    int64 start_time = 3;//开始时间 秒
-    int64 end_time = 4;//结束时间 秒
-    int32 time = 5;//运动时间 秒
-    int32 steps = 6;//总计步数
-    float distance = 7;//总路程-米
-    float max_speed = 8;//最大速度-米/秒
-    float avg_hr = 9;
-    repeated DetailSportData sport_data = 10;
-    repeated DetailDevice sport_device = 11;
-    int32 device_type = 12;//哪个端发起的运动，0-手机，1-手表
-    float distance_aim = 13;//距离目标
-    float calories_aim = 14;//热量目标
+    KInfo info = 2;
+    repeated KDevice devices = 3;
+    repeated KTimer timers = 4;
+    repeated KLocation locations = 5;
+    repeated KActivityData activity_data = 6;
+    repeated KDistanceData distance_data = 7;
 }
 
-
-message DetailSportData {
-    int32 time = 1;//运动时间 秒
-    int32 total_time = 2;//总时间 秒
-    double latitude = 3;
-    double longitude = 4;
-    float speed = 5;//米/秒
-    int32 cadence = 6;//步频 步数/分钟
-    int32 hr = 7;
-    int32 lap = 8;//圈数
-    float distance = 9;//总路程-米
-    int32 steps = 10;//步数
+message KInfo {
+    int32 type = 1;//运动类型
+    int64 start_time = 2;//开始时间 秒
+    int64 end_time = 3;//结束时间 秒
+    int32 time = 4;//运动时间 秒
+    int32 steps = 5;//总计步数
+    float distance = 6;//总路程-米
+    float max_speed = 7;//最大速度-米/秒
+    float avg_hr = 8;//平均心率
+    int32 max_hr = 9;//最大心率
+    int32 min_hr = 10;//最小心率
+    int32 device_type = 11;//哪个端发起的运动，0-手机，1-手表
+    float aim_data = 12;//距离数据
+    int32 aim_type = 13;//目标类型 0-无效，1-时间(秒)，2-距离(米)，3-卡路里，4-步数
+    float calories = 14;//热量
+    int32 lap = 15;//圈数
 }
 
-message DetailDevice {
+message KDevice {
     int32 device_type = 1;//0-手机，1-手表
     string mac = 2;
     string name = 3;
+}
+
+message KTimer {
+    int32 total_time = 1;//当前时间-开始时间 秒
+    int32 time = 2;//运动时间 秒
+    int32 status = 3;//1-开始，2-暂停，3-停止
+}
+
+message KLocation {
+    int32 time = 1;//运动时间 秒
+    double latitude = 2;
+    double longitude = 3;
+}
+
+message KActivityData {
+    int32 time = 1;//运动时间 秒
+    int32 hr = 2;
+    int32 steps = 3;//步数
+    int32 cadence = 4;//步频 步数/分钟
+
+}
+
+message KDistanceData {
+    int32 time = 1;//运动时间 秒
+    float distance = 2;//总路程-米
+    float speed = 3;//米/秒
+    int32 lap = 4;//圈数
 }
