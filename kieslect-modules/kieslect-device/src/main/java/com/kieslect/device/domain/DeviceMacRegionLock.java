@@ -16,7 +16,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author kieslect
- * @since 2024-09-06
+ * @since 2024-11-12
  */
 @Getter
 @Setter
@@ -58,4 +58,10 @@ public class DeviceMacRegionLock implements Serializable {
      */
       @TableField("update_time")
     private Long updateTime;
+
+      /**
+     * 锁类型（0：不可用国家，1：只限定国家可用）
+     */
+      @TableField("lock_type")
+    private Integer lockType;
 }

@@ -1,7 +1,5 @@
 package com.kieslect.device.controller;
 
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.kieslect.common.core.domain.R;
 import com.kieslect.device.domain.DeviceManage;
@@ -47,19 +45,8 @@ public class DeviceManageController {
     public R<?> getMacIsRegionLock(@RequestParam(value ="kId") Integer kId,
                                     @RequestParam(value ="mac") String mac,
                                     @RequestParam(value ="geoNameId") Integer geoNameId) {
-        // 查询设备是否开启地区锁，默认返回1
-        DeviceManage deviceManage = deviceManageService.getById(kId);
-        String paramCollection = deviceManage.getParamCollection();
-        JSONObject jsonObject = JSONUtil.parseObj(paramCollection);
-        // 检查是否包含键 "54" 且值为 "1"
-        if (jsonObject.containsKey("54") && "1".equals(jsonObject.getStr("54"))) {
-            // ("包含键值对 54:1");
-            int result = deviceMacRegionLockService.getLock(kId,mac,geoNameId);
-            return R.ok(result);
-        } else {
-            // ("不包含键值对 54:1");
-            return R.ok(1);
-        }
+        int result = deviceMacRegionLockService.getLock(kId,mac,geoNameId);
+        return R.ok(result);
     }
 
     @GetMapping("/getList")
