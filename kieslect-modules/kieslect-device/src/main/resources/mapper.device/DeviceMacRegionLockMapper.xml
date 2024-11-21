@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kieslect.device.mapper.DeviceMacRegionLockMapper">
+
+    <select id="getDeviceMacRegionLockWithPolicy" resultType="com.kieslect.device.domain.vo.DeviceMacRegionLockVO">
+        select t1.id, t1.device_id, t1.mac,t1.create_time , t1.update_time ,t2.id as policyId,t2.strategy_name as strategyName, t2.country as countryCodes, t2.strategy_status as lockType
+        from t_device_mac_region_lock t1
+        left join t_policy_info t2 on t1.policy_id = t2.id
+        <where>
+            <if test="macList != null and macList.size() > 0">
+                t1.mac in
+                <foreach collection="macList" item="mac" open="(" close=")" separator=",">
+                    #{mac}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>

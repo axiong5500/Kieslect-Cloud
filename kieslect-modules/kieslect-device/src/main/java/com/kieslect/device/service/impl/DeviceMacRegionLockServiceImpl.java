@@ -2,14 +2,18 @@ package com.kieslect.device.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kieslect.device.domain.DeviceMacRegionLock;
 import com.kieslect.device.domain.Geoname;
+import com.kieslect.device.domain.vo.DeviceMacRegionLockVO;
 import com.kieslect.device.mapper.DeviceMacRegionLockMapper;
 import com.kieslect.device.service.IDeviceMacRegionLockService;
 import com.kieslect.device.service.IGeonameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -63,5 +67,17 @@ public class DeviceMacRegionLockServiceImpl extends ServiceImpl<DeviceMacRegionL
             // 防止数据库出现两笔相同的mac地址，导致程序崩溃
             return 1;
         }
+    }
+
+    @Override
+    public Page<DeviceMacRegionLockVO> getDeviceMacRegionLockWithPolicy(DeviceMacRegionLock deviceMacRegionLock, int pageNum, int pageSize) {
+        // 将 mac 字符串分割为列表
+        List<String> macList = null;
+        if (deviceMacRegionLock != null && StrUtil.isNotEmpty(deviceMacRegionLock.getMac())) {
+            macList = StrUtil.split(deviceMacRegionLock.getMac(), ",");
+        }
+        // 创建分页对象
+        Page<DeviceMacRegionLockVO> page = new Page<>(pageNum, pageSize);
+        return deviceMacRegionLockMapper.getDeviceMacRegionLockWithPolicy(page,macList);
     }
 }

@@ -12,40 +12,40 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 
+ * 策略信息
  * </p>
  *
  * @author kieslect
- * @since 2024-11-15
+ * @since 2024-11-14
  */
 @Getter
 @Setter
   @Accessors(chain = true)
-  @TableName("t_device_mac_region_lock")
-public class DeviceMacRegionLock implements Serializable {
+  @TableName("t_policy_info")
+public class PolicyInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
       @TableId(value = "id", type = IdType.AUTO)
-      private Long id;
+      private Integer id;
 
       /**
-     * 设备ID，见 t_device_manage 表 ID
+     * 策略名称
      */
-      @TableField("device_id")
-    private Integer deviceId;
+      @TableField("strategy_name")
+    private String strategyName;
 
       /**
-     * 设备mac
+     * 策略国家或地区
      */
-      @TableField("mac")
-    private String mac;
+      @TableField("country")
+    private String country;
 
       /**
-     * 国家代码列表
+     * 策略状态，0：不可用，1：可用
      */
-      @TableField("country_codes")
-    private String countryCodes;
+      @TableField("strategy_status")
+    private Integer strategyStatus;
 
       /**
      * 创建时间
@@ -58,16 +58,4 @@ public class DeviceMacRegionLock implements Serializable {
      */
       @TableField("update_time")
     private Long updateTime;
-
-      /**
-     * 锁类型（0：不可用国家，1：只限定国家可用）
-     */
-      @TableField("lock_type")
-    private Integer lockType;
-
-      /**
-     * 策略ID，见 t_policy_info 表
-     */
-      @TableField("policy_id")
-    private Integer policyId;
 }
