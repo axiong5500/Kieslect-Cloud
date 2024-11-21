@@ -15,4 +15,23 @@
             </if>
         </where>
     </select>
+
+    <!-- 通过mac查询单个对象用于APP接口 -->
+    <select id="selectOneDeviceMacRegionLock" resultType="com.kieslect.device.domain.DeviceMacRegionLock">
+        select
+            t1.id,
+            t1.device_id,
+            t1.mac,
+            t1.create_time ,
+            t1.update_time ,
+            t2.id as policyId,
+            t2.country as countryCodes,
+            t2.strategy_status as lockType
+        from
+            t_device_mac_region_lock t1
+        left join
+            t_policy_info t2 on t1.policy_id = t2.id
+        WHERE
+            t1.mac = #{mac}
+    </select>
 </mapper>

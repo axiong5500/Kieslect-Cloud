@@ -18,5 +18,8 @@ import java.util.List;
  */
 public interface DeviceMacRegionLockMapper extends BaseMapper<DeviceMacRegionLock> {
 
+    DeviceMacRegionLock selectOneDeviceMacRegionLock(@Param("mac")String mac);
+
     Page<DeviceMacRegionLockVO> getDeviceMacRegionLockWithPolicy(Page<?> page,@Param("macList") List<String> macList);
+
 }

@@ -38,12 +38,9 @@ public class DeviceMacRegionLockServiceImpl extends ServiceImpl<DeviceMacRegionL
     public int getLock(Integer kId, String mac, Integer geoNameId) {
         // 判断mac在不在不可用区域表中，如果不存在就说明全球可用返回1
         try {
-            System.out.println(deviceMacRegionLockMapper.selectList(null));
             DeviceMacRegionLock deviceMacRegionLock = null;
             if (StrUtil.isNotBlank(mac)) {
-                LambdaQueryWrapper<DeviceMacRegionLock> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(DeviceMacRegionLock::getMac, mac);
-                deviceMacRegionLock = deviceMacRegionLockMapper.selectOne(queryWrapper);
+                deviceMacRegionLock = deviceMacRegionLockMapper.selectOneDeviceMacRegionLock(mac);
                 if (deviceMacRegionLock == null){
                     return 1;
                 }
