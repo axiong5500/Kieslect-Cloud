@@ -40,7 +40,10 @@ public class GatewayConfig {
             "/kieslect-auth/auth/login",
             "/kieslect-auth/auth/third/login",
             "/kieslect-auth/auth/logout",
+            "/kieslect-auth/auth/strava/getAccessToken",
+            "/kieslect-auth/strava/getAccessToken",
             "/kieslect-user/user/notify/getAppList",
+            "/kieslect-user/testProtoStuff/*",
             "/kieslect-device/device/**/sys/**",
             "/kieslect-device/device/getList",
             "/kieslect-device/device/ota/getList",
@@ -54,6 +57,7 @@ public class GatewayConfig {
             "/kieslect-outapi/**",
             "/kieslect-device/device/getMacIsRegionLock",
             "/kieslect-device/device/appManage/getQRList",
+            "/kieslect-device/device/deviceMacRegionLock/**",
     };
 
     @Bean
