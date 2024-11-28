@@ -54,6 +54,7 @@ public class GatewayConfig {
             "/kieslect-file/file/download/**",
             "/kieslect-weather/weather/getWeatherInfo",
             "/kieslect-**/**/task/**",
+            "/kieslect-**/**/sys/**",
             "/kieslect-outapi/**",
             "/kieslect-device/device/getMacIsRegionLock",
             "/kieslect-device/device/appManage/getQRList",
