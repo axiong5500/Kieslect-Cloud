@@ -1,6 +1,7 @@
 package com.kieslect.oms.service.impl;
 
 import com.kieslect.oms.domain.vo.ActivationQueryVO;
+import com.kieslect.oms.domain.vo.CountryDailyRequestVO;
 import com.kieslect.oms.domain.vo.CountryMonthRequestVO;
 import com.kieslect.oms.mapper.AnalysisMapper;
 import com.kieslect.oms.service.IAnalysisService;
@@ -49,6 +50,26 @@ public class AnalysisServiceImpl implements IAnalysisService {
                 .map(ActivationQueryVO::getNoIncludeCountryCode)
                 .orElse(null);
         return analysisMapper.selectActivationCountByGroup(startDate,endDate,countryCode,noIncludeCountryCode);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectCountryDailyByGroup(CountryDailyRequestVO countryDailyRequestVO) {
+        String startDate = Optional.ofNullable(countryDailyRequestVO)
+                .map(ActivationQueryVO::getStartDate)
+                .orElse(null);
+        String endDate = Optional.ofNullable(countryDailyRequestVO)
+                .map(ActivationQueryVO::getEndDate)
+                .orElse(null);
+        String countryCode = Optional.ofNullable(countryDailyRequestVO)
+                .map(ActivationQueryVO::getCountryCode)
+                .orElse(null);
+        String noIncludeCountryCode = Optional.ofNullable(countryDailyRequestVO)
+                .map(ActivationQueryVO::getNoIncludeCountryCode)
+                .orElse(null);
+        String category = Optional.ofNullable(countryDailyRequestVO)
+                .map(CountryDailyRequestVO::getCategory)
+                .orElse(null);
+        return analysisMapper.selectCountryDailyByGroup(startDate,endDate,countryCode,noIncludeCountryCode,category);
     }
 
     @Override

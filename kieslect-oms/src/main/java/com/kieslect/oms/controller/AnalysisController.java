@@ -2,6 +2,7 @@ package com.kieslect.oms.controller;
 
 import com.kieslect.common.core.domain.R;
 import com.kieslect.oms.domain.vo.ActivationQueryVO;
+import com.kieslect.oms.domain.vo.CountryDailyRequestVO;
 import com.kieslect.oms.domain.vo.CountryMonthRequestVO;
 import com.kieslect.oms.service.IAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,17 @@ public class AnalysisController {
     public R<?> deviceDailyGetListCount(@RequestBody(required = false) ActivationQueryVO activationQueryVO) {
         String count = analysisService.selectActivationCountByGroupCount(activationQueryVO);
         return R.ok(count);
+    }
+
+    /**
+     * 日度国家统计
+     * @param activationQueryVO
+     * @return
+     */
+    @PostMapping("/country/daily/getList")
+    public R<?> countryDailyGetList(@RequestBody(required = false) CountryDailyRequestVO activationQueryVO) {
+        List<Map<String, Object>> list = analysisService.selectCountryDailyByGroup(activationQueryVO);
+        return R.ok(list);
     }
 
     /**

@@ -59,4 +59,21 @@ public interface AnalysisMapper extends BaseMapper<Analysis> {
      */
     @MapKey("month")
     List<Map<String, Object>> selectMonthlyActivationCount();
+
+    /**
+     * 查询每日激活量
+     *
+     * @param startDate
+     * @param endDate
+     * @param country
+     * @param noIncludeCountryCode
+     * @param category
+     * @return
+     */
+    @MapKey("activationDate")
+    List<Map<String, Object>> selectCountryDailyByGroup(@Param("startDate") String startDate,
+                                                        @Param("endDate") String endDate,
+                                                        @Param("country") String country,
+                                                        @Param("noIncludeCountryCode") String noIncludeCountryCode,
+                                                        @Param("category")String category);
 }

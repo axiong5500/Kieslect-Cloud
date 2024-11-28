@@ -150,6 +150,7 @@
             AS totalSum;
     </select>
 
+    <!-- 查询国家月度激活数量 -->
     <select id="selectCountryMonthCountByGroup" resultType="map">
         WITH MonthlyData AS (
         SELECT
@@ -218,6 +219,7 @@
         SUM(CASE WHEN month = '2024-08' THEN activation_count ELSE 0 END) AS `08`,
         SUM(CASE WHEN month = '2024-09' THEN activation_count ELSE 0 END) AS `09`,
         SUM(CASE WHEN month = '2024-10' THEN activation_count ELSE 0 END) AS `10`,
+        SUM(CASE WHEN month = '2024-11' THEN activation_count ELSE 0 END) AS `11`,
         SUM(
         CASE
         WHEN month = '2024-01' THEN activation_count
@@ -230,6 +232,8 @@
         WHEN month = '2024-08' THEN activation_count
         WHEN month = '2024-09' THEN activation_count
         WHEN month = '2024-10' THEN activation_count
+        WHEN month = '2024-11' THEN activation_count
+
         ELSE 0
         END
         ) AS totalCount
@@ -251,6 +255,8 @@
         SUM(CASE WHEN month = '2024-08' THEN activation_count ELSE 0 END) AS `08`,
         SUM(CASE WHEN month = '2024-09' THEN activation_count ELSE 0 END) AS `09`,
         SUM(CASE WHEN month = '2024-10' THEN activation_count ELSE 0 END) AS `10`,
+        SUM(CASE WHEN month = '2024-11' THEN activation_count ELSE 0 END) AS `11`,
+
         SUM(
         CASE
         WHEN month = '2024-01' THEN activation_count
@@ -263,6 +269,8 @@
         WHEN month = '2024-08' THEN activation_count
         WHEN month = '2024-09' THEN activation_count
         WHEN month = '2024-10' THEN activation_count
+        WHEN month = '2024-11' THEN activation_count
+
         ELSE 0
         END
         ) AS totalCount
@@ -282,6 +290,8 @@
         `08`,
         `09`,
         `10`,
+        `11`,
+
         totalCount,
         ROUND(
         CASE
@@ -336,7 +346,14 @@
         WHEN `10` IS NULL OR `09` IS NULL THEN NULL
         ELSE (`10` - `09`) / `09` * 100
         END, 2
-        ) AS growth_rate_10_vs_09
+        ) AS growth_rate_10_vs_09,
+        ROUND(
+        CASE
+        WHEN `11` IS NULL OR `10` IS NULL THEN NULL
+        ELSE (`11` - `10`) / `10` * 100
+        END, 2
+        ) AS growth_rate_11_vs_10
+
         FROM
         PivotedData
         WHERE
@@ -355,6 +372,8 @@
         `08`,
         `09`,
         `10`,
+        `11`,
+
         totalCount,
         ROUND(
         CASE
@@ -409,7 +428,14 @@
         WHEN `10` IS NULL OR `09` IS NULL THEN NULL
         ELSE (`10` - `09`) / `09` * 100
         END, 2
-        ) AS growth_rate_10_vs_09
+        ) AS growth_rate_10_vs_09,
+        ROUND(
+        CASE
+        WHEN `11` IS NULL OR `10` IS NULL THEN NULL
+        ELSE (`11` - `10`) / `10` * 100
+        END, 2
+        ) AS growth_rate_11_vs_10
+
         FROM
         GlobalData
         )
@@ -425,6 +451,8 @@
         `08`,
         `09`,
         `10`,
+        `11`,
+
         totalCount,
         growth_rate_02_vs_01,
         growth_rate_03_vs_02,
@@ -434,7 +462,9 @@
         growth_rate_07_vs_06,
         growth_rate_08_vs_07,
         growth_rate_09_vs_08,
-        growth_rate_10_vs_09
+        growth_rate_10_vs_09,
+        growth_rate_11_vs_10
+
         FROM
         GrowthComparison
         UNION ALL
@@ -450,6 +480,8 @@
         `08`,
         `09`,
         `10`,
+        `11`,
+
         totalCount,
         growth_rate_02_vs_01,
         growth_rate_03_vs_02,
@@ -459,7 +491,9 @@
         growth_rate_07_vs_06,
         growth_rate_08_vs_07,
         growth_rate_09_vs_08,
-        growth_rate_10_vs_09
+        growth_rate_10_vs_09,
+        growth_rate_11_vs_10
+
         FROM
         GlobalGrowthComparison
         ORDER BY
@@ -479,7 +513,8 @@
     SUM(`Scykei Feel`) AS `Scykei Feel`,
     SUM(`Scykei Civis`) AS `Scykei Civis`,
     SUM(totalSum) AS totalSum
-        FROM (
+        FROM
+            (
             SELECT
             DATE(FROM_UNIXTIME(tai.activation_time)) AS activationDate,
             SUM(CASE WHEN dm.category = 'KS2' THEN 1 ELSE 0 END) AS KS2,
@@ -489,12 +524,7 @@
             0 AS Balancs,
             0 AS `Scykei Feel`,
             0 AS `Scykei Civis`,
-            SUM(
-            CASE
-            WHEN dm.category IN ('KS2', 'KS3', 'Actor') THEN 1
-            ELSE 0
-            END
-            ) AS totalSum
+            SUM(CASE WHEN dm.category IN ('KS2', 'KS3', 'Actor') THEN 1 ELSE 0 END) AS totalSum
             FROM
             t_third_device_active_info tai
             JOIN device_mapping dm ON tai.device_id = dm.device_id
@@ -512,12 +542,7 @@
             SUM(CASE WHEN dm.category = 'Balancs' THEN 1 ELSE 0 END) AS Balancs,
             SUM(CASE WHEN dm.category = 'Scykei Feel' THEN 1 ELSE 0 END) AS `Scykei Feel`,
             SUM(CASE WHEN dm.category = 'Scykei Civis' THEN 1 ELSE 0 END) AS `Scykei Civis`,
-            SUM(
-            CASE
-            WHEN dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel', 'Scykei Civis') THEN 1
-            ELSE 0
-            END
-            ) AS totalSum
+            SUM(CASE WHEN dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel', 'Scykei Civis') THEN 1 ELSE 0 END) AS totalSum
             FROM
             t_device_active_info tdai
             JOIN device_mapping dm ON tdai.device_id = dm.device_id
@@ -527,9 +552,78 @@
         GROUP BY
             month
         ORDER BY
-            month DESC
+            month DESC;
+
     </select>
 
+    <select id="selectCountryDailyByGroup" resultType="java.util.Map">
+        WITH DailyActivations AS (
+        SELECT
+        DATE(FROM_UNIXTIME(a.activation_time)) AS activationDate,
+        m.chinese_name AS country,
+
+        -- 针对来自 t_third_device_active_info 的设备 ID 统计
+        COUNT(CASE WHEN a.device_id IN ('20000', '30000', '7698', '7699', '7751', '7752', '7753', '7754', '7770') AND a.source = 'third' AND dm.category = 'KS2' THEN 1 END) AS `KS2`,
+        COUNT(CASE WHEN a.device_id IN ('7815') AND a.source = 'third' AND dm.category = 'KS3' THEN 1 END) AS `KS3`,
+        COUNT(CASE WHEN a.device_id IN ('7828') AND a.source = 'third' AND dm.category = 'Actor' THEN 1 END) AS `Actor`,
+
+        -- 针对来自 t_device_active_info 的设备 ID 统计
+        COUNT(CASE WHEN a.device_id IN ('RB320LGA', 'RB320LGB', 'RH320LGB') AND a.source = 'local' AND dm.category = 'Kieslect Pura' THEN 1 END) AS `Kieslect Pura`,
+        COUNT(CASE WHEN a.device_id IN ('RH281LAAZD', 'RB281LAAW', 'RH281LAAZ') AND a.source = 'local' AND dm.category = 'Balancs' THEN 1 END) AS `Balancs`,
+        COUNT(CASE WHEN a.device_id IN ('RB320LGN', 'RH320LGN') AND a.source = 'local' AND dm.category = 'Scykei Feel' THEN 1 END) AS `Scykei Feel`,
+        COUNT(CASE WHEN a.device_id IN ('RH281LAAZB', 'RH281LAAZE') AND a.source = 'local' AND dm.category = 'Scykei Civis' THEN 1 END) AS `Scykei Civis`
+
+        FROM
+        (
+        SELECT activation_time, country, device_id, 'third' AS source FROM `kieslect_cloud`.`t_third_device_active_info`
+        UNION ALL
+        SELECT activation_time, country, device_id, 'local' AS source FROM `kieslect_cloud`.`t_device_active_info`
+        ) a
+        JOIN `country_mapping` m ON a.country = m.country_code
+        LEFT JOIN `device_mapping` dm ON a.device_id = dm.device_id
+        <where>
+            <if test="startDate != null and endDate != null">
+                a.activation_time BETWEEN UNIX_TIMESTAMP(#{startDate}) AND UNIX_TIMESTAMP(#{endDate})
+            </if>
+            <if test="country != null">
+                AND a.country = #{country}
+            </if>
+            <if test="noIncludeCountryCode != null">
+                AND a.country != #{noIncludeCountryCode}
+            </if>
+            <if test="category != null">
+                AND dm.category = #{category}
+            </if>
+            AND DATE(FROM_UNIXTIME(a.activation_time)) &lt; CURDATE()
+        </where>
+
+        GROUP BY
+        activationDate, country
+        )
+
+        SELECT
+        activationDate,
+        country,
+        KS2,
+        KS3,
+        Actor,
+        `Kieslect Pura`,
+        Balancs,
+        `Scykei Feel`,
+        `Scykei Civis`,
+        -- 计算每天的激活总数
+        (KS2 + KS3 + Actor + `Kieslect Pura` + Balancs + `Scykei Feel` + `Scykei Civis`) AS daily_total_activations,
+        -- 计算每日所有国家的所有型号激活总数
+        SUM(KS2 + KS3 + Actor + `Kieslect Pura` + Balancs + `Scykei Feel` + `Scykei Civis`) OVER (PARTITION BY activationDate) AS total_daily_activations
+        FROM
+        DailyActivations
+        HAVING
+        daily_total_activations > 0
+        ORDER BY
+        activationDate DESC, daily_total_activations DESC;
+
+
+    </select>
 
 
 </mapper>
