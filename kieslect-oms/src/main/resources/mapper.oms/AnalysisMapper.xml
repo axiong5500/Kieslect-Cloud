@@ -220,6 +220,7 @@
         SUM(CASE WHEN month = '2024-09' THEN activation_count ELSE 0 END) AS `09`,
         SUM(CASE WHEN month = '2024-10' THEN activation_count ELSE 0 END) AS `10`,
         SUM(CASE WHEN month = '2024-11' THEN activation_count ELSE 0 END) AS `11`,
+        SUM(CASE WHEN month = '2024-12' THEN activation_count ELSE 0 END) AS `12`,
         SUM(
         CASE
         WHEN month = '2024-01' THEN activation_count
@@ -233,7 +234,7 @@
         WHEN month = '2024-09' THEN activation_count
         WHEN month = '2024-10' THEN activation_count
         WHEN month = '2024-11' THEN activation_count
-
+        WHEN month = '2024-12' THEN activation_count
         ELSE 0
         END
         ) AS totalCount
@@ -256,7 +257,7 @@
         SUM(CASE WHEN month = '2024-09' THEN activation_count ELSE 0 END) AS `09`,
         SUM(CASE WHEN month = '2024-10' THEN activation_count ELSE 0 END) AS `10`,
         SUM(CASE WHEN month = '2024-11' THEN activation_count ELSE 0 END) AS `11`,
-
+        SUM(CASE WHEN month = '2024-12' THEN activation_count ELSE 0 END) AS `12`,
         SUM(
         CASE
         WHEN month = '2024-01' THEN activation_count
@@ -270,7 +271,7 @@
         WHEN month = '2024-09' THEN activation_count
         WHEN month = '2024-10' THEN activation_count
         WHEN month = '2024-11' THEN activation_count
-
+        WHEN month = '2024-12' THEN activation_count
         ELSE 0
         END
         ) AS totalCount
@@ -291,7 +292,7 @@
         `09`,
         `10`,
         `11`,
-
+        `12`,
         totalCount,
         ROUND(
         CASE
@@ -352,8 +353,13 @@
         WHEN `11` IS NULL OR `10` IS NULL THEN NULL
         ELSE (`11` - `10`) / `10` * 100
         END, 2
-        ) AS growth_rate_11_vs_10
-
+        ) AS growth_rate_11_vs_10,
+        ROUND(
+        CASE
+        WHEN `12` IS NULL OR `11` IS NULL THEN NULL
+        ELSE (`12` - `11`) / `11` * 100
+        END, 2
+        ) AS growth_rate_12_vs_11
         FROM
         PivotedData
         WHERE
@@ -373,7 +379,7 @@
         `09`,
         `10`,
         `11`,
-
+        `12`,
         totalCount,
         ROUND(
         CASE
@@ -434,8 +440,13 @@
         WHEN `11` IS NULL OR `10` IS NULL THEN NULL
         ELSE (`11` - `10`) / `10` * 100
         END, 2
-        ) AS growth_rate_11_vs_10
-
+        ) AS growth_rate_11_vs_10,
+        ROUND(
+        CASE
+        WHEN `12` IS NULL OR `11` IS NULL THEN NULL
+        ELSE (`12` - `11`) / `11` * 100
+        END, 2
+        ) AS growth_rate_12_vs_11
         FROM
         GlobalData
         )
@@ -452,7 +463,7 @@
         `09`,
         `10`,
         `11`,
-
+        `12`,
         totalCount,
         growth_rate_02_vs_01,
         growth_rate_03_vs_02,
@@ -463,8 +474,8 @@
         growth_rate_08_vs_07,
         growth_rate_09_vs_08,
         growth_rate_10_vs_09,
-        growth_rate_11_vs_10
-
+        growth_rate_11_vs_10,
+        growth_rate_12_vs_11
         FROM
         GrowthComparison
         UNION ALL
@@ -481,7 +492,7 @@
         `09`,
         `10`,
         `11`,
-
+        `12`,
         totalCount,
         growth_rate_02_vs_01,
         growth_rate_03_vs_02,
@@ -492,8 +503,8 @@
         growth_rate_08_vs_07,
         growth_rate_09_vs_08,
         growth_rate_10_vs_09,
-        growth_rate_11_vs_10
-
+        growth_rate_11_vs_10,
+        growth_rate_12_vs_11
         FROM
         GlobalGrowthComparison
         ORDER BY
@@ -575,9 +586,9 @@
 
         FROM
         (
-        SELECT activation_time, country, device_id, 'third' AS source FROM `kieslect_cloud`.`t_third_device_active_info`
+        SELECT activation_time, country, device_id, 'third' AS source FROM `t_third_device_active_info`
         UNION ALL
-        SELECT activation_time, country, device_id, 'local' AS source FROM `kieslect_cloud`.`t_device_active_info`
+        SELECT activation_time, country, device_id, 'local' AS source FROM `t_device_active_info`
         ) a
         JOIN `country_mapping` m ON a.country = m.country_code
         LEFT JOIN `device_mapping` dm ON a.device_id = dm.device_id
