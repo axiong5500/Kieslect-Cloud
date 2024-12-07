@@ -379,7 +379,7 @@ public class WeatherServiceImpl implements IWeatherService {
         }
         if (isConditionMet(id, redisKey)) {
             weatherObj = redisService.getCacheObject(redisKey);
-            logger.info("redis缓存中获取数据" + redisKey + ",obj:" + weatherObj);
+            logger.info("命中缓存：{}，从缓存中获得数据",redisKey);
         } else {
             //纠正经纬度
             GeonameThirdGeo hirdGeo = getGeonameThirdGeo(id);
@@ -391,7 +391,7 @@ public class WeatherServiceImpl implements IWeatherService {
             String getWeatherForecast = HttpUtil.get(hourlyWeatherForecast);
             //检查getWeatherForecast返回的信息是不是{"code":"404"},说明是经纬度不是和风的经纬度，需要通过请求和风经纬度接口，获取正确经纬保存入库，再次用正确经纬度请求获取天气数据
             if (StrUtil.isNotEmpty(getWeatherForecast)){
-                if (getWeatherForecast.contains("429")){
+                if (getWeatherForecast.contains("429") || getWeatherForecast.contains("402")){
                     // 429错误，说明请求次数过多，需要请求收费接口再请求
                     switchToPremiumMode();
                     return getObject(id, latitude, longitude, langFormatted, unitFormatted, redisKey, weatherForecastUrl,retries-1);
@@ -406,7 +406,7 @@ public class WeatherServiceImpl implements IWeatherService {
                     // 请求和风geo接口，获得城市经纬度
                     String geoUrl = String.format(HEFENG_GEO_URL, currentApiKey, name);
                     String geoResult = HttpUtil.get(geoUrl);
-                    if (geoResult.contains("429")){
+                    if (geoResult.contains("429") || getWeatherForecast.contains("402")){
                         // 429错误，说明请求次数过多，需要请求收费接口再请求
                         switchToPremiumMode();
                         return getObject(id, latitude, longitude, langFormatted, unitFormatted, redisKey, weatherForecastUrl,retries-1);
@@ -509,10 +509,6 @@ public class WeatherServiceImpl implements IWeatherService {
         return String.format("%d", id);
     }
 
-    private static String buildRedisKey(int id, String langFormatted, String unitFormatted) {
-        // 将 id、latitude、longitude 拼接成字符串作为 Redis 键
-        return String.format("%d_%s_%s", id, langFormatted, unitFormatted);
-    }
 
 
     // 解析json

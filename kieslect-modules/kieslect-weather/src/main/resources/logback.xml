@@ -19,8 +19,8 @@
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 日志文件名格式 -->
 			<fileNamePattern>${log.path}/info.%d{yyyy-MM-dd}.log</fileNamePattern>
-			<!-- 日志最大的历史 15天 -->
-			<maxHistory>15</maxHistory>
+			<!-- 日志最大的历史 7天 -->
+			<maxHistory>7</maxHistory>
 		</rollingPolicy>
 		<encoder>
 			<pattern>${log.pattern}</pattern>
@@ -41,8 +41,8 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 日志文件名格式 -->
             <fileNamePattern>${log.path}/error.%d{yyyy-MM-dd}.log</fileNamePattern>
-			<!-- 日志最大的历史 15天 -->
-			<maxHistory>15</maxHistory>
+			<!-- 日志最大的历史 7天 -->
+			<maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>${log.pattern}</pattern>
