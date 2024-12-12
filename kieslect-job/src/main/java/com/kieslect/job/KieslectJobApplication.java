@@ -14,6 +14,7 @@ public class KieslectJobApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(KieslectJobApplication.class, args);
+        System.out.println("(♥◠‿◠)ﾉﾞ  任务调度启动成功   ლ(´ڡ`ლ)ﾞ  \n");
     }
 
 }
