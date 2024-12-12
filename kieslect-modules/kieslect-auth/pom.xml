@@ -31,6 +31,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- Kieslect Common Datasource-->
+        <dependency>
+            <groupId>com.kieslect</groupId>
+            <artifactId>kieslect-common-datasource</artifactId>
+        </dependency>
+
         <!-- Kieslect Common Security-->
         <dependency>
             <groupId>com.kieslect</groupId>

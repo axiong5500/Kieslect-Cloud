@@ -1,10 +1,16 @@
 package com.kieslect.device.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.kieslect.common.core.domain.R;
+import com.kieslect.device.domain.CustomWatchFace;
+import com.kieslect.device.domain.vo.CustomWatchFaceVO;
 import com.kieslect.device.domain.vo.WatchFaceListVO;
 import com.kieslect.device.domain.vo.WatchFaceTypeGroupVO;
+import com.kieslect.device.service.ICustomWatchFaceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -19,6 +25,8 @@ import java.util.Map;
 @RestController
 @RequestMapping(value ="/watchFace")
 public class WatchFaceController {
+    @Autowired
+    ICustomWatchFaceService customWatchFaceService;
     // list
     @GetMapping(value = "/list")
     public R<?> list(){
@@ -33,6 +41,16 @@ public class WatchFaceController {
         watchFaceListVOs.add(new WatchFaceListVO(4,"w4","/kieslect-file/file/download/watchface/w4.png",2,"",1,"/kieslect-file/file/download/watchface/w4.zip","200d1f3ab00b0973a02c5e4f7c59739c",6357937));
         result.put("watchFaceTypeGroup",watchFaceTypeGroupVOs);
         result.put("watchFaces",watchFaceListVOs);
+        return R.ok(result);
+    }
+
+    // 自定义表盘信息
+    @GetMapping(value = "/customWatchFace")
+    public R<?> customWatchFace(@RequestParam(value = "14", required =false)Integer innerId){
+        Map<String,Object> result = new HashMap<>();
+        CustomWatchFace customWatchFace = customWatchFaceService.getById(1);
+        CustomWatchFaceVO customWatchFaceVO = BeanUtil.copyProperties(customWatchFace,CustomWatchFaceVO.class);
+        result.put("customWatchFace",customWatchFaceVO);
         return R.ok(result);
     }
 }

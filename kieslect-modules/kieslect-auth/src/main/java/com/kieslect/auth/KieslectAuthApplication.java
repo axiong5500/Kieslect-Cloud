@@ -1,12 +1,13 @@
 package com.kieslect.auth;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+@SpringBootApplication
+@MapperScan("com.kieslect.**.mapper")
 @ComponentScan(basePackages = {"com.kieslect"})
 @EnableDiscoveryClient
 public class KieslectAuthApplication {

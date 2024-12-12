@@ -41,17 +41,14 @@ public class GatewayConfig {
             "/kieslect-auth/auth/third/login",
             "/kieslect-auth/auth/logout",
             "/kieslect-auth/auth/strava/getAccessToken",
-            "/kieslect-auth/strava/getAccessToken",
             "/kieslect-user/user/notify/getAppList",
             "/kieslect-user/testProtoStuff/*",
-            "/kieslect-device/device/**/sys/**",
+            "/kieslect-user/strava/*",
             "/kieslect-device/device/getList",
             "/kieslect-device/device/ota/getList",
             "/kieslect-device/device/dial/getList",
             "/kieslect-device/device/appManage/getApp",
-            "/kieslect-file/file/upload",
-            "/kieslect-file/file/v2/**",
-            "/kieslect-file/file/download/**",
+            "/kieslect-file/file/**",
             "/kieslect-weather/weather/getWeatherInfo",
             "/kieslect-**/**/task/**",
             "/kieslect-**/**/sys/**",
@@ -59,6 +56,8 @@ public class GatewayConfig {
             "/kieslect-device/device/getMacIsRegionLock",
             "/kieslect-device/device/appManage/getQRList",
             "/kieslect-device/device/deviceMacRegionLock/**",
+            "/kieslect-device/device/watchFace/customWatchFace",
+            "/kieslect-auth/auth/strava/**"
     };
 
     @Bean
