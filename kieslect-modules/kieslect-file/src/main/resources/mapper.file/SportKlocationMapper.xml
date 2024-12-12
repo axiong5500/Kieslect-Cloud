@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kieslect.file.mapper.SportKlocationMapper">
+
+    <select id="listByUserId" resultType="com.kieslect.file.domain.vo.SportKlocationVO">
+        SELECT tskt.total_time AS totalTime, tskl.*
+        FROM t_sport_ktimer tskt
+                 INNER JOIN t_sport_klocation tskl
+                            ON tskt.time = tskl.time AND tskl.user_id = #{userId}
+        WHERE tskt.user_id = #{userId}
+        ORDER BY tskt.total_time
+    </select>
+</mapper>

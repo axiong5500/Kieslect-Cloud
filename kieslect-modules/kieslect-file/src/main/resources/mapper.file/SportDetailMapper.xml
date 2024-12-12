@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kieslect.file.mapper.SportDetailMapper">
+    <insert id="insertOrUpdateSportDetailBatch" parameterType="java.util.List">
+        INSERT INTO t_sport_detail
+        (user_id, only, type, offset_hours, start_time, end_time, time, steps, distance,
+        max_speed, avg_hr, max_hr, min_hr, device_type, aim_data, aim_type, calories, lap, create_time, update_time)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId}, #{item.only}, #{item.type}, #{item.offsetHours}, #{item.startTime},
+            #{item.endTime}, #{item.time}, #{item.steps}, #{item.distance}, #{item.maxSpeed},
+            #{item.avgHr}, #{item.maxHr}, #{item.minHr}, #{item.deviceType}, #{item.aimData},
+            #{item.aimType}, #{item.calories}, #{item.lap}, #{item.createTime}, #{item.updateTime})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        type = VALUES(type),
+        offset_hours = VALUES(offset_hours),
+        start_time = VALUES(start_time),
+        end_time = VALUES(end_time),
+        time = VALUES(time),
+        steps = VALUES(steps),
+        distance = VALUES(distance),
+        max_speed = VALUES(max_speed),
+        avg_hr = VALUES(avg_hr),
+        max_hr = VALUES(max_hr),
+        min_hr = VALUES(min_hr),
+        device_type = VALUES(device_type),
+        aim_data = VALUES(aim_data),
+        aim_type = VALUES(aim_type),
+        calories = VALUES(calories),
+        lap = VALUES(lap),
+        update_time = VALUES(update_time);
+    </insert>
+
+
+    <select id="getThirdInfoByUserId" resultType="com.kieslect.file.domain.ThirdUserInfo">
+        SELECT * FROM t_third_user_info WHERE user_id = #{userId} AND third_token_type = 5
+    </select>
+</mapper>
