@@ -2,6 +2,9 @@ package com.kieslect.user.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.kieslect.user.domain.Issue;
+import com.kieslect.user.domain.vo.IssueListVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.kieslect.user.domain.Issue;
  */
 public interface IssueMapper extends BaseMapper<Issue> {
 
+    List<IssueListVO> listJoinMsgLevel(Long userId);
 }

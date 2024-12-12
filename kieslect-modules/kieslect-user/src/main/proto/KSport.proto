@@ -51,13 +51,13 @@ message KTimer {
 
 message KLocation {
     int32 time = 1;//运动时间 秒
-    double latitude = 2;
-    double longitude = 3;
+    double latitude = 2; // 纬度
+    double longitude = 3; // 经度
 }
 
 message KActivityData {
     int32 time = 1;//运动时间 秒
-    int32 hr = 2;
+    int32 hr = 2; // 心率
     int32 steps = 3;//步数
     int32 cadence = 4;//步频 步数/分钟
 
