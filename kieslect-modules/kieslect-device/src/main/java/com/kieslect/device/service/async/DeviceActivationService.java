@@ -14,10 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class DeviceActivationService {
@@ -41,6 +38,15 @@ public class DeviceActivationService {
         String operatingSystem = String.valueOf(loginUser.getAppSystem());
         String phoneModel = loginUser.getPhoneType();
         String gender = String.valueOf(loginUser.getSex());
+        // 判断是不是android手机上传上来的性别需进行转换
+        if (Objects.isNull(loginUser.getNewSex()) && loginUser.getSex() != null) {
+            if (loginUser.getAppSystem() == 0){
+                gender = String.valueOf(loginUser.getSex() == 0 ? (byte) 1 : (loginUser.getSex() == 1 ? (byte) 0 : (byte) 2));
+            }else{
+                gender = String.valueOf(loginUser.getSex());
+            }
+        }
+
         LocalDate birthdate = getBirthdate(loginUser.getBirthday());
         String activationTimezone = "UTC+8";
         String ipAddress = clientIp;

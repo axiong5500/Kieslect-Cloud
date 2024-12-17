@@ -71,6 +71,12 @@ public class UserInfo implements Serializable {
       @TableField("sex")
     private Byte sex;
 
+    /**
+     * 性别，0：男，女：1，2：其它
+     */
+    @TableField("new_sex")
+    private Byte newSex;
+
       /**
      * 生日
      */

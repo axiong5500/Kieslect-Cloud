@@ -22,6 +22,7 @@ public class LoginUserInfo implements Serializable {
     private String thirdToken;
     private Byte thirdTokenType;
     private Byte sex;
+    private byte newSex;
     private Long birthday;
     private Double height;
     private Double weight;

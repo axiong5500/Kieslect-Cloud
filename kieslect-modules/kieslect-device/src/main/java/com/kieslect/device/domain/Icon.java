@@ -48,6 +48,9 @@ public class Icon implements Serializable {
     @TableField("icon")
     private String icon;
 
+    @TableField("app_notify_switch")
+    private Integer appNotifySwitch;
+
     @TableField("create_time")
     private LocalDateTime createTime;
 

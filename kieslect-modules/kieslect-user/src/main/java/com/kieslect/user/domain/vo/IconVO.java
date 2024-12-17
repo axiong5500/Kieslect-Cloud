@@ -31,4 +31,6 @@ public class IconVO implements Serializable {
 
     private String icon;
 
+    private int appNotifySwitch;
+
 }
