@@ -33,6 +33,7 @@
             OR a.device_alias LIKE '%Pura%'
             OR a.device_alias LIKE '%Feel%'
             OR a.device_alias LIKE '%civis%'
+            OR a.device_alias LIKE '%GS Pro%'
             )
 
             AND a.country != 'CN'
