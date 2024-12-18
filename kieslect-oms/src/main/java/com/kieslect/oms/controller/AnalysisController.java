@@ -65,7 +65,7 @@ public class AnalysisController {
 
 
     /**
-     * 月度激活统计
+     * 月度激活统计-柱状图
      * @return
      */
     @GetMapping("/device/month/getList")

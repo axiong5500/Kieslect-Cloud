@@ -7,6 +7,7 @@
         SUM(KS2) AS KS2,
         SUM(KS3) AS KS3,
         SUM(Actor) AS Actor,
+        SUM(`Scykei Movis`) AS `Scykei Movis`,
         SUM(`Kieslect Pura`) AS `Kieslect Pura`,
         SUM(Balancs) AS Balancs,
         SUM(`Scykei Feel`) AS `Scykei Feel`,
@@ -18,13 +19,14 @@
         SUM(CASE WHEN dm.category = 'KS2' THEN 1 ELSE 0 END) AS KS2,
         SUM(CASE WHEN dm.category = 'KS3' THEN 1 ELSE 0 END) AS KS3,
         SUM(CASE WHEN dm.category = 'Actor' THEN 1 ELSE 0 END) AS Actor,
+        SUM(CASE WHEN dm.category = 'Scykei Movis' THEN 1 ELSE 0 END) AS `Scykei Movis`,
         0 AS `Kieslect Pura`,
         0 AS Balancs,
         0 AS `Scykei Feel`,
         0 AS `Scykei Civis`,
         SUM(
         CASE
-        WHEN dm.category IN ('KS2', 'KS3', 'Actor') THEN 1
+        WHEN dm.category IN ('KS2', 'KS3', 'Actor','Scykei Movis') THEN 1
         ELSE 0
         END
         ) AS totalSum
@@ -53,6 +55,7 @@
         0 AS KS2,
         0 AS KS3,
         0 AS Actor,
+        0 AS `Scykei Movis`,
         SUM(CASE WHEN dm.category = 'Kieslect Pura' THEN 1 ELSE 0 END) AS `Kieslect Pura`,
         SUM(CASE WHEN dm.category = 'Balancs' THEN 1 ELSE 0 END) AS Balancs,
         SUM(CASE WHEN dm.category = 'Scykei Feel' THEN 1 ELSE 0 END) AS `Scykei Feel`,
@@ -98,7 +101,7 @@
                 SELECT
                     SUM(
                             CASE
-                                WHEN dm.category IN ('KS2', 'KS3', 'Actor') THEN 1
+                                WHEN dm.category IN ('KS2', 'KS3', 'Actor','Scykei Movis') THEN 1
                                 ELSE 0
                                 END
                     )
@@ -519,6 +522,7 @@
     SUM(KS2) AS KS2,
     SUM(KS3) AS KS3,
     SUM(Actor) AS Actor,
+    SUM(`Scykei Movis`) AS `Scykei Movis`,
     SUM(`Kieslect Pura`) AS `Kieslect Pura`,
     SUM(Balancs) AS Balancs,
     SUM(`Scykei Feel`) AS `Scykei Feel`,
@@ -531,11 +535,12 @@
             SUM(CASE WHEN dm.category = 'KS2' THEN 1 ELSE 0 END) AS KS2,
             SUM(CASE WHEN dm.category = 'KS3' THEN 1 ELSE 0 END) AS KS3,
             SUM(CASE WHEN dm.category = 'Actor' THEN 1 ELSE 0 END) AS Actor,
+            SUM(CASE WHEN dm.category = 'Scykei Movis' THEN 1 ELSE 0 END) AS `Scykei Movis`,
             0 AS `Kieslect Pura`,
             0 AS Balancs,
             0 AS `Scykei Feel`,
             0 AS `Scykei Civis`,
-            SUM(CASE WHEN dm.category IN ('KS2', 'KS3', 'Actor') THEN 1 ELSE 0 END) AS totalSum
+            SUM(CASE WHEN dm.category IN ('KS2', 'KS3', 'Actor', 'Scykei Movis') THEN 1 ELSE 0 END) AS totalSum
             FROM
             t_third_device_active_info tai
             JOIN device_mapping dm ON tai.device_id = dm.device_id
@@ -549,6 +554,7 @@
             0 AS KS2,
             0 AS KS3,
             0 AS Actor,
+            0 AS `Scykei Movis`,
             SUM(CASE WHEN dm.category = 'Kieslect Pura' THEN 1 ELSE 0 END) AS `Kieslect Pura`,
             SUM(CASE WHEN dm.category = 'Balancs' THEN 1 ELSE 0 END) AS Balancs,
             SUM(CASE WHEN dm.category = 'Scykei Feel' THEN 1 ELSE 0 END) AS `Scykei Feel`,
@@ -577,6 +583,7 @@
         COUNT(CASE WHEN a.device_id IN ('20000', '30000', '7698', '7699', '7751', '7752', '7753', '7754', '7770') AND a.source = 'third' AND dm.category = 'KS2' THEN 1 END) AS `KS2`,
         COUNT(CASE WHEN a.device_id IN ('7815') AND a.source = 'third' AND dm.category = 'KS3' THEN 1 END) AS `KS3`,
         COUNT(CASE WHEN a.device_id IN ('7828') AND a.source = 'third' AND dm.category = 'Actor' THEN 1 END) AS `Actor`,
+        COUNT(CASE WHEN a.device_id IN ('7924') AND a.source = 'third' AND dm.category = 'Scykei Movis' THEN 1 END) AS `Scykei Movis`,
 
         -- 针对来自 t_device_active_info 的设备 ID 统计
         COUNT(CASE WHEN a.device_id IN ('RB320LGA', 'RB320LGB', 'RH320LGB') AND a.source = 'local' AND dm.category = 'Kieslect Pura' THEN 1 END) AS `Kieslect Pura`,
@@ -618,14 +625,15 @@
         KS2,
         KS3,
         Actor,
+        `Scykei Movis`,
         `Kieslect Pura`,
         Balancs,
         `Scykei Feel`,
         `Scykei Civis`,
         -- 计算每天的激活总数
-        (KS2 + KS3 + Actor + `Kieslect Pura` + Balancs + `Scykei Feel` + `Scykei Civis`) AS daily_total_activations,
+        (KS2 + KS3 + Actor + `Kieslect Pura` + Balancs + `Scykei Feel` + `Scykei Civis` + `Scykei Movis`) AS daily_total_activations,
         -- 计算每日所有国家的所有型号激活总数
-        SUM(KS2 + KS3 + Actor + `Kieslect Pura` + Balancs + `Scykei Feel` + `Scykei Civis`) OVER (PARTITION BY activationDate) AS total_daily_activations
+        SUM(KS2 + KS3 + Actor + `Kieslect Pura` + Balancs + `Scykei Feel` + `Scykei Civis` + `Scykei Movis`) OVER (PARTITION BY activationDate) AS total_daily_activations
         FROM
         DailyActivations
         HAVING
