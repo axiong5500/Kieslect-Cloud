@@ -139,7 +139,7 @@ public class UserInfoController {
         saveUserInfoVO.setId(loginUser.getKid());
         // 判断是不是android手机上传上来的性别需进行转换
         if (saveUserInfoVO.getNewSex() == null && saveUserInfoVO.getSex() != null) {
-            if (loginUser.getAppSystem() == 0){
+            if (loginUser.getAppSystem()!=null && loginUser.getAppSystem() == 0){
                 saveUserInfoVO.setNewSex(saveUserInfoVO.getSex() == 0 ? (byte) 1 : (saveUserInfoVO.getSex() == 1 ? (byte) 0 : (byte) 2));
             }else{
                 saveUserInfoVO.setNewSex(saveUserInfoVO.getSex());
