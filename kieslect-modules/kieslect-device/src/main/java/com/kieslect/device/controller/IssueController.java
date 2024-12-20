@@ -17,11 +17,19 @@ public class IssueController {
     private IIssueService issueService;
 
 
-    @GetMapping("/sys/getList")
-    public R<?> sysGetIssueManageList() {
+    @PostMapping("/sys/getList")
+    public R<?> sysGetIssueManageList(@RequestBody Issue issue) {
         LambdaQueryWrapper<Issue> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderByAsc(Issue::getIssueStatus) // 按照状态降序
-                .orderByDesc(Issue::getCreateTime); // 按照创建时间升序
+        if (issue.getIssueStatus() != null) {
+            queryWrapper.eq(Issue::getIssueStatus, issue.getIssueStatus());
+        }
+        if (issue.getAppName() != null) {
+            queryWrapper.eq(Issue::getAppName, issue.getAppName());
+        }
+        if (issue.getAppSystem() != null) {
+            queryWrapper.eq(Issue::getAppSystem, issue.getAppSystem());
+        }
+        queryWrapper.orderByDesc(Issue::getCreateTime); // 按照创建时间升序
         return R.ok(issueService.list(queryWrapper));
     }
 

@@ -45,8 +45,8 @@ public class IssueDetailController {
     @PostMapping("/create")
     public R<?> createIssueDetail(@RequestBody IssueDetailCreateVO issueDetailVO) {
         int result = issueDetailService.createIssueDetail(issueDetailVO);
-        // 更新问题与反馈的更新时间
-        issueService.update().set("update_time", Instant.now().getEpochSecond()).eq("id", issueDetailVO.getIssueId()).update();
+        // 更新问题与反馈的更新时间,更新问题状态
+        issueService.update().set("update_time", Instant.now().getEpochSecond()).set("issue_status", 0).eq("id", issueDetailVO.getIssueId()).update();
         return R.ok(result);
     }
 
@@ -60,8 +60,13 @@ public class IssueDetailController {
     public R<?> replyIssueDetail(@RequestBody IssueDetailReplyVO issueDetailReplyVO) {
         // 回复消息
         int result = issueDetailService.replyIssueDetail(issueDetailReplyVO);
-        // 更新问题与反馈的更新时间
-        issueService.update().set("update_time", Instant.now().getEpochSecond()).eq("id", issueDetailReplyVO.getIssueId()).update();
+        // 更新问题与反馈的更新时间、更新问题状态
+        Integer issueStatus = issueDetailReplyVO.getIssueStatus();
+        if (issueStatus != null && (issueStatus == 1 || issueStatus == 2)){
+            issueService.update().set("update_time", Instant.now().getEpochSecond()).set("issue_status", issueStatus).eq("id", issueDetailReplyVO.getIssueId()).update();
+        }else{
+            issueService.update().set("update_time", Instant.now().getEpochSecond()).eq("id", issueDetailReplyVO.getIssueId()).update();
+        }
         // 再删除缓存键
         String issueReadRedisKey = getissueReadStatusUserRedisKey(issueDetailReplyVO.getIssueId().toString());
         if (redisService.hasKey(issueReadRedisKey)) {

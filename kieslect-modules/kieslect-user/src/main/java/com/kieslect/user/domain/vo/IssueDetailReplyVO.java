@@ -3,6 +3,7 @@ package com.kieslect.user.domain.vo;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -14,4 +15,6 @@ import java.io.Serializable;
  */
 @Data
 public class IssueDetailReplyVO extends IssueDetailCreateVO implements Serializable {
+    List<String> adminReplyimagePaths;
+    private Integer issueStatus;
 }

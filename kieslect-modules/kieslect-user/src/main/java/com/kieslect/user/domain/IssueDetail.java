@@ -54,7 +54,7 @@ public class IssueDetail implements Serializable {
     private String filePath;
 
       /**
-     * 上传的文件类型，0：image，1：voice，2：video
+     * 上传的文件类型，0：文本，1：image，2：voice，3：video
      */
       @TableField("issue_file_type")
     private Integer issueFileType;

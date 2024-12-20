@@ -69,18 +69,20 @@ public class WeatherServiceImpl implements IWeatherService {
     // 每小时尝试切换回免费模式
     @Scheduled(cron = "0 0 0/1 * * ?")
     public void trySwitchBackToFreeMode() {
+        logger.info("尝试切换回免费模式...");
         if (isPremiumMode) {
-            logger.info("尝试切换回免费模式...");
             // 测试免费模式是否可以使用,使用深圳龙岗
             try {
-                String testUrl = String.format(NOW_WEATHER_URL, FREE_API_HOST,FREE_API_KEY, "113.0", "23.0");
+                String testUrl = String.format(NOW_WEATHER_URL, FREE_API_HOST, FREE_API_KEY, "113.0", "23.0");
                 String result = HttpUtil.get(testUrl);
                 logger.info("免费模式测试结果：" + result);
-                if (result.contains("200")) {
+                JSONObject jsonObject = JSONUtil.parseObj(result);
+                String code = jsonObject.getStr("code");
+                if (code.equals("200")) {
                     // 如果成功，切换回免费模式
                     switchToFreeMode();
                     logger.info("已切换回免费模式");
-                }else{
+                } else {
                     logger.info("免费模式仍限流，保持收费模式");
                 }
             } catch (Exception ex) {
@@ -370,7 +372,7 @@ public class WeatherServiceImpl implements IWeatherService {
         return HEFENG_PREFIX + prefix + redisKey;
     }
 
-    private Object getObject(int id, double latitude, double longitude, String langFormatted, String unitFormatted, String redisKey, String weatherForecastUrl,int retries) {
+    private Object getObject(int id, double latitude, double longitude, String langFormatted, String unitFormatted, String redisKey, String weatherForecastUrl, int retries) {
         Object weatherObj;
         // 如果已达到最大重试次数，直接返回空或报错
         if (retries <= 0) {
@@ -391,12 +393,14 @@ public class WeatherServiceImpl implements IWeatherService {
             String getWeatherForecast = HttpUtil.get(hourlyWeatherForecast);
             //检查getWeatherForecast返回的信息是不是{"code":"404"},说明是经纬度不是和风的经纬度，需要通过请求和风经纬度接口，获取正确经纬保存入库，再次用正确经纬度请求获取天气数据
             if (StrUtil.isNotEmpty(getWeatherForecast)){
-                if (getWeatherForecast.contains("429") || getWeatherForecast.contains("402")){
+                JSONObject weatherForecastJson = JSONUtil.parseObj(getWeatherForecast);
+                String code = weatherForecastJson.getStr("code");
+                if (code.equals("429") || code.equals("402")){
                     // 429错误，说明请求次数过多，需要请求收费接口再请求
                     switchToPremiumMode();
                     return getObject(id, latitude, longitude, langFormatted, unitFormatted, redisKey, weatherForecastUrl,retries-1);
                 }
-                if (getWeatherForecast.contains("404")) {
+                if (code.equals("404")) {
                     logger.warn("Weather forecast not found: {},result: {}", hourlyWeatherForecast, getWeatherForecast);
                     Geoname geoname = getGeoname(id);
                     String name = null;
@@ -406,7 +410,9 @@ public class WeatherServiceImpl implements IWeatherService {
                     // 请求和风geo接口，获得城市经纬度
                     String geoUrl = String.format(HEFENG_GEO_URL, currentApiKey, name);
                     String geoResult = HttpUtil.get(geoUrl);
-                    if (geoResult.contains("429") || getWeatherForecast.contains("402")){
+                    JSONObject geoResultJson = JSONUtil.parseObj(geoResult);
+                    String geoResultCode = geoResultJson.getStr("code");
+                    if (geoResultCode.equals("429") || geoResultCode.equals("402")){
                         // 429错误，说明请求次数过多，需要请求收费接口再请求
                         switchToPremiumMode();
                         return getObject(id, latitude, longitude, langFormatted, unitFormatted, redisKey, weatherForecastUrl,retries-1);
@@ -510,7 +516,6 @@ public class WeatherServiceImpl implements IWeatherService {
     }
 
 
-
     // 解析json
     public Object parseJson(String json) {
         JSONObject resultJson = JSONUtil.parseObj(json);
@@ -531,7 +536,6 @@ public class WeatherServiceImpl implements IWeatherService {
         }
         return null;
     }
-
 
 
     public static void main(String[] args) {
