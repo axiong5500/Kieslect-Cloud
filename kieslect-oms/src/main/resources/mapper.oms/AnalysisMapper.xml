@@ -43,6 +43,9 @@
             <if test="noIncludeCountryCode != null">
                 AND tai.country != #{noIncludeCountryCode}
             </if>
+            <if test="brand != null">
+                AND dm.brand = #{brand}
+            </if>
             AND DATE(FROM_UNIXTIME(tai.activation_time)) &lt; CURDATE()
         </where>
         GROUP BY
@@ -78,6 +81,9 @@
             </if>
             <if test="noIncludeCountryCode != null">
                 AND tdai.country != #{noIncludeCountryCode}
+            </if>
+            <if test="brand != null">
+                AND dm.brand = #{brand}
             </if>
             AND dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel','Scykei Civis')
             AND DATE(FROM_UNIXTIME(tdai.activation_time)) &lt; CURDATE()
@@ -119,6 +125,9 @@
             <if test="noIncludeCountryCode != null">
                 AND tai.country != #{noIncludeCountryCode}
             </if>
+            <if test="brand != null">
+                AND dm.brand = #{brand}
+            </if>
             AND DATE(FROM_UNIXTIME(tai.activation_time)) &lt; CURDATE()
         </where>
 
@@ -146,6 +155,9 @@
             </if>
             <if test="noIncludeCountryCode != null">
                 AND tdai.country != #{noIncludeCountryCode}
+            </if>
+            <if test="brand != null">
+                AND dm.brand = #{brand}
             </if>
             AND DATE(FROM_UNIXTIME(tdai.activation_time)) &lt; CURDATE()
         </where>
@@ -176,6 +188,7 @@
             <if test="category != null">
                 AND dm.category = #{category}
             </if>
+
         </where>
         GROUP BY
         cm.chinese_name,
@@ -203,6 +216,7 @@
             <if test="category != null">
                 AND dm.category = #{category}
             </if>
+
             AND dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel', 'Scykei Civis')
         </where>
         GROUP BY
@@ -508,6 +522,170 @@
         growth_rate_10_vs_09,
         growth_rate_11_vs_10,
         growth_rate_12_vs_11
+        FROM
+        GlobalGrowthComparison
+        ORDER BY
+        CASE WHEN countryCn = 'Unknown' THEN 1 ELSE 0 END,
+        totalCount DESC;
+    </select>
+
+    <sql id="dynamicMonthlyColumns">
+        <foreach collection="months" item="month" separator=",">
+            SUM(CASE WHEN activation_month = #{month} THEN activation_count ELSE 0 END) AS `${month.replace("-", "")}`
+        </foreach>
+    </sql>
+
+    <sql id="dynamicMonthlyName">
+        <foreach collection="months" item="month" separator=",">
+            `${month.replace("-", "")}`
+        </foreach>
+    </sql>
+
+    <sql id="dynamicGrowthRate">
+        <foreach collection="months" item="month" index="index" separator=",">
+            <if test="index > 0 and prevMonths[index] != null">
+                ROUND(
+                CASE
+                WHEN `${month.replace("-", "")}` IS NULL OR `${prevMonths[index].replace("-", "")}` IS NULL THEN NULL
+                ELSE (`${month.replace("-", "")}` - `${prevMonths[index].replace("-", "")}`) / `${prevMonths[index].replace("-", "")}` * 100
+                END, 2
+                )  AS gr_m${month.replace("-", "")}_m${prevMonths[index].replace("-", "")}
+            </if>
+        </foreach>
+    </sql>
+
+    <sql id="dynamicGrowthRateName">
+        <foreach collection="months" item="month" index="index" separator=",">
+            <if test="index > 0 and prevMonths[index] != null">
+                gr_m${month.replace("-", "")}_m${prevMonths[index].replace("-", "")}
+            </if>
+        </foreach>
+    </sql>
+
+    <select id="selectMonthlyData" resultType="map">
+        WITH MonthlyData AS (
+        SELECT
+        IFNULL(cm.chinese_name, 'Unknown') AS countryCn,
+        DATE_FORMAT(FROM_UNIXTIME(t.activation_time), '%Y-%m') AS activation_month,
+        COUNT(*) AS activation_count
+        FROM
+        t_third_device_active_info t
+        LEFT JOIN
+        country_mapping cm ON t.country = cm.country_code
+        JOIN
+        device_mapping dm ON t.device_id = dm.device_id
+        <where>
+            <if test="year != null">
+                AND DATE_FORMAT(FROM_UNIXTIME(t.activation_time), '%Y') = #{year}
+            </if>
+            <if test="country != null">
+                AND cm.country_code = #{country}
+            </if>
+            <if test="category != null">
+                AND dm.category = #{category}
+            </if>
+            <if test="yearAndMonth != null">
+                AND DATE_FORMAT(FROM_UNIXTIME(t.activation_time), '%Y-%m') >= #{yearAndMonth}
+            </if>
+        </where>
+        GROUP BY
+        cm.chinese_name,
+        activation_month
+
+        UNION ALL
+
+        SELECT
+        IFNULL(cm.chinese_name, 'Unknown') AS countryCn,
+        DATE_FORMAT(FROM_UNIXTIME(d.activation_time), '%Y-%m') AS activation_month,
+        COUNT(*) AS activation_count
+        FROM
+        t_device_active_info d
+        LEFT JOIN
+        country_mapping cm ON d.country = cm.country_code
+        JOIN
+        device_mapping dm ON d.device_id = dm.device_id
+        <where>
+            <if test="year != null">
+                AND DATE_FORMAT(FROM_UNIXTIME(d.activation_time), '%Y') = #{year}
+            </if>
+            <if test="country != null">
+                AND cm.country_code = #{country}
+            </if>
+            <if test="category != null">
+                AND dm.category = #{category}
+            </if>
+            <if test="yearAndMonth != null">
+                AND DATE_FORMAT(FROM_UNIXTIME(d.activation_time), '%Y-%m') >= #{yearAndMonth}
+            </if>
+            AND dm.category IN ('Kieslect Pura', 'Balancs', 'Scykei Feel', 'Scykei Civis')
+        </where>
+        GROUP BY
+        cm.chinese_name,
+        activation_month
+        ),
+        PivotedData AS (
+        SELECT
+        countryCn,
+        <include refid="dynamicMonthlyColumns" />,
+        SUM(
+        CASE
+        <foreach collection="months" item="month" separator=" ">
+             WHEN activation_month = #{month} THEN activation_count
+        </foreach>
+        ELSE 0 END
+        ) AS totalCount
+        FROM
+        MonthlyData
+        GROUP BY
+        countryCn
+        ),
+        GlobalData AS (
+        SELECT
+        'Global' AS countryCn,
+        <include refid="dynamicMonthlyColumns" />,
+        SUM(
+        CASE
+        <foreach collection="months" item="month" separator=" ">
+             WHEN activation_month = #{month} THEN activation_count
+        </foreach>
+        ELSE 0 END
+        ) AS totalCount
+        FROM
+        MonthlyData
+        ),
+        GrowthComparison AS (
+        SELECT
+        countryCn,
+        <include refid="dynamicMonthlyName" />,
+        totalCount,
+        <include refid="dynamicGrowthRate" />
+        FROM
+        PivotedData
+        WHERE
+        totalCount > 0
+        ),
+        GlobalGrowthComparison AS (
+        SELECT
+        <include refid="dynamicMonthlyName" />,
+        countryCn,
+        <include refid="dynamicGrowthRate" />,
+        totalCount
+        FROM
+        GlobalData
+        )
+        SELECT
+        countryCn,
+        <include refid="dynamicMonthlyName" />,
+        totalCount,
+        <include refid="dynamicGrowthRateName" />
+        FROM
+        GrowthComparison
+        UNION ALL
+        SELECT
+        countryCn,
+        <include refid="dynamicMonthlyName" />
+        ,totalCount,
+        <include refid="dynamicGrowthRateName" />
         FROM
         GlobalGrowthComparison
         ORDER BY

@@ -19,12 +19,15 @@ public interface AnalysisMapper extends BaseMapper<Analysis> {
      * @param endDate
      * @param country
      * @param noIncludeCountryCode
+     * @param brand
      * @return
      */
     @MapKey("activationDate")
     List<Map<String, Object>> selectActivationCountByGroup(@Param("startDate") String startDate,
                                                            @Param("endDate") String endDate,
-                                                           @Param("country") String country,@Param("noIncludeCountryCode") String noIncludeCountryCode);
+                                                           @Param("country") String country,
+                                                           @Param("noIncludeCountryCode") String noIncludeCountryCode,
+                                                           @Param("brand") String brand);
 
     /**
      * 查询每日激活量总数量
@@ -37,7 +40,9 @@ public interface AnalysisMapper extends BaseMapper<Analysis> {
      */
     String selectActivationCountByGroupCount(@Param("startDate") String startDate,
                                              @Param("endDate") String endDate,
-                                             @Param("country") String country,@Param("noIncludeCountryCode") String noIncludeCountryCode);
+                                             @Param("country") String country,
+                                             @Param("noIncludeCountryCode") String noIncludeCountryCode,
+                                             @Param("brand") String brand);
 
 
     /**
@@ -51,6 +56,14 @@ public interface AnalysisMapper extends BaseMapper<Analysis> {
     List<Map<String, Object>> selectCountryMonthCountByGroup(@Param("year") String year,
                                                              @Param("country") String country,
                                                              @Param("category") String category);
+
+    @MapKey("totalCount")
+    List<Map<String, Object>> selectMonthlyData(@Param("year") String year,
+                                                             @Param("country") String country,
+                                                             @Param("category") String category,
+                                                             @Param("yearAndMonth") String yearAndMonth,
+                                                             @Param("months") List<String> months,
+                                                             @Param("prevMonths") List<String> prevMonths);
 
 
     /**

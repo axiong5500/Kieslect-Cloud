@@ -32,7 +32,9 @@ public class AnalysisServiceImpl implements IAnalysisService {
         String noIncludeCountryCode = Optional.ofNullable(activationQueryVO)
                 .map(ActivationQueryVO::getNoIncludeCountryCode)
                 .orElse(null);
-        return analysisMapper.selectActivationCountByGroupCount(startDate,endDate,countryCode,noIncludeCountryCode);
+        String brand = Optional.ofNullable(activationQueryVO)
+                .map(ActivationQueryVO::getBrand).orElse(null);
+        return analysisMapper.selectActivationCountByGroupCount(startDate,endDate,countryCode,noIncludeCountryCode,brand);
     }
 
     @Override
@@ -49,7 +51,10 @@ public class AnalysisServiceImpl implements IAnalysisService {
         String noIncludeCountryCode = Optional.ofNullable(activationQueryVO)
                 .map(ActivationQueryVO::getNoIncludeCountryCode)
                 .orElse(null);
-        return analysisMapper.selectActivationCountByGroup(startDate,endDate,countryCode,noIncludeCountryCode);
+        String brand = Optional.ofNullable(activationQueryVO)
+                .map(ActivationQueryVO::getBrand)
+                .orElse(null);
+        return analysisMapper.selectActivationCountByGroup(startDate,endDate,countryCode,noIncludeCountryCode,brand);
     }
 
     @Override
@@ -83,7 +88,16 @@ public class AnalysisServiceImpl implements IAnalysisService {
         String category = Optional.ofNullable(countryMonthRequestVO)
                 .map(CountryMonthRequestVO::getCategory)
                 .orElse(null);
-        return analysisMapper.selectCountryMonthCountByGroup(currentYear, countryCode, category);
+        String yearAndMonth = Optional.ofNullable(countryMonthRequestVO)
+                .map(CountryMonthRequestVO::getYearAndMonth)
+                .orElse(null);
+        List<String> months = Optional.ofNullable(countryMonthRequestVO)
+                .map(CountryMonthRequestVO::getMonths)
+                .orElse(null);
+        List<String> prevMonths = Optional.ofNullable(countryMonthRequestVO)
+                .map(CountryMonthRequestVO::getPrevMonths)
+                .orElse(null);
+        return analysisMapper.selectMonthlyData(currentYear, countryCode, category, yearAndMonth,months,prevMonths);
     }
 
 
