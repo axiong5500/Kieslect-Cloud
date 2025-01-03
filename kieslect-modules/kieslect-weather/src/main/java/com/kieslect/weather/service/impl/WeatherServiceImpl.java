@@ -19,6 +19,7 @@ import com.kieslect.weather.service.IWeatherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,49 +46,63 @@ public class WeatherServiceImpl implements IWeatherService {
     // 最大重试次数
     private static final int MAX_RETRIES = 2;
 
-    // 当前的 API Key（默认使用免费 API Key）
-    private String currentApiKey = FREE_API_KEY;
-    // 当前的 Host（默认使用免费 API Host）
-    private String currentHost = FREE_API_HOST;
+    // 使用 AtomicReference 确保线程安全
+    private final AtomicReference<ApiConfig> apiConfig = new AtomicReference<>(ApiConfig.freeMode(FREE_API_KEY, FREE_API_HOST));
 
-    // 是否为收费模式
-    private boolean isPremiumMode = false;
+    /**
+     * 用于存储 API 配置的不可变数据类。
+     *
+     * @param currentApiKey 当前的 API Key
+     * @param currentHost   当前的 API Host
+     * @param isPremiumMode 是否处于收费模式
+     */
+    private record ApiConfig(String currentApiKey, String currentHost, boolean isPremiumMode) {
+        /**
+         * 创建一个免费模式的 ApiConfig 实例。
+         */
+        public static ApiConfig freeMode(String currentApiKey, String currentHost) {
+            return new ApiConfig(currentApiKey, currentHost, false);
+        }
+
+        /**
+         * 创建一个收费模式的 ApiConfig 实例。
+         */
+        public static ApiConfig premiumMode(String currentApiKey, String currentHost) {
+            return new ApiConfig(currentApiKey, currentHost, true);
+        }
+    }
 
     // 切换到收费模式的方法
     private void switchToPremiumMode() {
-        currentApiKey = PAID_API_KEY;
-        currentHost = PAID_API_HOST;
-        isPremiumMode = true;
+        apiConfig.set(ApiConfig.premiumMode(PAID_API_KEY, PAID_API_HOST));
     }
+
     // 切换到免费模式的方法
     private void switchToFreeMode() {
-        currentApiKey = FREE_API_KEY;
-        currentHost = FREE_API_HOST;
-        isPremiumMode = false;
+        apiConfig.set(ApiConfig.freeMode(FREE_API_KEY, FREE_API_HOST));
     }
 
-
     // 每小时尝试切换回免费模式
+    @Async
     @Scheduled(cron = "0 0 0/1 * * ?")
     public void trySwitchBackToFreeMode() {
         logger.info("尝试切换回免费模式...");
-        if (isPremiumMode) {
-            // 测试免费模式是否可以使用,使用深圳龙岗
+        ApiConfig config = apiConfig.get();
+        if (config.isPremiumMode) {
             try {
                 String testUrl = String.format(NOW_WEATHER_URL, FREE_API_HOST, FREE_API_KEY, "113.0", "23.0");
                 String result = HttpUtil.get(testUrl);
                 logger.info("免费模式测试结果：" + result);
                 JSONObject jsonObject = JSONUtil.parseObj(result);
                 String code = jsonObject.getStr("code");
-                if (code.equals("200")) {
-                    // 如果成功，切换回免费模式
+                if ("200".equals(code)) {
                     switchToFreeMode();
                     logger.info("已切换回免费模式");
                 } else {
                     logger.info("免费模式仍限流，保持收费模式");
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.error("切换回免费模式失败", ex);
             }
         }
     }
@@ -389,7 +405,7 @@ public class WeatherServiceImpl implements IWeatherService {
                 longitude = Double.valueOf(hirdGeo.getLongitude());
                 latitude = Double.valueOf(hirdGeo.getLatitude());
             }
-            String hourlyWeatherForecast = String.format(weatherForecastUrl, currentHost, currentApiKey, longitude, latitude);
+            String hourlyWeatherForecast = String.format(weatherForecastUrl, apiConfig.get().currentHost(), apiConfig.get().currentApiKey(), longitude, latitude);
             String getWeatherForecast = HttpUtil.get(hourlyWeatherForecast);
             //检查getWeatherForecast返回的信息是不是{"code":"404"},说明是经纬度不是和风的经纬度，需要通过请求和风经纬度接口，获取正确经纬保存入库，再次用正确经纬度请求获取天气数据
             if (StrUtil.isNotEmpty(getWeatherForecast)){
@@ -408,7 +424,7 @@ public class WeatherServiceImpl implements IWeatherService {
                         name = geoname.getName();
                     }
                     // 请求和风geo接口，获得城市经纬度
-                    String geoUrl = String.format(HEFENG_GEO_URL, currentApiKey, name);
+                    String geoUrl = String.format(HEFENG_GEO_URL, apiConfig.get().currentApiKey(), name);
                     String geoResult = HttpUtil.get(geoUrl);
                     JSONObject geoResultJson = JSONUtil.parseObj(geoResult);
                     String geoResultCode = geoResultJson.getStr("code");
