@@ -36,11 +36,11 @@ public class WeatherServiceImpl implements IWeatherService {
     private static final Logger logger = LoggerFactory.getLogger(WeatherServiceImpl.class);
 
     // 免费API Key（每日限额16,700次请求）
-    private static final String FREE_API_KEY = "ba0fb55d9b5c49ab8b352808ead4dac5";
+    private static final String FREE_API_KEY = "***";
     private static final String FREE_API_HOST = "devapi.qweather.com";
 
     // 收费API Key（无每日请求限制）
-    private static final String PAID_API_KEY = "36a411df3f974b53a42ec9c84e2c1139";
+    private static final String PAID_API_KEY = "***";
     private static final String PAID_API_HOST = "api.qweather.com";
 
     // 最大重试次数
