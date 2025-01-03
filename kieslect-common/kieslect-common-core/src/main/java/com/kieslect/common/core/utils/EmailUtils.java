@@ -80,23 +80,6 @@ public class EmailUtils {
         return str.matches(pattern);
     }
 
-    public static void main(String[] args) {
-//        MailConfig mailConfig = new MailConfig();
-        //QQ
-//        mailConfig.setUsername("lianyixiong@qq.com");
-//        mailConfig.setPassword("jgbencutyyygbbgj");
-//        mailConfig.setHost("smtp.qq.com");
-//        mailConfig.setPort(587);
-//        sendEmail(mailConfig, "lianyixiong@gmail.com", "Test Subject", "Test Body");
-        //ALi
-//        mailConfig.setUsername("KstyleOS@kieslect-cn.com");
-//        mailConfig.setPassword("HH123456@");
-//        mailConfig.setHost("smtp.qiye.aliyun.com");
-//        mailConfig.setPort(465);
-//        sendEmail(mailConfig, "lianyixiong@gmail.com", "Test Subject", "Test Body");
-        //
-        sendMessage("smtpdm.aliyun.com", "kstyleos@mail.kieslect.top", "KStyleos123456", "KstyleOS","lianyixiong@gmail.com");
-    }
 
     protected static String genMessageID(String mailFrom) {
         // message-id 用于唯一地标识每一封邮件，其格式需要遵循RFC 5322标准，通常如 <uniquestring@example.com>，其中uniquestring是邮件服务器生成的唯一标识，可能包含时间戳、随机数等信息。
