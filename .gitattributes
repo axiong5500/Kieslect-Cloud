@@ -1,2 +1,4 @@
 kieslect-generator/src/main/java/com/kieslect/gen/json/t_geoname.json filter=lfs diff=lfs merge=lfs -text
 kieslect-modules/kieslect-device/src/main/resources/GeoLite2-City.mmdb filter=lfs diff=lfs merge=lfs -text
+*.mmdb filter=lfs diff=lfs merge=lfs -text
+*.json filter=lfs diff=lfs merge=lfs -text
