@@ -6,36 +6,31 @@ Kieslect Cloud 是一个基于 Spring Boot 和微服务架构的后台管理系�
 ---
 
 ## 项目结构
-- **kieslect-api**  
-  用户服务模块，支持新增字段（如 `newSex`）。
-
-- **kieslect-common**  
-  公共工具模块，为其他模块提供基础支持。
-
-- **kieslect-gateway**  
-  网关模块，支持设备服务接口的自定义表格查询。
-
-- **kieslect-generator**  
-  代码生成模块，使用 Git LFS 管理大文件。
-
-- **kieslect-job**  
-  定时任务模块，支持分布式任务调度（如 Strava 分布式任务）。
-
-- **kieslect-modules**  
-  核心功能模块，存储地理位置等大文件资源。
-
-- **kieslect-oms**  
-  OMS 服务模块，提供国家管理和动态版本优化。
-
-- **kieslect-outapi**  
-  外部 API 模块，支持 OTA 更新服务。
-
-- **sql**  
-  数据库脚本文件夹。
-
-- **.gitattributes**  
-  配置 Git LFS 跟踪大文件。
-
+```
+Kieslect Cloud
+├── kieslect-api/                 # API网关模块，可能包含网关服务相关的接口定义和路由配置
+├── kieslect-common/              # 通用模块，提供基础功能的共享代码库
+│    ├── kieslect-common-core/    # 核心通用功能模块，可能包含项目中广泛使用的工具类和基础组件
+│    ├── kieslect-common-datasource/ # 数据源配置模块，用于配置和管理数据库连接
+│    ├── kieslect-common-mail/    # 邮件服务功能模块，包含发送邮件等邮件相关的功能实现
+│    ├── kieslect-common-redis/   # Redis配置与操作模块，提供与Redis缓存交互的工具和服务
+│    └── kieslect-common-security/ # 安全相关功能模块，包含身份验证、授权等安全相关的代码
+├── kieslect-gateway/             # 网关模块，负责路由转发、负载均衡等网关功能
+├── kieslect-generator/           # 代码生成器模块，用于自动生成项目代码或数据访问层代码
+├── kieslect-job/                 # 定时任务调度模块，负责执行计划内的定时任务
+├── kieslect-modules/             # 核心业务模块，集中管理业务逻辑代码
+│    ├── kieslect-auth/           # 鉴权模块，处理用户认证和权限控制
+│    ├── kieslect-device/         # 设备管理模块，负责设备相关数据的管理
+│    ├── kieslect-file/           # 文件管理模块，提供文件上传、存储、管理等功能
+│    ├── kieslect-user/           # 用户管理模块，管理用户信息和用户相关的业务逻辑
+│    └── kieslect-weather/        # 天气服务模块，提供天气信息服务
+├── kieslect-oms/                 # OMS服务模块，负责订单管理系统相关业务
+├── kieslect-outapi/              # 外部接口服务模块，提供对外部系统的API接口
+├── sql/                          # 数据库脚本目录，存放数据库初始化脚本和迁移脚本
+├── .gitattributes                # Git LFS配置文件，设置Git大文件存储的属性
+├── README.md                     # 项目说明文件，包含项目介绍、安装指南、使用说明等
+└── pom.xml                       # Maven项目配置文件，管理项目的构建配置、依赖关系等
+```
 ---
 
 ## 特性
